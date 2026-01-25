@@ -1,14 +1,15 @@
 ---
-title: Brian J. Murray - Resume
+title: ""
 author: Brian J. Murray
 date: January 25, 2026
 geometry: margin=0.75in
 fontsize: 11pt
+titlepage: false
 ---
 
 # BRIAN J. MURRAY
 
-brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
+brian@cfktech.com · ![](linkedin-qr.png){width=0.4in} LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 ## PROFESSIONAL EXPERIENCE
 
@@ -61,6 +62,10 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Led review of design and test plan documentation and code implementation.
 - Built web user interface for commonly used queries that streamlined workflow for tier 2 customer service.
 - Automated manual data deploy process using SSIS, SQL jobs and a web user interface for scheduling and configuration of SSIS package.
+
+## CERTIFICATIONS
+
+![](databricks-qr.png){width=0.4in} **Databricks Data Engineer Associate** (June 2025)
 
 ## EDUCATION
 
