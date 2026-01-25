@@ -3,9 +3,17 @@ layout: default
 title: "Brian J. Murray - Resume"
 ---
 
+---
+title: Brian J. Murray - Resume
+author: Brian J. Murray
+date: January 2026
+geometry: margin=0.75in
+fontsize: 11pt
+---
+
 # BRIAN J. MURRAY
 
-586.383.0539 · brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
+brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 ## PROFESSIONAL EXPERIENCE
 
