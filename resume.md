@@ -1,7 +1,7 @@
 ---
 title: ""
 author: Brian J. Murray
-date: January 25, 2026 — Updated
+date: January 25, 2026
 geometry: margin=0.75in
 fontsize: 11pt
 titlepage: false
