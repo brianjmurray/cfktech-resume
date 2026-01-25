@@ -1,0 +1,66 @@
+name: Auto-Release on Push to Main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - resume.md
+      - _layouts/**
+      - _config.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for version calculation
+
+      - name: Get latest tag
+        id: tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest tag: $LATEST_TAG"
+
+      - name: Calculate next version
+        id: version
+        run: |
+          LATEST=${{ steps.tag.outputs.latest_tag }}
+          # Remove 'v' prefix
+          VERSION=${LATEST#v}
+          
+          # Extract version parts
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          
+          # Increment patch version
+          PATCH=$((PATCH + 1))
+          NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+          
+          echo "next_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Next version: $NEW_VERSION"
+
+      - name: Check if tag already exists for this commit
+        id: check_tag
+        run: |
+          CURRENT_TAG=$(git describe --exact-match --tags 2>/dev/null || echo "")
+          if [ -z "$CURRENT_TAG" ]; then
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          else
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create release
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          gh release create ${{ steps.version.outputs.next_version }} \
+            --title "Resume ${{ steps.version.outputs.next_version }}" \
+            --notes "Auto-generated release from changes to resume.md or layout"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
