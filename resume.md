@@ -1,7 +1,7 @@
 ---
 title: Brian J. Murray - Resume
 author: Brian J. Murray
-date: January 2026
+date: January 25, 2026
 geometry: margin=0.75in
 fontsize: 11pt
 ---
