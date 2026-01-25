@@ -1,275 +1,429 @@
-# Resume Site with GitHub Pages + Automated PDF
+# cfktech.com Resume Site
 
-A Jekyll-based resume site template with automated PDF generation via GitHub Actions. Hosted on a custom domain using GitHub Pages with HTTPS.
+A Jekyll-based resume site with GitHub Pages hosting, automated semantic versioning, PDF generation, and CI/CD pipeline. Demonstrates GitHub Copilot CLI usage for repository management and GitHub Actions automation.
 
 ## Overview
 
 This project demonstrates:
-- **Static site hosting** using Jekyll + GitHub Pages
-- **Custom domain** with HTTPS via GitHub Pages
-- **Automated PDF generation** from Markdown using GitHub Actions
-- **Versioned releases** with downloadable resume assets
-- **GitHub Copilot CLI** workflows for repo management and automation
+- **Static site hosting** using Jekyll + GitHub Pages with custom domain
+- **Semantic versioning** — automatic patch version bumping on resume changes
+- **Automated PDF generation** from Markdown (pandoc + XeLaTeX)
+- **Versioned releases** with downloadable PDF assets
+- **Branch protection** enforcing PR reviews before main branch merges
+- **GitHub Actions automation** for release creation, PDF generation, and index regeneration
+- **QR codes** for LinkedIn profile and credential links
+- **GitHub Copilot CLI** workflows and commands documented
 
 ## Features
 
-✅ Resume hosted via GitHub Pages (custom domain + HTTPS)  
-✅ Resume content stored in Markdown (`resume.md`)  
-✅ Clean single-page Jekyll layout  
-✅ PDF auto-generated on each release  
-✅ HTTPS with GitHub-managed certificate  
+✅ Resume hosted at https://cfktech.com via GitHub Pages (custom domain + HTTPS)  
+✅ Resume content in Markdown (`resume.md`) with metadata frontmatter  
+✅ Automatic `index.md` regeneration for Jekyll rendering  
+✅ QR codes for LinkedIn and credential links  
+✅ Semantic versioning (v1.0.0 format, auto-incremented patch version)  
+✅ PDF auto-generated on resume changes and pushed to release assets  
+✅ Single consolidated GitHub Actions workflow for release + PDF + index sync  
+✅ Branch protection on main (require PR review before merge)  
+✅ HTTPS with GitHub-managed certificate (auto-renews)  
 
 ## Architecture
 
 ```
-resume-site/
-├── resume.md                         # Resume content (source of truth)
-├── index.md                          # Jekyll page that renders resume.md
-├── _config.yml                       # Jekyll configuration
+cfktech-resume/
+├── resume.md                         # Resume content (Markdown, source of truth)
+│   ├── Pandoc metadata block (lines 1–7)
+│   ├── LinkedIn contact with QR code
+│   └── CERTIFICATIONS section with QR codes
+├── index.md                          # Jekyll page (auto-regenerated from resume.md)
+├── _config.yml                       # Jekyll config (title, url, layout)
 ├── _layouts/
-│   └── default.html                  # HTML template
+│   └── default.html                  # Minimal HTML template
+├── linkedin-qr.png                   # QR code → LinkedIn profile
+├── databricks-qr.png                 # QR code → Databricks credential
+├── CNAME                             # Custom domain for GitHub Pages (cfktech.com)
 ├── .github/workflows/
-│   └── generate_pdf.yml              # GitHub Actions: PDF generation
-├── CNAME                             # Custom domain for GitHub Pages
+│   └── auto_release.yml              # Single workflow: versioning + release + PDF + sync
 └── README.md                         # This file
 ```
 
+## Workflow: auto_release.yml
+
+**Trigger**: `push` to `main` branch with changes to:
+- `resume.md`
+- `_layouts/**`
+- `_config.yml`
+
+**Steps**:
+1. **Checkout** with full history (for git tag calculation)
+2. **Get latest tag** from git history
+3. **Calculate next version** (semantic patch bump: v1.0.3 → v1.0.4)
+4. **Check if tag exists** for current commit (skip if already tagged)
+5. **Regenerate index.md** from resume.md with Jekyll frontmatter
+6. **Create release** with auto-incremented version tag
+7. **Install pandoc + TeX Live** (Ubuntu packages)
+8. **Generate PDF** from resume.md using XeLaTeX engine
+9. **Upload PDF** to release assets via GitHub REST API
+10. **Commit regenerated index.md** back to main (triggers GitHub Pages rebuild)
+
+**Permissions**: `contents: write` (allows release creation, PDF upload, and pushing commits)
+
 ## Getting Started
 
-### 1. Fork or Clone This Template
+### 1. Update Your Resume
 
-```bash
-gh repo create my-resume-site --public --clone
-cd my-resume-site
-```
-
-### 2. Edit Your Resume
-
-Edit `resume.md` with your resume content in Markdown:
+Edit `resume.md` with your content:
 
 ```markdown
+---
+title: ""
+titlepage: false
+author: Your Name
+geometry: margin=0.8in
+fontsize: 10pt
+---
+
 # Your Name
+
+**Email**: email@example.com · ![](linkedin-qr.png){width=0.4in} LinkedIn: [profile](https://linkedin.com/in/yourprofile)
 
 ## Professional Experience
 
-### Company Name
-#### Your Title (Start–End)
+**Company Name**, City  
+*Title* (Start–End)
 - Achievement or responsibility 1
 - Achievement or responsibility 2
+
+## CERTIFICATIONS
+
+![](cert-qr.png){width=0.4in} **Certification Name** (Month Year)
+
+## EDUCATION
+
+**School Name**, City  
+Degree (Year)
 ```
 
-Commit and push changes:
+The metadata block (lines 1–7) controls PDF formatting. Set `title: ""` and `titlepage: false` to suppress a title page.
+
+### 2. Generate QR Codes (Optional)
 
 ```bash
-git add resume.md
-git commit -m "Update resume"
-git push origin main
+# Generate QR code for LinkedIn profile
+qrencode -o linkedin-qr.png -s 4 "https://www.linkedin.com/in/yourprofile"
+
+# Generate QR code for credential URL
+qrencode -o cert-qr.png -s 4 "https://credentials.example.com/your-id"
+
+# Embed in resume.md
+# ![](linkedin-qr.png){width=0.4in} LinkedIn
+# ![](cert-qr.png){width=0.4in} Certification
 ```
 
-The site at your custom domain updates automatically.
-
-### 3. Set Up Custom Domain
-
-**Option A: GitHub Pages Settings**
-1. Go to **Settings → Pages**
-2. Under "Custom domain", enter your domain (e.g., `yourname.com`)
-3. GitHub creates a CNAME file and shows DNS instructions
-
-**Option B: Via Copilot CLI (automated)**
-```bash
-gh api repos/OWNER/REPO/pages -f cname=yourname.com
-```
-
-Update DNS records at your registrar:
-- **A records** (for apex domain): `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-- Or **CNAME** (for www subdomain): `USERNAME.github.io`
-
-### 4. Enable HTTPS
-
-In **Settings → Pages**, once DNS is configured, check "Enforce HTTPS". GitHub auto-issues a certificate.
-
-## Generating a Resume PDF
-
-### Create a Release to Trigger PDF Generation
+### 3. Commit and Push to Main
 
 ```bash
-gh release create v1.0 \
-  --title "Resume v1.0" \
-  --notes "Initial release"
+git checkout -b feature/update-resume
+git add resume.md linkedin-qr.png
+git commit -m "Update: Resume and QR codes"
+gh pr create --title "Update resume"
+gh pr merge --merge -d   # Approve and merge
 ```
 
-The GitHub Actions workflow automatically:
-1. Generates `resume.pdf` from `resume.md`
-2. Uploads the PDF as a release asset
+**The workflow automatically**:
+- Creates release v1.0.4 (auto-versioned)
+- Generates `resume.pdf`
+- Uploads PDF to release assets
+- Regenerates `index.md` and commits to main
+- Triggers GitHub Pages rebuild (site updates within 1–2 minutes)
 
-**Download** the PDF from the [Releases](../../releases) page.
+### 4. Configure Custom Domain
 
-### Updating an Existing PDF
+1. Update DNS at registrar (A records):
+   ```
+   185.199.108.153
+   185.199.109.153
+   185.199.110.153
+   185.199.111.153
+   ```
 
-Create a new release:
+2. GitHub Pages **Settings → Pages**:
+   - Custom domain: `yourname.com`
+   - Enforce HTTPS: ✅ (auto-manages certificate)
 
+### 5. Branch Protection
+
+**Settings → Branches → Add rule**:
+- Branch: `main`
+- ✅ Require pull request reviews (1 approver)
+- ✅ Require status checks to pass (Pages must build)
+- ✅ Require branches to be up to date
+- ✅ Dismiss stale reviews on push
+
+## Downloading Your Resume
+
+Resume PDF is available at:
+```
+https://github.com/brianjmurray/cfktech-resume/releases/download/v1.0.4/resume.pdf
+```
+
+Or via GitHub CLI:
 ```bash
-gh release create v1.1 \
-  --title "Resume v1.1" \
-  --notes "Updated: [changes here]"
+gh release download v1.0.4 --pattern "resume.pdf"
 ```
 
-## PDF Generation Workflow
-
-**Trigger**: On release publish  
-**File**: `.github/workflows/generate_pdf.yml`
-
-**Steps**:
-1. Install pandoc and TeX Live
-2. Convert `resume.md` → `resume.pdf` (using XeLaTeX)
-3. Upload PDF to release assets
-
-**Why XeLaTeX?**
-- Better font support (TrueType, OpenType)
-- Professional PDF output
-- Handles special characters well
+Or visit the [Releases page](../../releases) to download any version.
 
 ## GitHub Copilot CLI Reference
 
-### Repository Setup
+### Repository Setup & Configuration
+
 ```bash
-# Create a new repo
-gh repo create my-resume-site --public --source=. --push
+# Clone and navigate
+gh repo clone brianjmurray/cfktech-resume
+cd cfktech-resume
+
+# View repo metadata
+gh repo view --json description,homepage,isPrivate
 
 # Set homepage
-gh repo edit OWNER/REPO --homepage https://yourname.com
+gh repo edit --homepage https://cfktech.com
 ```
 
-### Release Management
-```bash
-# Create a release
-gh release create v1.0 --title "Resume v1.0" --notes "Release notes"
+### Branch & PR Management
 
-# List releases
+```bash
+# Create feature branch
+git checkout -b feature/update-resume
+
+# Create pull request
+gh pr create --title "Update resume content" --body "Added certifications"
+
+# View PR status
+gh pr view <PR_NUMBER>
+
+# Approve PR (if you have permissions)
+gh pr review <PR_NUMBER> --approve
+
+# Merge PR (deletes feature branch)
+gh pr merge <PR_NUMBER> --merge --delete-branch
+```
+
+### Release & Version Management
+
+```bash
+# List all releases
 gh release list
 
-# Delete a release
-gh release delete v1.0 --confirm
-```
+# View specific release with assets
+gh release view v1.0.4
 
-### GitHub Pages
-```bash
-# Check Pages status
-gh api repos/OWNER/REPO/pages --jq '.status, .https_enforced'
+# Download PDF from latest release
+gh release download --pattern "resume.pdf"
 
-# Set custom domain
-gh api repos/OWNER/REPO/pages -f cname=yourname.com
+# Download from specific version
+gh release download v1.0.3 --pattern "resume.pdf" -D ~/Downloads
 ```
 
 ### Workflow Monitoring
+
 ```bash
-# List workflow runs
-gh run list --repo OWNER/REPO --limit 10
+# List recent workflow runs
+gh run list --workflow auto_release.yml --limit 5
 
-# View workflow logs
-gh run view <RUN_ID> --log
+# View specific run details
+gh run view <RUN_ID> --json status,conclusion,createdAt
 
-# Check a specific job
-gh run view <RUN_ID> --json jobs
+# View full logs for a run
+gh run view <RUN_ID> --log | head -100
+
+# Check failed jobs only
+gh run list --status completed --conclusion failure
 ```
 
-## Protecting Your Repository (Public Repo)
+### GitHub Pages Status
 
-Since this is a public repository, consider these settings to prevent unauthorized changes:
+```bash
+# Check Pages configuration
+gh api repos/brianjmurray/cfktech-resume/pages --jq '.status, .https_enforced, .cname'
 
-### Branch Protection
-1. **Settings → Branches → Add rule**
-2. **Branch name pattern**: `main`
-3. Enable:
-   - ✅ **Require pull request reviews** (1 approver minimum)
-   - ✅ **Require status checks** (GitHub Pages build must pass)
-   - ✅ **Require branches to be up to date**
-   - ✅ **Dismiss stale pull request approvals**
+# Enable HTTPS (if not already)
+gh api repos/brianjmurray/cfktech-resume/pages -f https_enforced=true
+```
 
-### Access Control
-1. **Settings → Collaborators** — Only add trusted collaborators
-2. **Settings → Code security → Private vulnerability reporting** (if needed)
-3. Consider making the repo **private** if you prefer to limit visibility
+## Protecting the Repository
+
+### Branch Protection on Main
+
+Prevents direct pushes; all changes must come via PR from feature branches.
+
+**To set up via CLI**:
+```bash
+# Note: Full branch protection config via CLI is complex; use GitHub web UI
+
+# Quick web UI setup:
+# Settings → Branches → Add rule
+# - Branch name pattern: main
+# - ✅ Require pull request reviews (1 approver)
+# - ✅ Require status checks to pass (Pages build)
+# - ✅ Require branches to be up to date before merging
+# - ✅ Dismiss stale pull request approvals
+# - ✅ Block force pushes
+```
 
 ### Workflow Permissions
-The `generate_pdf.yml` workflow uses:
-- `permissions: contents: write` — allows uploading to releases only
-- `GITHUB_TOKEN` — scoped to this repo only (no personal access)
+
+The `auto_release.yml` workflow uses minimal permissions:
+```yaml
+permissions:
+  contents: write  # Only: create releases, push index.md commits
+```
+
+This token **cannot**:
+- Delete the repository
+- Modify settings
+- Access other repos or secrets
+
+### Branching Strategy
+
+1. **Create feature branch** from main:
+   ```bash
+   git checkout -b feature/update-resume
+   ```
+
+2. **Make changes** to `resume.md`, QR codes, or layouts
+
+3. **Push and create PR**:
+   ```bash
+   git push origin feature/update-resume
+   gh pr create
+   ```
+
+4. **PR triggers**:
+   - GitHub Pages build check (must pass)
+   - Status check for branch protection
+
+5. **Merge PR** (via CLI or web):
+   ```bash
+   gh pr merge --merge -d  # Deletes feature branch after merge
+   ```
+
+6. **Workflow runs automatically**:
+   - Detects `resume.md` change
+   - Creates release (v1.0.4)
+   - Generates PDF
+   - Pushes `index.md` back to main
+   - GitHub Pages rebuilds (live in 1–2 min)
+
+## Advanced: Semantic Versioning Details
+
+The workflow automatically bumps the **patch version** (v1.0.3 → v1.0.4) on any commit to `resume.md`.
+
+**How it works**:
+1. Fetch latest git tag: `git describe --tags --abbrev=0` → `v1.0.3`
+2. Extract version parts: MAJOR=1, MINOR=0, PATCH=3
+3. Increment PATCH: `PATCH=$((PATCH + 1))` → 4
+4. Create new tag: `v1.0.4`
+5. Create release with tag
+
+**To manually change MAJOR or MINOR**:
+- Edit `.github/workflows/auto_release.yml`
+- Modify the `Calculate next version` step
+- Or manually create release: `gh release create v2.0.0 --title "Resume v2.0.0"`
 
 ## Local Development
 
 ### Preview Site Locally
 ```bash
+# Install Jekyll
 gem install bundler jekyll
+
+# Install dependencies
 bundle install
+
+# Serve locally
 bundle exec jekyll serve
 ```
-Visit `http://localhost:4000`
+Visit `http://localhost:4000` — changes to `resume.md` auto-reload.
 
 ### Generate PDF Locally
 ```bash
-# Install pandoc and texlive-xetex
+# Install tools (macOS)
 brew install pandoc texlive
 
-# Generate PDF
-pandoc resume.md -o resume.pdf --pdf-engine=xelatex
+# Generate (uses resume.md metadata block)
+pandoc resume.md -o resume.pdf --pdf-engine=xelatex --standalone
 ```
 
 ## Customization
 
-### Styling
-Edit `_layouts/default.html` to customize CSS:
+### Change Site Title or URL
+Edit `_config.yml`:
+```yaml
+title: "Your Name - Resume"
+url: "https://yourname.com"
+baseurl: ""
+```
 
+### Change HTML Layout
+Edit `_layouts/default.html`:
 ```html
 <style>
-  body { font-family: "Georgia", serif; max-width: 900px; }
+  body { font-family: Georgia, serif; max-width: 900px; margin: 0 auto; }
   h1 { color: #333; border-bottom: 2px solid #0066cc; }
 </style>
 ```
 
-### PDF Styling
-Add a pandoc metadata block to `resume.md`:
-
+### Modify PDF Formatting
+Edit the pandoc metadata block in `resume.md` (lines 1–7):
 ```yaml
 ---
-title: Your Name
+title: ""
+titlepage: false
 author: Your Name
-date: January 2026
-geometry: margin=1in
-fontsize: 11pt
+geometry: margin=0.8in
+fontsize: 10pt
 ---
 ```
 
-Then generate with metadata:
-```bash
-pandoc resume.md -o resume.pdf --pdf-engine=xelatex --metadata-file resume.md
-```
-
-### Jekyll Config
-Edit `_config.yml` to change site title or add plugins:
-
-```yaml
-title: "Your Name - Resume"
-baseurl: ""
-url: "https://yourname.com"
-```
+Available options:
+- `title: "Your Title"` or `""` (no title page)
+- `geometry: margin=1in` (1-inch margins)
+- `fontsize: 11pt` (font size)
+- `date: "January 2026"` (date on title page)
 
 ## Troubleshooting
 
-### GitHub Pages not updating
-- Check **Settings → Pages** to confirm source is `main` branch, root directory
-- Verify CNAME file exists and contains your domain
-- Wait 1–2 minutes for GitHub's build to complete
+### Website not updating after merge
+- **Check**: GitHub Pages build status in **Settings → Pages → Recent deployments**
+- **Fix**: The `auto_release.yml` workflow regenerates `index.md` and commits it back to main. This may take 2–3 minutes after PR merge.
+- **Verify**: `grep "CERTIFICATIONS" index.md` should show your content
 
-### PDF upload fails in Actions
-- Verify workflow has `permissions: contents: write`
-- Check workflow logs: `gh run view <RUN_ID> --log`
-- Ensure GITHUB_TOKEN is not rate-limited
+### Workflow didn't trigger
+- **Cause**: Workflow only triggers on changes to `resume.md`, `_layouts/**`, or `_config.yml`
+- **Not triggered by**: changes to workflow file itself, QR code images, or README
+- **Fix**: If you update the workflow, make a test change to `resume.md` to trigger it
 
-### DNS not resolving
-- Flush DNS cache: `sudo dscacheutil -flushcache` (macOS)
-- Check DNS records: `dig yourname.com @8.8.8.8`
-- Allow 24–48 hours for propagation
+### PDF missing QR codes in release
+- **Check**: Ensure QR code PNG files are committed: `git ls-files *.png`
+- **Check**: `resume.md` references are correct: `![](filename.png){width=0.4in}`
+- **Test locally**: `pandoc resume.md -o test.pdf --pdf-engine=xelatex`
+
+### DNS not working
+- **Check**: `dig cfktech.com` or `nslookup cfktech.com`
+- **Expected**: 4 A records pointing to GitHub Pages IPs:
+  ```
+  185.199.108.153
+  185.199.109.153
+  185.199.110.153
+  185.199.111.153
+  ```
+- **Note**: DNS changes can take 24–48 hours to propagate
+
+### HTTPS certificate not issued
+- **Cause**: DNS must be configured and resolving first
+- **Check**: **Settings → Pages → Custom domain** should show domain without error
+- **Wait**: GitHub issues cert within 15 min of DNS resolving
+- **Force**: Try unchecking/re-checking "Enforce HTTPS"
 
 ## License
 
