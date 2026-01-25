@@ -85,9 +85,17 @@ jobs:
         if: steps.release.outputs.created == 'true'
         run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
 
+      - name: Verify image files exist
+        if: steps.release.outputs.created == 'true'
+        run: |
+          echo "Checking for QR code images:"
+          ls -lh linkedin-qr.png databricks-qr.png
+          echo "Files in current directory:"
+          ls -lh
+
       - name: Generate PDF
         if: steps.release.outputs.created == 'true'
-        run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex --standalone
+        run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex --standalone --resource-path=.:/usr/share/pandoc
 
       - name: Upload PDF to Release
         if: steps.release.outputs.created == 'true'
