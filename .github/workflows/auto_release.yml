@@ -58,9 +58,36 @@ jobs:
 
       - name: Create release
         if: steps.check_tag.outputs.tag_exists == 'false'
+        id: release
         run: |
           gh release create ${{ steps.version.outputs.next_version }} \
             --title "Resume ${{ steps.version.outputs.next_version }}" \
             --notes "Auto-generated release from changes to resume.md or layout"
+          echo "created=true" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install pandoc and TeX Live
+        if: steps.release.outputs.created == 'true'
+        run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
+
+      - name: Generate PDF
+        if: steps.release.outputs.created == 'true'
+        run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex --standalone
+
+      - name: Upload PDF to Release
+        if: steps.release.outputs.created == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get release ID from tag
+          RELEASE_ID=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ steps.version.outputs.next_version }}" \
+            | grep '"id"' | head -1 | awk '{print $2}' | tr -d ',')
+          
+          # Upload asset via REST API
+          curl -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @resume.pdf \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=resume.pdf"
