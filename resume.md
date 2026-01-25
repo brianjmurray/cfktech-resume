@@ -17,7 +17,7 @@
 - Refactored legacy jobs into bundle-managed resources, parameterized catalogs/schemas, and consolidated schedules via Quartz cron; added centralized logging/metrics and alerting.
 - Tech: Python (PySpark), SQL, Delta Lake/DLT, Unity Catalog, Databricks CLI, Azure DevOps, Azure CLI, Databricks Asset Bundles.
 
-### Independent Pet Group
+### Independence Pet Group
 
 #### Manager, Data Development (08/2021–04/2023)
 - Lead and train team responsible for ETL/ELT processes to transactional database, warehouse, Salesforce and partners.
