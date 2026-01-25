@@ -71,3 +71,4 @@ brian@cfktech.com · ![](linkedin-qr.png) LinkedIn: https://www.linkedin.com/in/
 
 **Macomb Community College**, Warren, Michigan  
 Associate of Applied Science – Networking Specialist (May 2003)
+
