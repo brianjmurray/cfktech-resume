@@ -8,8 +8,6 @@ fontsize: 11pt
 
 # BRIAN J. MURRAY
 
-586.383.0539 · brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
-
 brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 ## PROFESSIONAL EXPERIENCE
