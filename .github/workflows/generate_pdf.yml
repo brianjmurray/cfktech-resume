@@ -1,0 +1,20 @@
+name: Generate PDF on release
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pandoc and TeX Live
+        run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
+      - name: Generate PDF
+        run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./resume.pdf
+          asset_name: resume.pdf
+          asset_content_type: application/pdf
