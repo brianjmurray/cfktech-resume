@@ -12,7 +12,7 @@ jobs:
       - name: Install pandoc and TeX Live
         run: sudo apt-get update && sudo apt-get install -y pandoc texlive-xetex
       - name: Generate PDF
-        run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex
+        run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex --standalone
       - name: Upload Release Asset
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
