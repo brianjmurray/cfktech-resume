@@ -8,11 +8,9 @@
       body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; line-height:1.4; color:#111 }
       h1,h2,h3,h4 { color:#1a1a1a }
       a { color:#0366d6 }
-      /* Hide QR codes and pandoc width syntax on website (visible in PDF) */
-      img[src*="qr.png"] { display: none; }
     </style>
     <script>
-      // Remove pandoc width syntax from HTML on page load
+      // Remove pandoc width syntax artifacts from HTML
       document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('em').forEach(function(el) {
           if (el.textContent.includes('{width=')) {

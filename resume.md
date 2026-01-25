@@ -9,7 +9,7 @@ titlepage: false
 
 # BRIAN J. MURRAY
 
-brian@cfktech.com · ![](linkedin-qr.png) LinkedIn: https://www.linkedin.com/in/brianjmurray/
+brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 ## PROFESSIONAL EXPERIENCE
 
@@ -65,7 +65,7 @@ brian@cfktech.com · ![](linkedin-qr.png) LinkedIn: https://www.linkedin.com/in/
 
 ## CERTIFICATIONS
 
-![](databricks-qr.png) **Databricks Data Engineer Associate** (June 2025)
+**Databricks Data Engineer Associate** (June 2025)
 
 ## EDUCATION
 
