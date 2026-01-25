@@ -3,14 +3,6 @@ layout: default
 title: "Brian J. Murray - Resume"
 ---
 
----
-title: ""
-author: Brian J. Murray
-date: January 25, 2026 — Updated
-geometry: margin=0.75in
-fontsize: 11pt
-titlepage: false
----
 
 # BRIAN J. MURRAY
 
