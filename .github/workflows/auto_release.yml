@@ -56,6 +56,19 @@ jobs:
             echo "tag_exists=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Regenerate index.md from resume.md
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          # Regenerate index.md with frontmatter from resume.md
+          cat > index.md <<'INDEXEOF'
+---
+layout: default
+title: "Brian J. Murray - Resume"
+---
+
+INDEXEOF
+          cat resume.md >> index.md
+
       - name: Create release
         if: steps.check_tag.outputs.tag_exists == 'false'
         id: release
@@ -91,3 +104,14 @@ jobs:
             -H "Content-Type: application/octet-stream" \
             --data-binary @resume.pdf \
             "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=resume.pdf"
+
+      - name: Commit regenerated index.md to main
+        if: steps.release.outputs.created == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.md
+          git commit -m "Auto-regenerate index.md from resume.md for v${{ steps.version.outputs.next_version }}" || echo "No changes to commit"
+          git push origin main || echo "Push failed (may already be up to date)"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
