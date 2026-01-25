@@ -6,7 +6,7 @@ title: "Brian J. Murray - Resume"
 
 # BRIAN J. MURRAY
 
-brian@cfktech.com · ![LinkedIn QR Code](linkedin-qr.png){width=2cm height=2cm} LinkedIn: https://www.linkedin.com/in/brianjmurray/
+brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 ## PROFESSIONAL EXPERIENCE
 
@@ -62,7 +62,7 @@ brian@cfktech.com · ![LinkedIn QR Code](linkedin-qr.png){width=2cm height=2cm} 
 
 ## CERTIFICATIONS
 
-![Databricks QR Code](databricks-qr.png){width=2cm height=2cm} **Databricks Data Engineer Associate** (June 2025)
+**Databricks Data Engineer Associate** (June 2025)
 
 ## EDUCATION
 
