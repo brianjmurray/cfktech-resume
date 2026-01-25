@@ -12,9 +12,9 @@ jobs:
       - name: Generate PDF
         run: pandoc resume.md -o resume.pdf --pdf-engine=xelatex
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./resume.pdf
-          asset_name: resume.pdf
-          asset_content_type: application/pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} resume.pdf \
+            --repo ${{ github.repository }} \
+            --clobber
