@@ -139,3 +139,12 @@ Testing workflow validation.
 
 The CI/CD pipeline is now fully functional.
 Test
+# Test PR for Staging Workflow
+
+This is a test PR to verify the staging deployment pipeline works correctly.
+
+See the PR comments for:
+1. Validation results
+2. Staging URL (https://cfktech.com/staging/pr-X/)
+3. Testing checklist
+
