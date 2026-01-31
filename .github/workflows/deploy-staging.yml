@@ -1,0 +1,83 @@
+name: Deploy to Staging (PR Testing)
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '_posts/**'
+      - '_layouts/**'
+      - 'blog/**'
+      - '_config.yml'
+      - '_config_staging.yml'
+      - 'Gemfile'
+      - '.github/workflows/deploy-staging.yml'
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+    - name: Checkout PR branch
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+    
+    - name: Build Jekyll for staging
+      run: |
+        bundle exec jekyll build \
+          --destination ./staging \
+          --config _config.yml,_config_staging.yml
+    
+    - name: Deploy staging to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./staging
+        destination_dir: staging/pr-${{ github.event.pull_request.number }}
+        keep_files: true
+    
+    - name: Comment PR with staging link
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const prNumber = context.issue.number;
+          const stagingUrl = `https://cfktech.com/staging/pr-${prNumber}/`;
+          
+          const message = `🚀 **Staging Deployment Ready!**
+
+Your changes have been built and deployed to staging:
+👉 [Review on Staging](${stagingUrl})
+
+**Before approving this PR, please verify:**
+- [ ] All pages load without errors (check browser console)
+- [ ] Tag pages display posts correctly
+- [ ] Clicking tag links works
+- [ ] Blog search functionality works
+- [ ] Styling looks correct on desktop and mobile
+- [ ] No broken links (check for 404s by clicking around)
+
+**If everything looks good**, this PR is safe to merge! 
+If you find issues, request changes and the PR author can update.`;
+          
+          try {
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+          } catch (error) {
+            console.error('Failed to post comment:', error);
+            throw error;
+          }

@@ -123,31 +123,78 @@ cfktech-resume/
 
 ## Workflow Architecture
 
-### Deployment Pipeline
+### Complete Deployment Pipeline (with Staging Testing)
 
 ```
 Code Changes
     ↓
 Feature Branch
     ↓
-Push to GitHub
+Push & Create PR
     ↓
-Build Check (PR validation) ✓
+TWO PARALLEL WORKFLOWS:
+├─ Validation (pr-validation.yml)
+│  ├─ test.sh validates posts/tags/links
+│  ├─ Comments ✅ or ❌ on PR
+│  └─ Fails if tests don't pass
+│
+└─ Staging Deploy (deploy-staging.yml) 
+   ├─ Builds to /staging/pr-{NUMBER}/
+   ├─ Deploys to GitHub Pages
+   └─ Posts staging URL for manual testing
     ↓
-Create Pull Request
+MANUAL TESTING (See _docs/TESTING_CHECKLIST.md)
+├─ Visit staging link
+├─ Test tag pages (critical - this catches slug bugs!)
+├─ Test search, links, responsive design
+└─ Approve or request changes
     ↓
-Review & Approve
-    ↓
-Merge to Main
+Merge to Main (when tests pass + approved)
     ↓
 Auto-Release Workflow
 ├─ Calculate Version
 ├─ Generate PDF
 ├─ Create Release Tag
-└─ Deploy to GitHub Pages
+└─ Deploy to GitHub Pages (main)
     ↓
 Live on cfktech.com ✓ (2-3 minutes)
 ```
+
+**Key Improvement**: Staging environment prevents bugs from reaching production. The CI/CD tag slug bug would have been caught during staging testing because users could see the broken link.
+
+### pr-validation.yml
+
+**Trigger**: Pull request to main with changes to posts, layouts, or config
+
+**Steps**:
+1. Checkout PR code
+2. Set up Ruby 3.2
+3. Run test.sh to validate:
+   - Jekyll builds without errors
+   - All tag files exist
+   - Posts reference only defined tags
+   - All tag links point to valid files
+4. Post comment with ✅ or ❌ result
+
+**Purpose**: Automated checks that catch most issues before staging
+
+**Note**: Does NOT deploy anything. Only validates structure.
+
+### deploy-staging.yml
+
+**Trigger**: Pull request to main (same trigger as validation)
+
+**Steps**:
+1. Checkout PR code
+2. Build Jekyll to `./staging` directory using `_config_staging.yml`
+3. Deploy to GitHub Pages under `/staging/pr-{PR_NUMBER}/`
+4. Post comment with live staging URL
+
+**Example URL**: `https://cfktech.com/staging/pr-72/` for PR #72
+
+**Purpose**: Live preview environment for manual testing before merge
+
+**Testing**: See `_docs/TESTING_CHECKLIST.md` for what to verify on staging
 
 ### auto_release.yml
 
@@ -164,22 +211,132 @@ Live on cfktech.com ✓ (2-3 minutes)
 3. Create release tag
 4. Generate PDF from resume.md (pandoc + XeLaTeX)
 5. Upload PDF to GitHub release assets
-6. Deploy to GitHub Pages
+6. Deploy to GitHub Pages (main)
 
 **Permissions**: `contents: write` (allows tag creation and PDF upload)
 
-### build-check.yml
+**Result**: Live on https://cfktech.com within 2-3 minutes
 
-**Trigger**: Pull request to main
+## How to Work on Issues
 
-**Steps**:
-1. Checkout code
-2. Set up Ruby 3.2
-3. Install dependencies (bundler + gems)
-4. Run Jekyll build
-5. Fail if build errors detected
+### Standard Workflow: Issue → PR → Staging → Production
 
-**Purpose**: Catch configuration or Markdown syntax errors before merge
+1. **Pick an Issue**
+   - Find an open issue (e.g., Issue #24, #30, #31)
+   - Issues are grouped by phase (Phase 2, Phase 3, etc.)
+
+2. **Create Feature Branch**
+   ```bash
+   git checkout -b feature/issue-24-blog-post
+   ```
+   Naming: `feature/issue-NUMBER-short-description`
+
+3. **Make Changes**
+   ```bash
+   # Make changes locally
+   bundle exec jekyll serve  # Test locally first
+   ```
+
+4. **Commit with Issue Reference**
+   ```bash
+   git commit -m "Add blog post: Homebrew automation - fixes #24"
+   ```
+   Use `fixes #24` / `closes #24` to auto-close when merged.
+
+5. **Create Pull Request**
+   ```bash
+   git push -u origin feature/issue-24-blog-post
+   gh pr create --title "Add blog post: Homebrew automation - fixes #24"
+   ```
+
+6. **GitHub Actions Run (Automatically)**
+   - ✅ **pr-validation.yml** runs first → posts ✅ or ❌ comment
+   - 🚀 **deploy-staging.yml** runs in parallel → posts staging URL
+
+7. **Manual Testing (You Do This)**
+   - Visit the staging URL from the PR comment
+   - Follow `_docs/TESTING_CHECKLIST.md`
+   - Check tag pages especially (they catch slug bugs!)
+   - Approve or request changes
+
+8. **Merge When Satisfied**
+   ```bash
+   gh pr merge --merge --delete-branch
+   ```
+   This:
+   - Merges the PR
+   - Auto-closes Issue #24 (because of `fixes #24` in commit)
+   - Triggers auto-release workflow
+
+9. **Auto-Release (GitHub Does This)**
+   - Calculates new version (v1.0.X)
+   - Generates resume PDF
+   - Creates release tag
+   - Deploys to production
+
+10. **Live!**
+    - Visit https://cfktech.com
+    - Verify your changes are live (2-3 minutes)
+
+### Key Points
+
+- ❌ **Don't** merge without testing on staging first
+- ✅ **Always** check tag pages (where bugs hide)
+- ✅ **Use** staging URL to test as a real user would
+- ✅ **Reference** the issue number in commits
+- ✅ **Let GitHub Actions do the heavy lifting**
+
+### Example: Adding a Blog Post
+
+```bash
+# 1. Start
+git checkout -b feature/issue-24-homebrew-post
+
+# 2. Create post
+echo "---
+layout: post
+title: 'Automating macOS with Homebrew'
+date: 2026-02-01
+excerpt: 'Learn how to automate macOS updates'
+tags: [DevOps, Automation, Homebrew, macOS]
+---
+
+Content here..." > _posts/2026-02-01-homebrew-automation.md
+
+# 3. Test locally
+bundle exec jekyll serve
+# ← Visit http://localhost:4000/blog/  to verify
+
+# 4. Commit
+git commit -m "Add Homebrew automation blog post - fixes #24"
+git push -u origin feature/issue-24-homebrew-post
+
+# 5. Create PR (GitHub creates it)
+gh pr create --title "Add blog post: Homebrew automation - fixes #24"
+
+# 6. Wait for Actions (watch PR)
+# ← pr-validation.yml validates (5s)
+# ← deploy-staging.yml deploys (30s)
+# ← Comment appears with staging URL
+
+# 7. Test staging
+# ← Click staging link
+# ← Check /blog/ shows new post
+# ← Check tags link works
+# ← Click tag links - no 404s
+# ← Follow TESTING_CHECKLIST.md
+
+# 8. Approve & merge
+gh pr merge --merge --delete-branch
+
+# 9. Watch auto-release
+# ← New version tag created (v1.0.17)
+# ← PDF generated
+# ← Live in 2-3 minutes
+
+# 10. Verify on production
+# → https://cfktech.com/blog/ shows new post
+```
 
 ## Architecture Decisions
 

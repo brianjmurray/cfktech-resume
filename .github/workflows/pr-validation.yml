@@ -87,8 +87,8 @@ jobs:
         script: |
           const status = process.env.STATUS;
           const message = status === 'success'
-            ? '✅ **Build & validation successful!**\n\nAll tag pages validated. Tags match post definitions. Ready to merge.'
-            : '❌ **Build failed**\n\nPlease check the logs for details and fix the issues before this PR can be merged.';
+            ? '✅ **Validation Successful**\n\nAll tests passed. Check the staging deployment in the other workflow comment for live preview.'
+            : '❌ **Validation Failed**\n\nPlease check the logs above for details and fix the issues before this PR can be merged.';
           
           try {
             await github.rest.issues.createComment({
