@@ -139,7 +139,7 @@ For automated deployments, configure service principal with:
 
 - [SQL Database Projects Extension (Microsoft Docs)](https://learn.microsoft.com/en-us/sql/azure-data-studio/extensions/sql-database-project-extension?view=sql-server-ver16)
 - [SqlProj NuGet Package](https://www.nuget.org/packages/MSBuild.Sdk.SqlProj)
-- [AdventureWorks Example Branch](https://github.com/brianjmurray/mssql-database-project/tree/feature/AdventureWorks)
+- [AdventureWorks Example Branch](https://github.com/brianjmurray/mssql-database-project/tree/feature/adventureworks)
 
 ## Next Steps
 
