@@ -132,3 +132,6 @@ If a tag page isn't working:
 4. Run test.sh again
 5. Verify on live site
 6. THEN merge and close
+# Workflow Test
+
+Testing workflow validation.
