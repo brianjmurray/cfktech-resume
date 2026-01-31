@@ -3,7 +3,7 @@
 
 set -e
 
-cd /Users/brianmurray/Documents/Source/cfktech-resume
+cd "$(dirname "$0")"
 
 echo "================================"
 echo "cfktech-resume Testing Script"
