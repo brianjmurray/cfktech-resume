@@ -10,6 +10,7 @@ on:
       - '_config.yml'
       - 'Gemfile'
       - 'test.sh'
+      - '.github/workflows/pr-validation.yml'
 
 jobs:
   validate-and-stage:
