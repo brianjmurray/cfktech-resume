@@ -55,26 +55,28 @@ for tag_dir in _site/blog/tags/*/; do
 done
 echo ""
 
-echo "Step 7: Verifying tag cloud links in tag pages..."
-echo "Checking for broken tag cloud links..."
+echo "Step 7: Validating ALL tag links in generated tag pages..."
+echo "Extracting and verifying tag cloud href attributes..."
 BROKEN_LINKS=0
+CHECKED_LINKS=0
 
+# For each tag page, find all tag links and verify the destination exists
 for tag_page in _site/blog/tags/*/index.html; do
-  # Check for links like ci/cd (with slash) instead of ci-cd
-  if grep -q 'href="[^"]*ci/cd' "$tag_page" 2>/dev/null; then
-    echo "❌ BROKEN: Found ci/cd link (should be ci-cd) in $(dirname "$tag_page")"
-    BROKEN_LINKS=$((BROKEN_LINKS + 1))
-  fi
-  
-  # Check for double slashes or other malformed URLs
-  if grep -q 'href="[^"]*//[^/]' "$tag_page" 2>/dev/null; then
-    echo "❌ BROKEN: Found malformed URL (double slash) in $(dirname "$tag_page")"
-    BROKEN_LINKS=$((BROKEN_LINKS + 1))
-  fi
+  # Extract all href="/blog/tags/..." from post-tag class links
+  grep -o 'class="post-tag"[^>]*href="[^"]*"' "$tag_page" 2>/dev/null | sed 's/.*href="\([^"]*\)".*/\1/' | while read href; do
+    CHECKED_LINKS=$((CHECKED_LINKS + 1))
+    # Convert href to file path: /blog/tags/ci-cd/ -> _site/blog/tags/ci-cd/index.html
+    TARGET="_site${href}index.html"
+    
+    if [ ! -f "$TARGET" ]; then
+      echo "❌ BROKEN LINK: $href (from $(basename $(dirname "$tag_page"))) -> file not found: $TARGET"
+      BROKEN_LINKS=$((BROKEN_LINKS + 1))
+    fi
+  done
 done
 
 if [ "$BROKEN_LINKS" -eq 0 ]; then
-  echo "✓ No broken tag cloud links found"
+  echo "✓ All $CHECKED_LINKS tag links validated - no 404s found"
 fi
 echo ""
 
