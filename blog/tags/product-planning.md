@@ -1,5 +1,5 @@
 ---
 layout: tag
-tag: ProductPlanning
+tag: Product Planning
 permalink: /blog/tags/product-planning/
 ---

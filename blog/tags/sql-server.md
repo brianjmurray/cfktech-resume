@@ -1,5 +1,5 @@
 ---
 layout: tag
-tag: SQLServer
+tag: SQL Server
 permalink: /blog/tags/sql-server/
 ---

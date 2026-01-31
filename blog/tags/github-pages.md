@@ -1,5 +1,5 @@
 ---
 layout: tag
-tag: GitHubPages
+tag: GitHub Pages
 permalink: /blog/tags/github-pages/
 ---
