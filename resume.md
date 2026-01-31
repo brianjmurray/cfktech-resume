@@ -72,3 +72,4 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 **Macomb Community College**, Warren, Michigan  
 Associate of Applied Science – Networking Specialist (May 2003)
 
+
