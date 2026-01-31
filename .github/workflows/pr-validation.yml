@@ -1,0 +1,95 @@
+name: PR Validation & Staging Deploy
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '_posts/**'
+      - '_layouts/**'
+      - 'blog/**'
+      - '_config.yml'
+      - 'Gemfile'
+      - 'test.sh'
+
+jobs:
+  validate-and-stage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout PR branch
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.1'
+        bundler-cache: true
+    
+    - name: Run validation tests
+      run: |
+        chmod +x ./test.sh
+        ./test.sh
+        
+    - name: Build Jekyll for staging
+      run: |
+        bundle exec jekyll build --destination ./staging --config _config.yml
+      
+    - name: Verify staging build
+      run: |
+        if [ ! -d "./staging" ]; then
+          echo "ERROR: Staging directory not created"
+          exit 1
+        fi
+        
+        if [ ! -f "./staging/index.html" ]; then
+          echo "ERROR: index.html not found in staging build"
+          exit 1
+        fi
+        
+        echo "✓ Staging build successful"
+        echo "✓ Files generated: $(find ./staging -type f | wc -l)"
+    
+    - name: Check for broken links (basic)
+      run: |
+        echo "Checking for common issues..."
+        
+        # Check tag pages generated
+        if [ ! -d "./staging/blog/tags" ]; then
+          echo "ERROR: Tag pages not generated"
+          exit 1
+        fi
+        
+        TAG_COUNT=$(find ./staging/blog/tags -name "index.html" | wc -l)
+        echo "✓ Generated $TAG_COUNT tag pages"
+        
+        # Check for empty tag pages
+        EMPTY_TAGS=$(find ./staging/blog/tags -name "index.html" -exec sh -c 'grep -L "blog-post-preview" "$1" 2>/dev/null' _ {} \; | wc -l)
+        if [ "$EMPTY_TAGS" -gt 0 ]; then
+          echo "⚠️  WARNING: $EMPTY_TAGS tag pages have no posts (may still be OK)"
+        fi
+    
+    - name: Comment PR with staging link
+      uses: actions/github-script@v7
+      if: success()
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ **Build successful!**\n\n🧪 **Test on staging**: https://cfktech.com/staging/\n\nThe staging site will be updated with this PR\'s changes once deployed.'
+          })
+    
+    - name: Comment PR with failure details
+      uses: actions/github-script@v7
+      if: failure()
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ **Build failed**\n\nPlease check the logs for details and fix the issues before this PR can be merged.'
+          })
