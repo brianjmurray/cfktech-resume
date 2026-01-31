@@ -12,7 +12,7 @@ permalink: /blog/tags/
   {% assign tags = site.posts | map: 'tags' | join: ','  | split: ',' | uniq | sort %}
   {% for tag in tags %}
     {% assign count = site.posts | where_exp: "post", "post.tags contains tag" | size %}
-    <a href="/blog/tags/{{ tag | downcase | replace: ' ', '-' }}/" class="tag-link" data-count="{{ count }}">
+    <a href="/blog/tags/{{ tag | downcase | replace: ' ', '-' | replace: '/', '-' }}/" class="tag-link" data-count="{{ count }}">
       {{ tag }} <span class="tag-count">({{ count }})</span>
     </a>
   {% endfor %}
