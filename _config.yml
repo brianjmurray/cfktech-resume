@@ -9,6 +9,7 @@ collections:
     permalink: /blog/:title/
 
 # Defaults for post layout
+# Post layout auto-generates URLs based on filename and frontmatter
 defaults:
   - scope:
       path: "_posts"
