@@ -299,12 +299,67 @@ Live on cfktech.com ✓ (2-3 minutes)
 
 ## GitHub Issues for Project Management
 
-This project uses GitHub Issues to track work:
-- Issues for Phase 2 features
-- Issues for Phase 3 enhancements
-- Issues for bugs or improvements
+This project uses GitHub Issues to track Phase 2 and Phase 3 work. Issues are linked to feature branches, PRs, and releases using a simple keyword pattern.
 
-Check the [Issues tab](https://github.com/brianjmurray/cfktech-resume/issues) for current work.
+### Workflow: From Issue to Live
+
+1. **Pick an issue** (e.g., #24 "Blog post: brew-setup-and-update")
+2. **Create feature branch** from the issue:
+   ```bash
+   git checkout -b feature/issue-24-brew-blog
+   ```
+3. **Make changes** and test locally
+4. **Commit with issue keyword**:
+   ```bash
+   git commit -m "Add brew-setup-and-update blog post - fixes #24"
+   git push origin feature/issue-24-brew-blog
+   ```
+5. **Create PR** on GitHub:
+   ```bash
+   gh pr create --title "Blog post: brew-setup-and-update - fixes #24"
+   ```
+   - **Key**: Include "fixes #24" in PR title or commit message
+   - Build check runs automatically on PR
+6. **Review & merge**:
+   ```bash
+   gh pr merge --merge --delete-branch
+   ```
+   - When PR merges, GitHub automatically closes issue #24
+7. **Auto-release triggers**:
+   - New version created (v1.0.16)
+   - PDF generated (if resume changed)
+   - GitHub Pages updates live (2-3 minutes)
+
+### Issue Keywords That Auto-Close
+
+Add any of these keywords with the issue number in your **commit message** or **PR title** to auto-close the issue when merged:
+- `fixes #24` - closes the issue
+- `closes #24` - closes the issue
+- `resolves #24` - closes the issue
+
+**Example commits**:
+```bash
+git commit -m "Add brew blog post - fixes #24"
+git commit -m "Update project cards - closes #26, #27"
+git commit -m "Implement search functionality - resolves #28"
+```
+
+### Current Phases
+
+**Phase 2** (More Content):
+- [#24](https://github.com/brianjmurray/cfktech-resume/issues/24) Blog post: brew-setup-and-update
+- [#25](https://github.com/brianjmurray/cfktech-resume/issues/25) SQL Server Database Projects (published)
+- [#26](https://github.com/brianjmurray/cfktech-resume/issues/26) Project card: brew-setup-and-update
+- [#27](https://github.com/brianjmurray/cfktech-resume/issues/27) Project card: cfktech-resume
+
+**Phase 3** (Advanced Features):
+- [#28](https://github.com/brianjmurray/cfktech-resume/issues/28) Blog search functionality
+- [#29](https://github.com/brianjmurray/cfktech-resume/issues/29) Blog tags and categories
+- [#30](https://github.com/brianjmurray/cfktech-resume/issues/30) Email newsletter integration
+- [#31](https://github.com/brianjmurray/cfktech-resume/issues/31) Analytics and engagement tracking
+- [#32](https://github.com/brianjmurray/cfktech-resume/issues/32) Buy Me a Coffee donations
+
+Check the [Issues tab](https://github.com/brianjmurray/cfktech-resume/issues) for details on each issue.
 
 ## Contributing
 
@@ -334,391 +389,3 @@ Questions about the site, Jekyll, GitHub automation, or data architecture?
 - **LinkedIn**: [@brianjmurray](https://www.linkedin.com/in/brianjmurray/)
 - **GitHub**: [@brianjmurray](https://github.com/brianjmurray)
 
-**Trigger**: `push` to `main` branch with changes to:
-- `resume.md`
-- `_layouts/**`
-- `_config.yml`
-
-**Steps**:
-1. **Checkout** with full history (for git tag calculation)
-2. **Get latest tag** from git history
-3. **Calculate next version** (semantic patch bump: v1.0.3 → v1.0.4)
-4. **Check if tag exists** for current commit (skip if already tagged)
-5. **Regenerate index.md** from resume.md with Jekyll frontmatter
-6. **Create release** with auto-incremented version tag
-7. **Install pandoc + TeX Live** (Ubuntu packages)
-8. **Generate PDF** from resume.md using XeLaTeX engine
-9. **Upload PDF** to release assets via GitHub REST API
-10. **Commit regenerated index.md** back to main (triggers GitHub Pages rebuild)
-
-**Permissions**: `contents: write` (allows release creation, PDF upload, and pushing commits)
-
-## Getting Started
-
-### 1. Update Your Resume
-
-Edit `resume.md` with your content:
-
-```markdown
----
-title: ""
-titlepage: false
-author: Your Name
-geometry: margin=0.8in
-fontsize: 10pt
----
-
-# Your Name
-
-**Email**: email@example.com · ![](linkedin-qr.png){width=0.4in} LinkedIn: [profile](https://linkedin.com/in/yourprofile)
-
-## Professional Experience
-
-**Company Name**, City  
-*Title* (Start–End)
-- Achievement or responsibility 1
-- Achievement or responsibility 2
-
-## CERTIFICATIONS
-
-![](cert-qr.png){width=0.4in} **Certification Name** (Month Year)
-
-## EDUCATION
-
-**School Name**, City  
-Degree (Year)
-```
-
-The metadata block (lines 1–7) controls PDF formatting. Set `title: ""` and `titlepage: false` to suppress a title page.
-
-### 2. Generate QR Codes (Optional)
-
-```bash
-# Generate QR code for LinkedIn profile
-qrencode -o linkedin-qr.png -s 4 "https://www.linkedin.com/in/yourprofile"
-
-# Generate QR code for credential URL
-qrencode -o cert-qr.png -s 4 "https://credentials.example.com/your-id"
-
-# Embed in resume.md
-# ![](linkedin-qr.png){width=0.4in} LinkedIn
-# ![](cert-qr.png){width=0.4in} Certification
-```
-
-### 3. Commit and Push to Main
-
-```bash
-git checkout -b feature/update-resume
-git add resume.md linkedin-qr.png
-git commit -m "Update: Resume and QR codes"
-gh pr create --title "Update resume"
-gh pr merge --merge -d   # Approve and merge
-```
-
-**The workflow automatically**:
-- Creates release v1.0.4 (auto-versioned)
-- Generates `resume.pdf`
-- Uploads PDF to release assets
-- Regenerates `index.md` and commits to main
-- Triggers GitHub Pages rebuild (site updates within 1–2 minutes)
-
-### 4. Configure Custom Domain
-
-1. Update DNS at registrar (A records):
-   ```
-   185.199.108.153
-   185.199.109.153
-   185.199.110.153
-   185.199.111.153
-   ```
-
-2. GitHub Pages **Settings → Pages**:
-   - Custom domain: `yourname.com`
-   - Enforce HTTPS: ✅ (auto-manages certificate)
-
-### 5. Branch Protection
-
-**Settings → Branches → Add rule**:
-- Branch: `main`
-- ✅ Require pull request reviews (1 approver)
-- ✅ Require status checks to pass (Pages must build)
-- ✅ Require branches to be up to date
-- ✅ Dismiss stale reviews on push
-
-## Downloading Your Resume
-
-Resume PDF is available at:
-```
-https://github.com/brianjmurray/cfktech-resume/releases/download/v1.0.4/resume.pdf
-```
-
-Or via GitHub CLI:
-```bash
-gh release download v1.0.4 --pattern "resume.pdf"
-```
-
-Or visit the [Releases page](../../releases) to download any version.
-
-## GitHub Copilot CLI Reference
-
-### Repository Setup & Configuration
-
-```bash
-# Clone and navigate
-gh repo clone brianjmurray/cfktech-resume
-cd cfktech-resume
-
-# View repo metadata
-gh repo view --json description,homepage,isPrivate
-
-# Set homepage
-gh repo edit --homepage https://cfktech.com
-```
-
-### Branch & PR Management
-
-```bash
-# Create feature branch
-git checkout -b feature/update-resume
-
-# Create pull request
-gh pr create --title "Update resume content" --body "Added certifications"
-
-# View PR status
-gh pr view <PR_NUMBER>
-
-# Approve PR (if you have permissions)
-gh pr review <PR_NUMBER> --approve
-
-# Merge PR (deletes feature branch)
-gh pr merge <PR_NUMBER> --merge --delete-branch
-```
-
-### Release & Version Management
-
-```bash
-# List all releases
-gh release list
-
-# View specific release with assets
-gh release view v1.0.4
-
-# Download PDF from latest release
-gh release download --pattern "resume.pdf"
-
-# Download from specific version
-gh release download v1.0.3 --pattern "resume.pdf" -D ~/Downloads
-```
-
-### Workflow Monitoring
-
-```bash
-# List recent workflow runs
-gh run list --workflow auto_release.yml --limit 5
-
-# View specific run details
-gh run view <RUN_ID> --json status,conclusion,createdAt
-
-# View full logs for a run
-gh run view <RUN_ID> --log | head -100
-
-# Check failed jobs only
-gh run list --status completed --conclusion failure
-```
-
-### GitHub Pages Status
-
-```bash
-# Check Pages configuration
-gh api repos/brianjmurray/cfktech-resume/pages --jq '.status, .https_enforced, .cname'
-
-# Enable HTTPS (if not already)
-gh api repos/brianjmurray/cfktech-resume/pages -f https_enforced=true
-```
-
-## Protecting the Repository
-
-### Branch Protection on Main
-
-Prevents direct pushes; all changes must come via PR from feature branches.
-
-**To set up via CLI**:
-```bash
-# Note: Full branch protection config via CLI is complex; use GitHub web UI
-
-# Quick web UI setup:
-# Settings → Branches → Add rule
-# - Branch name pattern: main
-# - ✅ Require pull request reviews (1 approver)
-# - ✅ Require status checks to pass (Pages build)
-# - ✅ Require branches to be up to date before merging
-# - ✅ Dismiss stale pull request approvals
-# - ✅ Block force pushes
-```
-
-### Workflow Permissions
-
-The `auto_release.yml` workflow uses minimal permissions:
-```yaml
-permissions:
-  contents: write  # Only: create releases, push index.md commits
-```
-
-This token **cannot**:
-- Delete the repository
-- Modify settings
-- Access other repos or secrets
-
-### Branching Strategy
-
-1. **Create feature branch** from main:
-   ```bash
-   git checkout -b feature/update-resume
-   ```
-
-2. **Make changes** to `resume.md`, QR codes, or layouts
-
-3. **Push and create PR**:
-   ```bash
-   git push origin feature/update-resume
-   gh pr create
-   ```
-
-4. **PR triggers**:
-   - GitHub Pages build check (must pass)
-   - Status check for branch protection
-
-5. **Merge PR** (via CLI or web):
-   ```bash
-   gh pr merge --merge -d  # Deletes feature branch after merge
-   ```
-
-6. **Workflow runs automatically**:
-   - Detects `resume.md` change
-   - Creates release (v1.0.4)
-   - Generates PDF
-   - Pushes `index.md` back to main
-   - GitHub Pages rebuilds (live in 1–2 min)
-
-## Advanced: Semantic Versioning Details
-
-The workflow automatically bumps the **patch version** (v1.0.3 → v1.0.4) on any commit to `resume.md`.
-
-**How it works**:
-1. Fetch latest git tag: `git describe --tags --abbrev=0` → `v1.0.3`
-2. Extract version parts: MAJOR=1, MINOR=0, PATCH=3
-3. Increment PATCH: `PATCH=$((PATCH + 1))` → 4
-4. Create new tag: `v1.0.4`
-5. Create release with tag
-
-**To manually change MAJOR or MINOR**:
-- Edit `.github/workflows/auto_release.yml`
-- Modify the `Calculate next version` step
-- Or manually create release: `gh release create v2.0.0 --title "Resume v2.0.0"`
-
-## Local Development
-
-### Preview Site Locally
-```bash
-# Install Jekyll
-gem install bundler jekyll
-
-# Install dependencies
-bundle install
-
-# Serve locally
-bundle exec jekyll serve
-```
-Visit `http://localhost:4000` — changes to `resume.md` auto-reload.
-
-### Generate PDF Locally
-```bash
-# Install tools (macOS)
-brew install pandoc texlive
-
-# Generate (uses resume.md metadata block)
-pandoc resume.md -o resume.pdf --pdf-engine=xelatex --standalone
-```
-
-## Customization
-
-### Change Site Title or URL
-Edit `_config.yml`:
-```yaml
-title: "Your Name - Resume"
-url: "https://yourname.com"
-baseurl: ""
-```
-
-### Change HTML Layout
-Edit `_layouts/default.html`:
-```html
-<style>
-  body { font-family: Georgia, serif; max-width: 900px; margin: 0 auto; }
-  h1 { color: #333; border-bottom: 2px solid #0066cc; }
-</style>
-```
-
-### Modify PDF Formatting
-Edit the pandoc metadata block in `resume.md` (lines 1–7):
-```yaml
----
-title: ""
-titlepage: false
-author: Your Name
-geometry: margin=0.8in
-fontsize: 10pt
----
-```
-
-Available options:
-- `title: "Your Title"` or `""` (no title page)
-- `geometry: margin=1in` (1-inch margins)
-- `fontsize: 11pt` (font size)
-- `date: "January 2026"` (date on title page)
-
-## Troubleshooting
-
-### Website not updating after merge
-- **Check**: GitHub Pages build status in **Settings → Pages → Recent deployments**
-- **Fix**: The `auto_release.yml` workflow regenerates `index.md` and commits it back to main. This may take 2–3 minutes after PR merge.
-- **Verify**: `grep "CERTIFICATIONS" index.md` should show your content
-
-### Workflow didn't trigger
-- **Cause**: Workflow only triggers on changes to `resume.md`, `_layouts/**`, or `_config.yml`
-- **Not triggered by**: changes to workflow file itself, QR code images, or README
-- **Fix**: If you update the workflow, make a test change to `resume.md` to trigger it
-
-### PDF missing QR codes in release
-- **Check**: Ensure QR code PNG files are committed: `git ls-files *.png`
-- **Check**: `resume.md` references are correct: `![](filename.png){width=0.4in}`
-- **Test locally**: `pandoc resume.md -o test.pdf --pdf-engine=xelatex`
-
-### DNS not working
-- **Check**: `dig cfktech.com` or `nslookup cfktech.com`
-- **Expected**: 4 A records pointing to GitHub Pages IPs:
-  ```
-  185.199.108.153
-  185.199.109.153
-  185.199.110.153
-  185.199.111.153
-  ```
-- **Note**: DNS changes can take 24–48 hours to propagate
-
-### HTTPS certificate not issued
-- **Cause**: DNS must be configured and resolving first
-- **Check**: **Settings → Pages → Custom domain** should show domain without error
-- **Wait**: GitHub issues cert within 15 min of DNS resolving
-- **Force**: Try unchecking/re-checking "Enforce HTTPS"
-
-## License
-
-This template is provided as-is. Feel free to modify and use for your resume site.
-
----
-
-**Learn More**:
-- [GitHub Pages Documentation](https://pages.github.com)
-- [GitHub Copilot CLI](https://github.com/features/copilot)
-- [Jekyll Documentation](https://jekyllrb.com)
-- [Pandoc Documentation](https://pandoc.org)
