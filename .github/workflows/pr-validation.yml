@@ -76,14 +76,6 @@ jobs:
           echo "⚠️  WARNING: $EMPTY_TAGS tag pages have no posts (may still be OK)"
         fi
     
-    - name: Deploy staging to GitHub Pages
-      if: success()
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./staging
-        destination_dir: staging
-        cname: cfktech.com
     
     - name: Comment PR with status
       uses: actions/github-script@v7
@@ -95,7 +87,7 @@ jobs:
         script: |
           const status = process.env.STATUS;
           const message = status === 'success'
-            ? '✅ **Build successful!**\n\n🧪 **Test on staging**: https://cfktech.com/staging/\n\nThe staging site will be updated with this PR\'s changes once deployed.'
+            ? '✅ **Build & validation successful!**\n\nAll tag pages validated. Tags match post definitions. Ready to merge.'
             : '❌ **Build failed**\n\nPlease check the logs for details and fix the issues before this PR can be merged.';
           
           try {
