@@ -2,6 +2,10 @@ title: "Brian J. Murray - Resume"
 baseurl: ""
 url: "https://cfktech.com"
 
+# Plugins
+plugins:
+  - jekyll-feed
+
 # Collections for blog posts
 collections:
   posts:
