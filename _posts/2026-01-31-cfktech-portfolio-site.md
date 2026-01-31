@@ -3,6 +3,7 @@ layout: post
 title: "Building cfktech.com: A Portfolio Site with Automated CI/CD"
 date: 2026-01-31
 excerpt: "From resume site to portfolio: how I built a fully automated site using Jekyll, GitHub Pages, semantic versioning, and CI/CD pipelines to showcase projects and thought leadership."
+tags: [Jekyll, GitHub Pages, CI/CD, Portfolio, Automation]
 ---
 
 ## The Journey: Resume to Portfolio

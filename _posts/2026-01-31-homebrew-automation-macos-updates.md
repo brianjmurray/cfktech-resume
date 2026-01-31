@@ -3,6 +3,7 @@ layout: post
 title: "Automating macOS Updates with Homebrew: Keeping Your Mac Fresh"
 date: 2026-01-31
 excerpt: "A practical guide to automating macOS, Homebrew, App Store, and package manager updates using a single script. Save time, maintain consistency, and ensure your development environment stays current."
+tags: [Bash, macOS, Automation, DevOps, Homebrew]
 ---
 
 Keeping a macOS development machine up-to-date is a constant challenge. Between OS updates, Homebrew packages, App Store apps, npm packages, Azure CLI tools, and VS Code extensions, it's easy to fall behind or forget something important. In this post, I'll show you how to automate the entire process with a single bash script—the same approach I've used for years on my development Macs.
