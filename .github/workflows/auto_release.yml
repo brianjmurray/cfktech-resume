@@ -10,7 +10,9 @@ on:
       - _layouts/**
       - _config.yml
       - _posts/**
+      - blog/**
       - projects/**
+      - search.json
 
 permissions:
   contents: write
