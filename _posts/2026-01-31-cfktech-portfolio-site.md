@@ -269,3 +269,4 @@ Interested in the technical details? Check out the repository:
 **[cfktech-resume on GitHub →](https://github.com/brianjmurray/cfktech-resume)**
 
 Questions about portfolio sites, Jekyll, automation, or data architecture? Reach out on LinkedIn or email me at brian@cfktech.com.
+
