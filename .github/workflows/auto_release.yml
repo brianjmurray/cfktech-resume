@@ -9,7 +9,7 @@ on:
       - resume.md
       - _layouts/**
       - _config.yml
-      - blog/**
+      - _posts/**
       - projects/**
 
 permissions:
