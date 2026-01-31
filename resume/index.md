@@ -17,7 +17,5 @@ permalink: /resume/
 
 <div class="resume-section">
   <h2>View Online</h2>
-  <p>See my full resume content below, or download the PDF for a formatted version.</p>
+  <p>The PDF version above contains the formatted resume with all details. For the most current version, download the PDF or view the full resume on the home page.</p>
 </div>
-
-{% include resume-content.html %}
