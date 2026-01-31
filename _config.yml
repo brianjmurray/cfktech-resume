@@ -16,3 +16,13 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+
+# Lunr search configuration
+lunr:
+  languages:
+    en: {}
+  fields:
+    - title
+    - excerpt
+    - tags
+    - content
