@@ -84,26 +84,19 @@ jobs:
         destination_dir: staging
         cname: cfktech.com
     
-    - name: Comment PR with staging link
+    - name: Comment PR with status
       uses: actions/github-script@v7
-      if: success()
+      if: always()
       with:
         script: |
+          const jobStatus = '${{ job.status }}';
+          const message = jobStatus === 'success'
+            ? '✅ **Build successful!**\n\n🧪 **Test on staging**: https://cfktech.com/staging/\n\nThe staging site will be updated with this PR\'s changes once deployed.'
+            : '❌ **Build failed**\n\nPlease check the logs for details and fix the issues before this PR can be merged.';
+          
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: '✅ **Build successful!**\n\n🧪 **Test on staging**: https://cfktech.com/staging/\n\nThe staging site will be updated with this PR\'s changes once deployed.'
-          })
-    
-    - name: Comment PR with failure details
-      uses: actions/github-script@v7
-      if: failure()
-      with:
-        script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '❌ **Build failed**\n\nPlease check the logs for details and fix the issues before this PR can be merged.'
+            body: message
           })
