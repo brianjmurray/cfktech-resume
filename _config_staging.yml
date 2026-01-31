@@ -1,0 +1,21 @@
+title: "Brian J. Murray - Resume (Staging)"
+baseurl: "/staging"
+url: "https://cfktech.com"
+
+# Plugins
+plugins:
+  - jekyll-feed
+
+# Collections for blog posts
+collections:
+  posts:
+    output: true
+    permalink: /blog/:title/
+
+# Defaults for post layout
+defaults:
+  - scope:
+      path: "_posts"
+      type: "posts"
+    values:
+      layout: "post"

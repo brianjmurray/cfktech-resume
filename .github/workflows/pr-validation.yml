@@ -34,7 +34,9 @@ jobs:
         
     - name: Build Jekyll for staging
       run: |
-        bundle exec jekyll build --destination ./staging --config _config.yml
+        bundle exec jekyll build \
+          --destination ./staging \
+          --config _config.yml,_config_staging.yml
       
     - name: Verify staging build
       run: |
@@ -69,6 +71,15 @@ jobs:
         if [ "$EMPTY_TAGS" -gt 0 ]; then
           echo "⚠️  WARNING: $EMPTY_TAGS tag pages have no posts (may still be OK)"
         fi
+    
+    - name: Deploy staging to GitHub Pages
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./staging
+        destination_dir: staging
+        cname: cfktech.com
     
     - name: Comment PR with staging link
       uses: actions/github-script@v7
