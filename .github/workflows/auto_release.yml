@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - index.md
       - resume.md
       - _layouts/**
       - _config.yml
