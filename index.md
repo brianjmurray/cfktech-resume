@@ -1,6 +1,6 @@
 ---
-layout: home
-title: "Data Architecture & Engineering"
+layout: default
+title: "Brian J. Murray - Resume"
 ---
 
 
