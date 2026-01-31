@@ -3,6 +3,7 @@ layout: post
 title: "SQL Server Database Projects: Schema Management Template"
 date: 2026-01-31
 excerpt: "A comprehensive template for managing SQL Server database schema and structure using Database Projects, supporting versioning, CI/CD integration, and multi-environment deployments."
+tags: [SQL Server, Database, DevOps, CI/CD]
 ---
 
 Database schema management can be challenging, especially when working across multiple environments (dev, UAT, prod). This post introduces a SQL Server Database Projects template designed to simplify schema versioning, automate deployment, and enable teams to track database changes with the same rigor as application code.
