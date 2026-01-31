@@ -25,6 +25,56 @@ This project demonstrates:
 ✅ Single consolidated GitHub Actions workflow for release + PDF + index sync  
 ✅ Branch protection on main (require PR review before merge)  
 ✅ HTTPS with GitHub-managed certificate (auto-renews)  
+✅ **Phase 1**: Portfolio site with blog, projects showcase, and modern styling  
+✅ **Phase 1**: Local testing + GitHub Actions build validation on PRs  
+
+## Local Development
+
+### Setup
+
+1. **Install Ruby 3.2+** (required for Jekyll)
+   ```bash
+   ruby --version  # Should be 3.2.0+
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   bundle install
+   ```
+
+3. **Start local server**:
+   ```bash
+   bundle exec jekyll serve
+   ```
+   Visit http://localhost:4000 in your browser. Changes auto-reload as you save files.
+
+### Creating a Feature Branch
+
+1. **Create a branch**:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make changes** and test locally with `jekyll serve`
+
+3. **Commit and push**:
+   ```bash
+   git add .
+   git commit -m "Your commit message"
+   git push -u origin feature/your-feature-name
+   ```
+
+4. **Create a pull request** on GitHub (GitHub Actions build check runs automatically)
+
+5. **Review & merge** (build must pass before merging)
+
+### Build Locally
+
+```bash
+bundle exec jekyll clean && bundle exec jekyll build
+```
+
+Verify the `_site/` directory is generated with no errors.
 
 ## Architecture
 

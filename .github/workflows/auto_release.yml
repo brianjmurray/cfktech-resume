@@ -8,6 +8,9 @@ on:
       - resume.md
       - _layouts/**
       - _config.yml
+      - blog/**
+      - projects/**
+      - index.md
 
 permissions:
   contents: write
