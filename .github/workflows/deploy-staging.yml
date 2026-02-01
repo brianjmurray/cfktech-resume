@@ -8,6 +8,8 @@ on:
       - '_posts/**'
       - '_layouts/**'
       - 'blog/**'
+      - 'index.md'
+      - 'projects/**'
       - '_config.yml'
       - '_config_staging.yml'
       - 'Gemfile'
@@ -48,6 +50,7 @@ jobs:
     
     - name: Comment PR with staging link
       uses: actions/github-script@v7
+      if: success()
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
