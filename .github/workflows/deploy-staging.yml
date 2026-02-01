@@ -57,21 +57,7 @@ jobs:
           const prNumber = context.issue.number;
           const stagingUrl = `https://cfktech.com/staging/pr-${prNumber}/`;
           
-          const message = `🚀 **Staging Deployment Ready!**
-
-Your changes have been built and deployed to staging:
-👉 [Review on Staging](${stagingUrl})
-
-**Before approving this PR, please verify:**
-- [ ] All pages load without errors (check browser console)
-- [ ] Tag pages display posts correctly
-- [ ] Clicking tag links works
-- [ ] Blog search functionality works
-- [ ] Styling looks correct on desktop and mobile
-- [ ] No broken links (check for 404s by clicking around)
-
-**If everything looks good**, this PR is safe to merge! 
-If you find issues, request changes and the PR author can update.`;
+          const message = `🚀 **Staging Deployment Ready!**\n\nYour changes have been built and deployed to staging:\n👉 [Review on Staging](${stagingUrl})\n\n**Before approving this PR, please verify:**\n- [ ] All pages load without errors (check browser console)\n- [ ] Tag pages display posts correctly\n- [ ] Clicking tag links works\n- [ ] Blog search functionality works\n- [ ] Styling looks correct on desktop and mobile\n- [ ] No broken links (check for 404s by clicking around)\n\n**If everything looks good**, this PR is safe to merge!\nIf you find issues, request changes and the PR author can update.`;
           
           try {
             await github.rest.issues.createComment({
