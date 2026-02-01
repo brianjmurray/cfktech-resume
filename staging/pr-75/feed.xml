@@ -1,0 +1,2336 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://cfktech.com/staging/feed.xml" rel="self" type="application/atom+xml" /><link href="https://cfktech.com/staging/" rel="alternate" type="text/html" /><updated>2026-02-01T01:21:07+00:00</updated><id>https://cfktech.com/staging/feed.xml</id><title type="html">Brian J. Murray - Resume (Staging)</title><entry><title type="html">Building cfktech.com: A Portfolio Site with Automated CI/CD</title><link href="https://cfktech.com/staging/blog/cfktech-portfolio-site/" rel="alternate" type="text/html" title="Building cfktech.com: A Portfolio Site with Automated CI/CD" /><published>2026-01-31T00:00:00+00:00</published><updated>2026-01-31T00:00:00+00:00</updated><id>https://cfktech.com/staging/blog/cfktech-portfolio-site</id><content type="html" xml:base="https://cfktech.com/staging/blog/cfktech-portfolio-site/"><![CDATA[<h2 id="the-journey-resume-to-portfolio">The Journey: Resume to Portfolio</h2>
+
+<p>My professional website evolved significantly in early 2026. It started as a simple resume site (v1.0.0-v1.0.14) and transformed into a full portfolio platform with automated deployments, blog infrastructure, and project showcases. This post shares the technical decisions, challenges, and solutions behind cfktech.com.</p>
+
+<h2 id="phase-0-the-resume-site-v100-v1014">Phase 0: The Resume Site (v1.0.0-v1.0.14)</h2>
+
+<h3 id="what-started-it-all">What Started It All</h3>
+
+<p>I needed a professional web presence that was:</p>
+<ul>
+  <li><strong>Self-hosted</strong> on a custom domain</li>
+  <li><strong>Always up-to-date</strong> with my resume</li>
+  <li><strong>Professional-looking</strong> with minimal maintenance</li>
+  <li><strong>Demonstrating automation skills</strong> (as a data engineer)</li>
+</ul>
+
+<h3 id="solution-jekyll--github-pages">Solution: Jekyll + GitHub Pages</h3>
+
+<p>I chose a simple stack:</p>
+<ul>
+  <li><strong>Jekyll</strong> for static site generation (no server needed)</li>
+  <li><strong>GitHub Pages</strong> for free hosting with custom domain support</li>
+  <li><strong>Markdown</strong> for resume content (versionable, easy to edit)</li>
+  <li><strong>GitHub Actions</strong> for automation</li>
+</ul>
+
+<h3 id="key-features-v100-v1014">Key Features (v1.0.0-v1.0.14)</h3>
+
+<p><strong>Semantic Versioning</strong>: Every time I updated my resume, a GitHub Action would:</p>
+<ol>
+  <li>Calculate the next patch version (e.g., v1.0.3 → v1.0.4)</li>
+  <li>Create a git tag and GitHub release</li>
+  <li>Generate a PDF from the Markdown resume</li>
+  <li>Upload the PDF to the release assets</li>
+  <li>Deploy to GitHub Pages</li>
+</ol>
+
+<p><strong>PDF Generation</strong>: Using pandoc + XeLaTeX to convert Markdown to professional PDF:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pandoc resume.md <span class="nt">-o</span> resume.pdf <span class="nt">--pdf-engine</span><span class="o">=</span>xelatex <span class="nt">--standalone</span>
+</code></pre></div></div>
+
+<p><strong>Branch Protection</strong>: Enforcing PR reviews before merging to main, ensuring all changes were reviewed.</p>
+
+<p><strong>QR Codes</strong>: Added LinkedIn and Databricks credential links (later removed due to PDF rendering issues).</p>
+
+<p><strong>Result</strong>: A fully automated resume site that updated with a single git push.</p>
+
+<h2 id="phase-1-portfolio-expansion-v1015">Phase 1: Portfolio Expansion (v1.0.15+)</h2>
+
+<p>After successfully automating the resume site, I realized it could be so much more. I wanted to:</p>
+<ul>
+  <li><strong>Share knowledge</strong> through blog posts</li>
+  <li><strong>Showcase projects</strong> from my GitHub</li>
+  <li><strong>Build thought leadership</strong> in data architecture</li>
+  <li><strong>Maintain momentum</strong> with a semi-automated workflow</li>
+</ul>
+
+<h3 id="home-page-redesign">Home Page Redesign</h3>
+
+<p>Instead of just displaying the resume on the homepage, I created a portfolio landing page with:</p>
+
+<p><strong>Hero Section</strong>: A gradient background with compelling headline</p>
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">background</span><span class="o">:</span> <span class="nt">linear-gradient</span><span class="o">(</span><span class="err">135</span><span class="nt">deg</span><span class="o">,</span> <span class="err">#667</span><span class="nt">eea</span> <span class="m">0%</span><span class="o">,</span> <span class="err">#764</span><span class="nt">ba2</span> <span class="m">100%</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p><strong>About Section</strong>: Professional bio with specializations and recent focus areas</p>
+
+<p><strong>Featured Work</strong>: Auto-populated from blog posts (first 3 appear on homepage)</p>
+
+<p><strong>Contact CTA</strong>: Direct links to email, GitHub, and LinkedIn</p>
+
+<h3 id="blog-infrastructure">Blog Infrastructure</h3>
+
+<p>Implemented <strong>Jekyll Collections</strong> for blog posts:</p>
+
+<p><strong>File Structure</strong>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_posts/
+  ├── 2026-01-31-sql-server-database-projects-template.md
+  └── 2026-01-31-cfktech-portfolio-site.md (this post!)
+</code></pre></div></div>
+
+<p><strong>Automatic URL Generation</strong>: Posts automatically get URLs like <code class="language-plaintext highlighter-rouge">/blog/post-title/</code></p>
+
+<p><strong>Post Template</strong>: Dedicated layout for blog posts with title, date, and styling</p>
+
+<p><strong>Blog Listing</strong>: <code class="language-plaintext highlighter-rouge">/blog/</code> automatically lists all posts in reverse chronological order</p>
+
+<h3 id="projects-showcase">Projects Showcase</h3>
+
+<p>Created a <code class="language-plaintext highlighter-rouge">/projects/</code> page featuring GitHub repositories:</p>
+<ul>
+  <li>Grid layout with project cards</li>
+  <li>Tech stack tags for each project</li>
+  <li>Links to GitHub repositories and related blog posts</li>
+  <li>Template ready for adding more projects</li>
+</ul>
+
+<h3 id="workflow-validation">Workflow Validation</h3>
+
+<p>Added <strong>GitHub Actions build check</strong> on pull requests:</p>
+<ul>
+  <li>Validates Jekyll builds successfully before merge</li>
+  <li>Catches configuration or syntax errors early</li>
+  <li>Prevents broken deploys</li>
+</ul>
+
+<h2 id="technical-highlights">Technical Highlights</h2>
+
+<h3 id="challenge-1-resume-as-source-of-truth">Challenge #1: Resume as Source of Truth</h3>
+
+<p><strong>Problem</strong>: Resume needed to be accessible both on GitHub Pages (HTML) and as a downloadable PDF.</p>
+
+<p><strong>Solution</strong>: Use Markdown as the single source of truth:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">resume.md</code> contains resume content with pandoc frontmatter</li>
+  <li>GitHub Action converts to PDF on every release</li>
+  <li>Homepage extracts relevant content for web display</li>
+  <li><code class="language-plaintext highlighter-rouge">/resume/</code> page links to PDF download</li>
+</ul>
+
+<h3 id="challenge-2-auto-release-complexity">Challenge #2: Auto-Release Complexity</h3>
+
+<p><strong>Problem</strong>: The auto-release workflow regenerated index.md from resume.md, overwriting the new portfolio homepage.</p>
+
+<p><strong>Discovery</strong>: This was by design for v1.0.14 (when homepage = resume wrapper), but broke in Phase 1 (when homepage = portfolio).</p>
+
+<p><strong>Solution</strong>: Removed index.md regeneration from auto-release workflow. Now:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">index.md</code> is the portfolio homepage (manually maintained)</li>
+  <li><code class="language-plaintext highlighter-rouge">/resume/</code> page links to PDF downloads</li>
+  <li>Auto-release only generates PDF and creates release (no index regeneration)</li>
+</ul>
+
+<h3 id="challenge-3-build-failure-debugging">Challenge #3: Build Failure Debugging</h3>
+
+<p>Initial Phase 1 deployment revealed two issues:</p>
+
+<p><strong>Issue 1</strong>: Gemfile specified <code class="language-plaintext highlighter-rouge">jekyll-feed (~&gt; 0.18)</code> which doesn’t exist on rubygems.org</p>
+<ul>
+  <li><strong>Fix</strong>: Changed to <code class="language-plaintext highlighter-rouge">jekyll-feed (~&gt; 0.17)</code> (latest available)</li>
+</ul>
+
+<p><strong>Issue 2</strong>: <code class="language-plaintext highlighter-rouge">/resume/index.md</code> referenced a non-existent include file</p>
+<ul>
+  <li><strong>Fix</strong>: Removed placeholder include, added fallback content</li>
+</ul>
+
+<p>Both issues caught by GitHub Actions build check before going live!</p>
+
+<h2 id="architecture-decisions">Architecture Decisions</h2>
+
+<h3 id="css-inline-vs-separate-files">CSS Inline vs Separate Files</h3>
+
+<p><strong>Decision</strong>: Inline CSS in <code class="language-plaintext highlighter-rouge">_layouts/default.html</code></p>
+
+<p><strong>Why</strong>:</p>
+<ul>
+  <li>GitHub Pages works best with single-file layouts</li>
+  <li>Easier to maintain (layout + styles in one place)</li>
+  <li>No need for asset pipeline</li>
+  <li>400+ lines of modern CSS (gradients, cards, hover effects, responsive grid)</li>
+</ul>
+
+<h3 id="collections-vs-static-pages">Collections vs Static Pages</h3>
+
+<p><strong>Decision</strong>: Used Jekyll collections for blog</p>
+
+<p><strong>Why</strong>:</p>
+<ul>
+  <li>Automatic URL generation from filenames</li>
+  <li>Liquid loops to automatically populate listings</li>
+  <li>Scalable (easy to add posts without modifying templates)</li>
+  <li>Standard Jekyll pattern</li>
+</ul>
+
+<h3 id="workflow-separation">Workflow Separation</h3>
+
+<p><strong>Decision</strong>: Separate build-check workflow from auto-release</p>
+
+<p><strong>Why</strong>:</p>
+<ul>
+  <li>Build validation happens on every PR (fail fast)</li>
+  <li>Auto-release only runs on main after approval</li>
+  <li>Keeps concerns separated</li>
+  <li>Clear staging (PR = validation, merge = deploy)</li>
+</ul>
+
+<h2 id="the-deployment-pipeline">The Deployment Pipeline</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Code Changes
+    ↓
+Create Feature Branch
+    ↓
+Push to GitHub
+    ↓
+GitHub Actions Build Check ✓
+    ↓
+Create Pull Request
+    ↓
+Review &amp; Approve
+    ↓
+Merge to Main
+    ↓
+Auto-Release Workflow
+    ├─ Calculate Version
+    ├─ Generate PDF
+    ├─ Create Release Tag
+    └─ Deploy to GitHub Pages
+    ↓
+Live on cfktech.com ✓
+</code></pre></div></div>
+
+<p>Time from code push to live: ~2-3 minutes</p>
+
+<h2 id="whats-live-now">What’s Live Now</h2>
+
+<h3 id="pages">Pages</h3>
+
+<ul>
+  <li><strong>Home</strong>: https://cfktech.com (portfolio landing)</li>
+  <li><strong>Blog</strong>: https://cfktech.com/blog/ (post listings)</li>
+  <li><strong>Projects</strong>: https://cfktech.com/projects/ (project showcases)</li>
+  <li><strong>Resume</strong>: https://cfktech.com/resume/ (PDF download)</li>
+</ul>
+
+<h3 id="first-posts">First Posts</h3>
+
+<ul>
+  <li>“SQL Server Database Projects: Schema Management Template” - featuring mssql-database-project</li>
+  <li>“Building cfktech.com: A Portfolio Site with Automated CI/CD” - this post!</li>
+</ul>
+
+<h3 id="automation">Automation</h3>
+
+<ul>
+  <li>Semantic versioning (v1.0.15)</li>
+  <li>PDF generation from Markdown</li>
+  <li>GitHub Pages deployment</li>
+  <li>Build validation on PRs</li>
+  <li>Feature branch → Main → Auto-Release → Live</li>
+</ul>
+
+<h2 id="whats-next">What’s Next</h2>
+
+<h3 id="phase-2-more-content">Phase 2: More Content</h3>
+<ul>
+  <li>Add 2-3 more blog posts from existing GitHub projects</li>
+  <li>Create more project showcase cards</li>
+  <li>Deepen thought leadership content</li>
+</ul>
+
+<h3 id="phase-3-advanced-features">Phase 3: Advanced Features</h3>
+<ul>
+  <li>Search functionality for blog</li>
+  <li>Tags/categories for posts</li>
+  <li>Email newsletter integration</li>
+  <li>Analytics (understanding audience)</li>
+  <li>Subtle monetization (courses, templates, consulting)</li>
+</ul>
+
+<h2 id="key-lessons">Key Lessons</h2>
+
+<ol>
+  <li><strong>Automate what you repeat</strong>: If you’re doing something manually multiple times, automate it</li>
+  <li><strong>Fail fast with validation</strong>: Build checks catch issues before they go live</li>
+  <li><strong>Markdown is underrated</strong>: Single source of truth that works everywhere</li>
+  <li><strong>Simple tools scale</strong>: Jekyll + GitHub Pages handles it all without complexity</li>
+  <li><strong>Git history is documentation</strong>: Each commit tells a story of evolution</li>
+</ol>
+
+<h2 id="try-it-yourself">Try It Yourself</h2>
+
+<p>If you want to build something similar:</p>
+
+<ol>
+  <li><strong>Clone a Jekyll starter</strong> or use the GitHub Pages template</li>
+  <li><strong>Write content in Markdown</strong> (posts, pages, resume)</li>
+  <li><strong>Add custom CSS</strong> for your brand (gradients, cards, hero sections)</li>
+  <li><strong>Set up GitHub Actions</strong> for PDF generation, versioning, or other automation</li>
+  <li><strong>Push to main</strong> and watch it deploy automatically</li>
+</ol>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>cfktech.com represents my commitment to:</p>
+<ul>
+  <li><strong>Continuous learning</strong> (Jekyll, GitHub Actions, automation)</li>
+  <li><strong>Professional presence</strong> (portfolio + blog + projects)</li>
+  <li><strong>Thought leadership</strong> (sharing what I know about data architecture)</li>
+  <li><strong>Automation over manual work</strong> (letting CI/CD handle deployments)</li>
+</ul>
+
+<p>The site will evolve with my career, showcasing new projects and sharing insights from the data engineering and architecture world. And it all happens with the push of a git commit.</p>
+
+<hr />
+
+<p>Interested in the technical details? Check out the repository:</p>
+
+<p><strong><a href="https://github.com/brianjmurray/cfktech-resume">cfktech-resume on GitHub →</a></strong></p>
+
+<p>Questions about portfolio sites, Jekyll, automation, or data architecture? Reach out on LinkedIn or email me at brian@cfktech.com.</p>]]></content><author><name></name></author><category term="Jekyll" /><category term="GitHub Pages" /><category term="CI/CD" /><category term="Portfolio" /><category term="Automation" /><summary type="html"><![CDATA[From resume site to portfolio: how I built a fully automated site using Jekyll, GitHub Pages, semantic versioning, and CI/CD pipelines to showcase projects and thought leadership.]]></summary></entry><entry><title type="html">From Idea to Automated Resume Site: How Copilot CLI Accelerated Phase 1</title><link href="https://cfktech.com/staging/blog/copilot-cli-phase-1-foundation-retrospective/" rel="alternate" type="text/html" title="From Idea to Automated Resume Site: How Copilot CLI Accelerated Phase 1" /><published>2026-01-31T00:00:00+00:00</published><updated>2026-01-31T00:00:00+00:00</updated><id>https://cfktech.com/staging/blog/copilot-cli-phase-1-foundation-retrospective</id><content type="html" xml:base="https://cfktech.com/staging/blog/copilot-cli-phase-1-foundation-retrospective/"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>Phase 1 of cfktech-resume happened before I was systematically documenting Copilot CLI usage. But looking back, Copilot CLI was critical to how quickly and confidently I shipped the foundation.</p>
+
+<p>This post is a retrospective on Phase 1, documenting how Copilot CLI shaped the initial site architecture, workflow automation, and deployment strategy—lessons that directly informed how I approached Phases 2 and 3.</p>
+
+<hr />
+
+<h2 id="phase-1-overview">Phase 1 Overview</h2>
+
+<p><strong>Timeline</strong>: December 2025 - January 2026<br />
+<strong>Releases</strong>: v1.0.0 → v1.0.15<br />
+<strong>Goal</strong>: Build a professional, automated resume site on cfktech.com<br />
+<strong>Tech Stack</strong>: Jekyll + GitHub Pages + GitHub Actions + pandoc</p>
+
+<p>The challenge wasn’t building a resume site (simple), but building one that:</p>
+<ul>
+  <li>✅ Auto-generates PDFs</li>
+  <li>✅ Uses semantic versioning</li>
+  <li>✅ Deploys automatically</li>
+  <li>✅ Is professionally designed</li>
+  <li>✅ Showcases automation skills</li>
+</ul>
+
+<hr />
+
+<h2 id="part-1-discovery--architecture-with-copilot-cli">Part 1: Discovery &amp; Architecture with Copilot CLI</h2>
+
+<h3 id="the-starting-question">The Starting Question</h3>
+
+<p>When I first started Phase 1, I asked myself: <strong>“What’s the fastest way to build a professional resume site that auto-generates PDFs and versions itself?”</strong></p>
+
+<p>This required research into:</p>
+<ul>
+  <li>Static site generators (Jekyll vs. Hugo vs. Next.js vs. others)</li>
+  <li>Deployment platforms (GitHub Pages vs. Netlify vs. traditional hosting)</li>
+  <li>PDF generation approaches (pandoc vs. wkhtmltopdf vs. serverless)</li>
+  <li>CI/CD frameworks (GitHub Actions vs. GitLab CI vs. others)</li>
+</ul>
+
+<p>Without Copilot CLI, I would have:</p>
+<ol>
+  <li>Spent 3-4 hours browsing tutorials</li>
+  <li>Compared tools on Reddit</li>
+  <li>Made fragmented decisions</li>
+  <li>Possibly chosen the wrong stack</li>
+</ol>
+
+<h3 id="how-copilot-cli-helped">How Copilot CLI Helped</h3>
+
+<p><strong>Initial Research Phase:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I want to build a resume site with these requirements:
+- Professional design
+- Auto-generates PDF from Markdown
+- Deploys automatically
+- Uses semantic versioning for releases
+- Low maintenance
+
+Compare Jekyll, Hugo, and Next.js. What are the tradeoffs?"</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI Response</strong> (synthesized from documentation + best practices):</p>
+<ul>
+  <li><strong>Jekyll</strong>: Mature. Simple. GitHub Pages native integration. Good for blogs. PDF generation via pandoc. <em>Best for static resume + blog.</em></li>
+  <li><strong>Hugo</strong>: Faster builds. Less JavaScript. Requires separate deployment. Overkill for resume.</li>
+  <li><strong>Next.js</strong>: Powerful. Requires server. Expensive to run. Overcomplicated for static site.</li>
+</ul>
+
+<p><strong>Decision</strong>: Jekyll. The reasoning:</p>
+<ul>
+  <li>GitHub Pages native support (free hosting)</li>
+  <li>Markdown-first workflow (versionable)</li>
+  <li>Simple enough to understand and modify</li>
+  <li>Proven ecosystem for PDF generation</li>
+</ul>
+
+<hr />
+
+<h2 id="part-2-architecture--layout-design">Part 2: Architecture &amp; Layout Design</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Jekyll generates static sites, but I needed:</p>
+<ul>
+  <li>A professional layout (not default Jekyll theme)</li>
+  <li>Separate pages: Resume, Home, About</li>
+  <li>Semantic HTML for accessibility</li>
+  <li>Modern CSS (gradients, cards, responsive design)</li>
+  <li>PDF-friendly styling</li>
+</ul>
+
+<h3 id="copilot-cli-in-action-layout-design">Copilot CLI in Action: Layout Design</h3>
+
+<p>Rather than start with a blank canvas, I used Copilot CLI:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Design a Jekyll site structure for a resume + portfolio.
+What should the directory structure look like?
+What are the standard collections and includes?
+How do I organize CSS?"</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI provided</strong>:</p>
+<ul>
+  <li>Standard Jekyll structure (<code class="language-plaintext highlighter-rouge">_includes/</code>, <code class="language-plaintext highlighter-rouge">_layouts/</code>, <code class="language-plaintext highlighter-rouge">assets/</code>)</li>
+  <li>How collections work (for blogs added later)</li>
+  <li>Best practices for modular CSS</li>
+  <li>Where to put configuration</li>
+</ul>
+
+<p>Then I asked:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I need a professional resume layout in HTML/CSS.
+The resume should:
+- Display from Markdown frontmatter
+- Be printable to PDF
+- Have a two-column layout (skills on left, content on right)
+- Use modern colors and typography
+
+Generate a Jekyll layout template."</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI generated</strong>:</p>
+<ul>
+  <li>A professional <code class="language-plaintext highlighter-rouge">_layouts/default.html</code> template</li>
+  <li>CSS for two-column resume layout</li>
+  <li>Print-friendly media queries</li>
+  <li>Semantic HTML structure</li>
+</ul>
+
+<p>This saved hours of design iteration. Instead of trying different layouts, I had a solid foundation to refine.</p>
+
+<h3 id="key-insight">Key Insight</h3>
+
+<p>Copilot CLI didn’t just provide code—it provided a <strong>coherent architecture</strong>. Rather than collecting snippets from 10 different blogs, I had a unified design philosophy backed by layout templates and CSS structure.</p>
+
+<hr />
+
+<h2 id="part-3-automation--github-actions">Part 3: Automation &amp; GitHub Actions</h2>
+
+<h3 id="the-biggest-time-saver-workflow-design">The Biggest Time Saver: Workflow Design</h3>
+
+<p>Phase 1’s killer feature is the auto-release workflow:</p>
+<ol>
+  <li>Push resume changes to main</li>
+  <li>GitHub Action calculates next version</li>
+  <li>Automatically generates PDF</li>
+  <li>Creates GitHub release with PDF attached</li>
+  <li>Deploys to GitHub Pages</li>
+</ol>
+
+<p>Without this workflow, each resume update would be manual: bump version, generate PDF, commit changes, push.</p>
+
+<h3 id="how-copilot-cli-shaped-the-workflow">How Copilot CLI Shaped the Workflow</h3>
+
+<p><strong>Initial Question:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I want to automate resume updates in GitHub Actions.
+When I push to main:
+1. Calculate the next semantic version from git tags
+2. Generate a PDF using pandoc
+3. Create a GitHub release with the PDF as an asset
+4. Deploy to GitHub Pages
+
+Design a GitHub Actions workflow for this."</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI Provided</strong>:
+A full workflow structure covering:</p>
+<ul>
+  <li>Trigger conditions (on push to main)</li>
+  <li>Getting git history and tags</li>
+  <li>Calculating semantic version with <code class="language-plaintext highlighter-rouge">git describe</code></li>
+  <li>Running pandoc to generate PDF</li>
+  <li>Using GitHub API to create releases</li>
+  <li>Best practices for error handling</li>
+</ul>
+
+<p><strong>What Would Have Taken 4 Hours</strong>:</p>
+<ul>
+  <li>Learning GitHub Actions syntax</li>
+  <li>Understanding context and secrets</li>
+  <li>Figuring out how to calculate versions</li>
+  <li>Debugging pandoc command-line options</li>
+  <li>Handling edge cases (no previous tag, malformed version)</li>
+</ul>
+
+<p><strong>What Actually Took 1 Hour</strong>:</p>
+<ul>
+  <li>Copilot CLI provided the workflow</li>
+  <li>I customized it for my resume format</li>
+  <li>Small tweaks for PDF styling</li>
+  <li>Testing on actual push</li>
+</ul>
+
+<h3 id="key-technical-decisions-shaped-by-copilot-cli">Key Technical Decisions (Shaped by Copilot CLI)</h3>
+
+<p><strong>Version Calculation</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Best way to calculate next semantic version from 
+existing git tags in a GitHub Actions workflow?"</span>
+</code></pre></div></div>
+
+<p>Copilot CLI recommended:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LATEST_TAG</span><span class="o">=</span><span class="si">$(</span>git describe <span class="nt">--tags</span> <span class="nt">--abbrev</span><span class="o">=</span>0<span class="si">)</span>
+<span class="nv">NEW_VERSION</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="nv">$LATEST_TAG</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="nb">.</span> <span class="s1">'{print $1"."$2"."$3+1}'</span><span class="si">)</span>
+</code></pre></div></div>
+
+<p>This simple approach saved debugging complex version management tools.</p>
+
+<p><strong>PDF Engine Selection</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Should I use pandoc with pdflatex, xelatex, or wkhtmltopdf 
+for converting Markdown resume to PDF? Which handles Unicode, fonts, and styling best?"</span>
+</code></pre></div></div>
+
+<p>Copilot CLI explained:</p>
+<ul>
+  <li><strong>pdflatex</strong>: Fast. Limited Unicode. Works fine for English.</li>
+  <li><strong>xelatex</strong>: Slower. Full Unicode support. Better fonts.</li>
+  <li><strong>wkhtmltopdf</strong>: Deprecated. Avoid.</li>
+</ul>
+
+<p><strong>Decision</strong>: xelatex for professional appearance and future Unicode support.</p>
+
+<hr />
+
+<h2 id="part-4-lessons-that-shaped-phase-2">Part 4: Lessons That Shaped Phase 2</h2>
+
+<h3 id="lesson-1-systematic-versioning-enables-confidence">Lesson 1: Systematic Versioning Enables Confidence</h3>
+
+<p>Phase 1 established semantic versioning (v1.0.0 → v1.0.15). This small decision had huge consequences:</p>
+<ul>
+  <li>Every change is tagged and released</li>
+  <li>Can revert to any version</li>
+  <li>Release notes create documentation</li>
+  <li>Creates a product feel (not just a website)</li>
+</ul>
+
+<p>In Phase 2, this workflow was so smooth that we shipped 4 releases in one session (v1.0.16 → v1.0.19).</p>
+
+<p><strong>Copilot CLI Contribution</strong>: Helped design and debug the version calculation logic. Without that confidence, we might have skipped versioning entirely.</p>
+
+<h3 id="lesson-2-automation-compounds">Lesson 2: Automation Compounds</h3>
+
+<p>Phase 1 automated resume updates. Phase 2 automated blog deployments. Phase 3 will automate Medium cross-posting.</p>
+
+<p>Each phase adds 5-10 minutes of workflow automation. By Phase 5, shipping becomes near-instant.</p>
+
+<p><strong>Copilot CLI Contribution</strong>: Showed how GitHub Actions patterns repeat. Once I understood the pattern (trigger → process → release), Phase 2 and 3 workflows were simple extensions.</p>
+
+<h3 id="lesson-3-architecture-decisions-pay-off">Lesson 3: Architecture Decisions Pay Off</h3>
+
+<p>Choosing Jekyll Collections for blogs in Phase 1 meant Phase 2 blog posts auto-populate into listings. One good architecture decision prevented hours of custom code in Phase 2.</p>
+
+<p><strong>Copilot CLI Contribution</strong>: Explained Jekyll collections early, enabling a blog-ready architecture before we wrote a single post.</p>
+
+<h3 id="lesson-4-constraints-enable-shipping">Lesson 4: Constraints Enable Shipping</h3>
+
+<p>GitHub Pages has constraints:</p>
+<ul>
+  <li>No server-side processing</li>
+  <li>Static files only</li>
+  <li>Build limitations</li>
+  <li>Jekyll-specific</li>
+</ul>
+
+<p>Rather than fight these constraints, Copilot CLI helped me embrace them:</p>
+<ul>
+  <li>Use static search (not server search)</li>
+  <li>Generate PDFs at build time (not on-demand)</li>
+  <li>Use client-side JavaScript (not backend APIs)</li>
+</ul>
+
+<p>These constraints led to simpler, more reliable solutions.</p>
+
+<hr />
+
+<h2 id="part-5-what-would-have-been-different-without-copilot-cli">Part 5: What Would Have Been Different Without Copilot CLI</h2>
+
+<h3 id="scenario-a-without-copilot-cli">Scenario A: Without Copilot CLI</h3>
+
+<p><strong>Timeline: 4-6 weeks</strong></p>
+
+<ol>
+  <li>Spend 2-3 days researching Jekyll vs. Hugo vs. Next.js</li>
+  <li>Watch 10 tutorials, follow conflicting advice</li>
+  <li>Get stuck on GitHub Actions (underdocumented)</li>
+  <li>Build workflows incorrectly, debug for days</li>
+  <li>Struggle with pandoc configuration</li>
+  <li>Make conservative architectural choices to avoid learning curves</li>
+  <li>Ship with no versioning or PDF generation</li>
+  <li>Regret the architecture when Phase 2 starts</li>
+</ol>
+
+<p><strong>Result</strong>: Working site, but fragile. Phases 2 and 3 would reveal architectural limitations.</p>
+
+<h3 id="scenario-b-with-copilot-cli-what-actually-happened">Scenario B: With Copilot CLI (What Actually Happened)</h3>
+
+<p><strong>Timeline: 1-2 weeks</strong></p>
+
+<ol>
+  <li>Copilot CLI research in 30 minutes → Jekyll decision made with confidence</li>
+  <li>Copilot CLI workflow templates → GitHub Actions working in 1 hour</li>
+  <li>Copilot CLI layout design → Professional design in 2 hours</li>
+  <li>Small tweaks and testing → Done</li>
+</ol>
+
+<p><strong>Result</strong>: Solid foundation. Versioning. PDF generation. Blog-ready architecture. Phase 2 and 3 built on confidence, not compromise.</p>
+
+<hr />
+
+<h2 id="part-6-the-numbers">Part 6: The Numbers</h2>
+
+<h3 id="time-investment-estimates">Time Investment (Estimates)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Without Copilot CLI</th>
+      <th>With Copilot CLI</th>
+      <th>Savings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Research &amp; decision (Jekyll)</td>
+      <td>3 hours</td>
+      <td>0.5 hours</td>
+      <td>2.5 hours</td>
+    </tr>
+    <tr>
+      <td>Workflow design</td>
+      <td>4 hours</td>
+      <td>1 hour</td>
+      <td>3 hours</td>
+    </tr>
+    <tr>
+      <td>Layout &amp; CSS</td>
+      <td>6 hours</td>
+      <td>2 hours</td>
+      <td>4 hours</td>
+    </tr>
+    <tr>
+      <td>Pandoc setup &amp; debug</td>
+      <td>3 hours</td>
+      <td>0.5 hours</td>
+      <td>2.5 hours</td>
+    </tr>
+    <tr>
+      <td>Testing &amp; fixes</td>
+      <td>4 hours</td>
+      <td>1 hour</td>
+      <td>3 hours</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td><strong>20 hours</strong></td>
+      <td><strong>5 hours</strong></td>
+      <td><strong>15 hours</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="confidence-multiplier">Confidence Multiplier</h3>
+
+<p>Beyond time savings, Copilot CLI provided <strong>confidence</strong>:</p>
+<ul>
+  <li>Confident in Jekyll choice (not second-guessing)</li>
+  <li>Confident in workflows (not worried about fragility)</li>
+  <li>Confident in architecture (not planning major rewrites)</li>
+</ul>
+
+<p>This confidence enabled rapid iteration in Phases 2 and 3.</p>
+
+<hr />
+
+<h2 id="part-7-how-phase-1-wisdom-shaped-future-phases">Part 7: How Phase 1 Wisdom Shaped Future Phases</h2>
+
+<h3 id="pattern-recognition">Pattern Recognition</h3>
+
+<p>Phase 1 established a pattern:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Issue → Branch → Commit → PR → Build Check → Release → Live
+</code></pre></div></div>
+
+<p>This simple workflow became the <strong>standard for Phase 2 and 3</strong>. By the time Phase 2 started, we could close 7 issues in 2 hours because the workflow was second nature.</p>
+
+<h3 id="reusable-components">Reusable Components</h3>
+
+<p>Phase 1 built:</p>
+<ul>
+  <li>Jekyll site structure</li>
+  <li>GitHub Actions workflow patterns</li>
+  <li>CSS framework</li>
+  <li>README documentation</li>
+</ul>
+
+<p>Phase 2 reused all of these, just adding content and blog posts. Phase 3 will reuse them again, adding features on top.</p>
+
+<p><strong>This is the compounding effect of good Phase 1 work.</strong></p>
+
+<h3 id="automation-mindset">Automation Mindset</h3>
+
+<p>Phase 1’s automation obsession (versioning, PDF generation, GitHub Actions) set the tone for Phases 2 and 3:</p>
+<ul>
+  <li>Phase 2 automated blog post deployment</li>
+  <li>Phase 3 will automate Medium cross-posting</li>
+</ul>
+
+<p>Each phase automates more, reducing manual work.</p>
+
+<hr />
+
+<h2 id="conclusion-phase-1-as-foundation">Conclusion: Phase 1 as Foundation</h2>
+
+<p>Phase 1 of cfktech-resume was about more than building a resume site. It was about:</p>
+<ol>
+  <li><strong>Choosing the right stack</strong> (Jekyll, not over-engineered solutions)</li>
+  <li><strong>Building a solid foundation</strong> (versioning, deployment, architecture)</li>
+  <li><strong>Establishing workflows</strong> (issue → release → live pattern)</li>
+  <li><strong>Creating confidence</strong> (through successful execution)</li>
+</ol>
+
+<p>All of this was accelerated by Copilot CLI, which:</p>
+<ul>
+  <li><strong>Answered research questions</strong> quickly and reliably</li>
+  <li><strong>Provided workflow templates</strong> that worked first-try</li>
+  <li><strong>Explained architecture patterns</strong> that paid off in later phases</li>
+  <li><strong>Reduced decision friction</strong> so we could ship fast</li>
+</ul>
+
+<hr />
+
+<h2 id="the-three-phases-a-complete-view">The Three Phases: A Complete View</h2>
+
+<p><strong>Phase 1</strong> (Foundation): Built the platform, established workflows, automated versioning<br />
+<strong>Phase 2</strong> (Content): Populated with blog posts, added projects, documented the process<br />
+<strong>Phase 3</strong> (Scale): Adding discovery (search/tags), audience growth (newsletter), monetization</p>
+
+<p>Each phase builds on the previous. Phase 1’s decisions made Phase 2 possible. Phase 2’s patterns will make Phase 3 simpler.</p>
+
+<p><strong>The common thread</strong>: Using Copilot CLI to make informed decisions, avoid dead-ends, and ship confidently.</p>
+
+<hr />
+
+<h2 id="whats-next">What’s Next</h2>
+
+<p>This completes the Copilot CLI retrospective series:</p>
+<ol>
+  <li>✅ Phase 1: Foundation &amp; Automation (this post)</li>
+  <li>✅ Phase 2: Blog Infrastructure &amp; Content</li>
+  <li>✅ Phase 3: Advanced Features &amp; Monetization Planning</li>
+</ol>
+
+<p>Phase 3 implementation begins next, starting with blog search (#28) and tags (#29).</p>
+
+<hr />
+
+<h2 id="lessons-for-other-builders">Lessons for Other Builders</h2>
+
+<p>If you’re building a portfolio site or similar project:</p>
+
+<ol>
+  <li><strong>Use Copilot CLI for research</strong>: Faster than googling. More coherent than Reddit.</li>
+  <li><strong>Choose boring technology</strong>: Jekyll &gt; Next.js for blogs. Don’t over-engineer.</li>
+  <li><strong>Automate early</strong>: Versioning and deployment are easier early. Harder to add later.</li>
+  <li><strong>Build incrementally</strong>: Phases allow learning and adjusting without rewriting.</li>
+  <li><strong>Document the journey</strong>: Blog posts about the process are as valuable as the code.</li>
+</ol>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><strong>cfktech-resume repository</strong>: https://github.com/brianjmurray/cfktech-resume</li>
+  <li><strong>Phase 2 post</strong>: <a href="/blog/copilot-cli-phase-2-blog-infrastructure/">Using Copilot CLI for Blog Infrastructure</a></li>
+  <li><strong>Phase 3 post</strong>: <a href="/blog/copilot-cli-phase-3-advanced-features/">Planning Advanced Features &amp; Monetization</a></li>
+  <li><strong>General Phase 1 retrospective</strong>: <a href="/blog/cfktech-portfolio-site/">Building cfktech.com</a></li>
+</ul>
+
+<hr />
+
+<p><em>This completes the Copilot CLI journey through cfktech-resume. From foundation to content to scale—all documented, all shipped. What would you build with Copilot CLI? Share your ideas <a href="https://github.com/brianjmurray/cfktech-resume">on GitHub</a>.</em></p>]]></content><author><name></name></author><category term="Copilot CLI" /><category term="GitHub" /><category term="Retrospective" /><category term="Phase 1" /><category term="Jekyll" /><summary type="html"><![CDATA[Retrospective on Phase 1 of cfktech-resume: how GitHub Copilot CLI helped design Jekyll architecture, automate GitHub Actions workflows, and ship v1.0.0-v1.0.15 in weeks instead of months.]]></summary></entry><entry><title type="html">Using GitHub Copilot CLI to Build a Scalable Blog: Phase 2 of cfktech-resume</title><link href="https://cfktech.com/staging/blog/copilot-cli-phase-2-blog-infrastructure/" rel="alternate" type="text/html" title="Using GitHub Copilot CLI to Build a Scalable Blog: Phase 2 of cfktech-resume" /><published>2026-01-31T00:00:00+00:00</published><updated>2026-01-31T00:00:00+00:00</updated><id>https://cfktech.com/staging/blog/copilot-cli-phase-2-blog-infrastructure</id><content type="html" xml:base="https://cfktech.com/staging/blog/copilot-cli-phase-2-blog-infrastructure/"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>When I started Phase 2 of the cfktech-resume portfolio project, the goal was ambitious: build a scalable blog infrastructure, write multiple technical posts, and expand the portfolio showcase. What could have been a week of manual troubleshooting became a focused workflow using <strong>GitHub Copilot CLI</strong> as my development partner.</p>
+
+<p>This post documents how Copilot CLI transformed my Phase 2 workflow through exploration, automation, problem-solving, and systematic issue tracking.</p>
+
+<h2 id="phase-2-overview">Phase 2 Overview</h2>
+
+<p>Phase 2 of cfktech-resume focused on three major components:</p>
+<ol>
+  <li><strong>Blog infrastructure</strong>: Expanding from 1 to multiple blog posts</li>
+  <li><strong>Content creation</strong>: Writing deep-dive technical posts (12k+ words)</li>
+  <li><strong>Portfolio expansion</strong>: Adding project showcase cards</li>
+  <li><strong>Workflow fixes</strong>: Debugging critical automation pipeline issues</li>
+</ol>
+
+<p>Let me walk through how Copilot CLI helped with each.</p>
+
+<hr />
+
+<h2 id="1-blog-infrastructure-setup-with-copilot-cli">1. Blog Infrastructure Setup with Copilot CLI</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Starting Phase 2, I had one blog post working in Jekyll, but scaling to multiple posts while maintaining consistency required understanding:</p>
+<ul>
+  <li>How Jekyll collections work</li>
+  <li>Proper frontmatter structure for posts</li>
+  <li>How to auto-generate listing pages</li>
+  <li>Building reusable templates</li>
+</ul>
+
+<h3 id="how-copilot-cli-helped">How Copilot CLI Helped</h3>
+
+<p><strong>Exploration Phase:</strong>
+I used Copilot CLI to ask questions about Jekyll collections without leaving the terminal:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"How do Jekyll collections work? I have _posts/ directory with markdown files"</span>
+</code></pre></div></div>
+
+<p>Instead of googling and switching browser tabs, Copilot CLI provided:</p>
+<ul>
+  <li>Explanation of Jekyll’s auto-discovery of <code class="language-plaintext highlighter-rouge">_posts/</code> directory</li>
+  <li>How frontmatter drives URL generation based on <code class="language-plaintext highlighter-rouge">_config.yml</code> permalink patterns</li>
+  <li>Why Liquid loops in layout templates auto-populate blog listings</li>
+</ul>
+
+<p><strong>Code Navigation:</strong>
+Then I asked Copilot CLI to show me the current configuration:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Show me how the current Jekyll site is structured for blog posts"</span>
+</code></pre></div></div>
+
+<p>This helped me understand the existing <code class="language-plaintext highlighter-rouge">_posts/</code> setup, <code class="language-plaintext highlighter-rouge">_config.yml</code> permalink patterns, and liquid templates without reading 5 separate documentation pages.</p>
+
+<h3 id="outcome">Outcome</h3>
+
+<p>I confidently built the Phase 2 blog infrastructure with:</p>
+<ul>
+  <li>Consistent frontmatter structure (layout, title, date, excerpt, tags)</li>
+  <li>Automatic URL generation (<code class="language-plaintext highlighter-rouge">/blog/post-slug/</code>)</li>
+  <li>Auto-listing templates that scale as posts are added</li>
+</ul>
+
+<p><strong>Key insight</strong>: Copilot CLI’s ability to quickly synthesize Jekyll concepts meant I could focus on <em>writing</em> rather than <em>learning the tool</em>.</p>
+
+<hr />
+
+<h2 id="2-content-creation--automation">2. Content Creation &amp; Automation</h2>
+
+<h3 id="the-challenge-1">The Challenge</h3>
+
+<p>Writing one 12k-word technical blog post about Homebrew automation seemed straightforward, but required:</p>
+<ul>
+  <li>Researching the brew-setup-and-update project deeply</li>
+  <li>Structuring a comprehensive technical post</li>
+  <li>Creating project showcase cards that link to blog posts</li>
+  <li>Managing content deployment through the CI/CD pipeline</li>
+</ul>
+
+<h3 id="how-copilot-cli-helped-1">How Copilot CLI Helped</h3>
+
+<p><strong>Research and Outline:</strong>
+I used Copilot CLI to analyze the brew-setup-and-update repository:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I have a GitHub repo at brew-setup-and-update. What are the main components I should write about in a technical blog post?"</span>
+</code></pre></div></div>
+
+<p>Copilot CLI:</p>
+<ol>
+  <li>Helped me explore the repo structure (bash scripts, Brewfile, automation patterns)</li>
+  <li>Identified the key storytelling angle (problem → solution → implementation)</li>
+  <li>Suggested code examples to highlight</li>
+</ol>
+
+<p><strong>Content Generation:</strong>
+With the outline, I asked Copilot CLI to help structure the post:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Write an introduction to a blog post about automating macOS package management with Homebrew. Include: the problem statement, why it matters, and what readers will learn."</span>
+</code></pre></div></div>
+
+<p>This accelerated the initial draft. Rather than starting with a blank page, Copilot CLI provided high-quality scaffolding that I refined based on the actual code.</p>
+
+<p><strong>Project Card Creation:</strong>
+After publishing the blog post, I created project showcase cards linking to both the repository and the blog post. Copilot CLI helped me:</p>
+<ul>
+  <li>Understand the existing project card HTML structure</li>
+  <li>Write consistent descriptions for new cards</li>
+  <li>Ensure all three project cards (SQL Server, Homebrew, cfktech-resume) had parallel formatting</li>
+</ul>
+
+<h3 id="outcome-1">Outcome</h3>
+
+<p>Phase 2 shipped with:</p>
+<ul>
+  <li>1 comprehensive Homebrew automation blog post (12,257 words)</li>
+  <li>2 new project showcase cards</li>
+  <li>Consistent content structure across 3 projects</li>
+</ul>
+
+<p><strong>Key insight</strong>: Copilot CLI’s ability to quickly generate well-structured content meant I could iterate and refine rather than starting from scratch.</p>
+
+<hr />
+
+<h2 id="3-problem-solving-the-workflow-bug">3. Problem Solving: The Workflow Bug</h2>
+
+<h3 id="the-challenge-2">The Challenge</h3>
+
+<p>I merged the Homebrew blog post (Issue #24), but the auto-release workflow failed silently. Version v1.0.16 didn’t create, and the release asset (PDF) wasn’t generated. This was a critical blocker for Phase 2.</p>
+
+<h3 id="how-copilot-cli-helped-2">How Copilot CLI Helped</h3>
+
+<p><strong>Diagnosis:</strong>
+I used Copilot CLI to analyze the failing workflow:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"My GitHub Actions workflow isn't creating a release. The JSON parsing step might be failing. Show me how to reliably extract JSON values in bash without fragile grep/awk pipelines."</span>
+</code></pre></div></div>
+
+<p>Copilot CLI immediately identified the problem pattern:</p>
+<ul>
+  <li>The existing workflow used <code class="language-plaintext highlighter-rouge">grep '"id"' | head -1 | awk '{print $2}' | tr -d ','</code></li>
+  <li>This fragile regex approach failed when JSON formatting was unexpected</li>
+  <li>The workflow had no error handling, so it silently proceeded with an empty value</li>
+</ul>
+
+<p><strong>Solution:</strong>
+Copilot CLI suggested the correct approach:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Bad (fragile):</span>
+<span class="nv">RELEASE_ID</span><span class="o">=</span><span class="si">$(</span><span class="nb">grep</span> <span class="s1">'"id"'</span> release.json | <span class="nb">head</span> <span class="nt">-1</span> | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">','</span><span class="si">)</span>
+
+<span class="c"># Good (reliable):</span>
+<span class="nv">RELEASE_ID</span><span class="o">=</span><span class="si">$(</span>jq <span class="nt">-r</span> <span class="s1">'.id'</span> release.json<span class="si">)</span>
+</code></pre></div></div>
+
+<p><strong>Implementation:</strong>
+I updated <code class="language-plaintext highlighter-rouge">.github/workflows/auto_release.yml</code> with Copilot CLI’s guidance:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Extract Release ID</span>
+  <span class="na">id</span><span class="pi">:</span> <span class="s">release</span>
+  <span class="na">run</span><span class="pi">:</span> <span class="pi">|</span>
+    <span class="s">RELEASE_ID=$(jq -r '.id' &lt;&lt;&lt; "$RESPONSE")</span>
+    <span class="s">if [ -z "$RELEASE_ID" ] || [ "$RELEASE_ID" = "null" ]; then</span>
+      <span class="s">echo "Error: Failed to extract release ID from GitHub API response"</span>
+      <span class="s">echo "Response: $RESPONSE"</span>
+      <span class="s">exit 1</span>
+    <span class="s">fi</span>
+    <span class="s">echo "release_id=$RELEASE_ID" &gt;&gt; $GITHUB_OUTPUT</span>
+</code></pre></div></div>
+
+<p>This fix included:</p>
+<ol>
+  <li>Using <code class="language-plaintext highlighter-rouge">jq</code> for reliable JSON parsing</li>
+  <li>Explicit error checking for null or empty values</li>
+  <li>Debug output showing the response for troubleshooting</li>
+  <li>Early exit on failure instead of silent continuation</li>
+</ol>
+
+<h3 id="outcome-2">Outcome</h3>
+
+<ul>
+  <li>✅ v1.0.16 successfully released</li>
+  <li>✅ PDF asset uploaded</li>
+  <li>✅ Homebrew blog post deployed to cfktech.com</li>
+</ul>
+
+<p><strong>Key insight</strong>: Copilot CLI didn’t just suggest syntax—it identified the <em>pattern</em> of failure (fragile JSON parsing) and provided a systemic solution that prevented future bugs.</p>
+
+<hr />
+
+<h2 id="4-phased-approach-with-github-issues">4. Phased Approach with GitHub Issues</h2>
+
+<h3 id="the-challenge-3">The Challenge</h3>
+
+<p>Phase 2 had multiple moving parts:</p>
+<ul>
+  <li>Issue #24: Write Homebrew blog post</li>
+  <li>Issue #26: Add brew project card</li>
+  <li>Issue #27: Add cfktech-resume project card</li>
+  <li>Issue #36: Clean up homepage (unrelated bug)</li>
+  <li>Issue #38: Fix workflow bug</li>
+</ul>
+
+<p>Without systematic issue tracking, these would get mixed together and shipped as one monolithic change. This makes it hard to:</p>
+<ul>
+  <li>Debug individual problems</li>
+  <li>Revert specific features</li>
+  <li>Understand what each version includes</li>
+</ul>
+
+<h3 id="how-copilot-cli-helped-3">How Copilot CLI Helped</h3>
+
+<p><strong>Issue Workflow:</strong>
+Copilot CLI helped me establish a repeatable pattern for tracking and shipping work:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Pick an issue</span>
+<span class="nv">$ </span>gh issue view 24
+
+<span class="c"># 2. Create a feature branch</span>
+<span class="nv">$ </span>git checkout <span class="nt">-b</span> feature/issue-24-brew-blog
+
+<span class="c"># 3. Make changes locally</span>
+<span class="nv">$ </span>vim _posts/2026-01-31-homebrew-automation-macos-updates.md
+
+<span class="c"># 4. Commit with auto-close keyword</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"Add Homebrew automation blog post - fixes #24"</span>
+
+<span class="c"># 5. Create PR with same keyword</span>
+<span class="nv">$ </span>gh <span class="nb">pr </span>create <span class="nt">--title</span> <span class="s2">"Blog post: Homebrew automation - fixes #24"</span>
+
+<span class="c"># 6. Build passes automatically</span>
+<span class="c"># GitHub Actions validates the PR</span>
+
+<span class="c"># 7. Merge → Auto-close issue → Auto-release workflow</span>
+<span class="nv">$ </span>gh <span class="nb">pr </span>merge <span class="nt">--merge</span> <span class="nt">--delete-branch</span>
+</code></pre></div></div>
+
+<p>When the commit message contains “fixes #24”, GitHub <strong>automatically closes the issue</strong> when the PR merges. This creates a durable link between:</p>
+<ul>
+  <li>Issue (problem statement)</li>
+  <li>Feature branch (work in progress)</li>
+  <li>Commit (proof of work)</li>
+  <li>PR (code review)</li>
+  <li>Release version (shipped)</li>
+</ul>
+
+<p><strong>Documentation:</strong>
+I used Copilot CLI to help document this workflow in the README:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Write clear documentation for developers on how to work with GitHub Issues using the 'fixes #' pattern for auto-close. Include examples and common keywords."</span>
+</code></pre></div></div>
+
+<p>Copilot CLI provided the documentation that went into the README, which is now the source of truth for Phase 2 and Phase 3 work.</p>
+
+<h3 id="outcome-3">Outcome</h3>
+
+<p>Phase 2 shipped as 4 independent but coordinated releases:</p>
+<ul>
+  <li>✅ v1.0.16: Blog post + workflow fix</li>
+  <li>✅ v1.0.17: Project showcase cards</li>
+  <li>Each tied to specific GitHub Issues</li>
+  <li>Each with a clear commit trail</li>
+</ul>
+
+<p><strong>Key insight</strong>: Copilot CLI helped turn chaos into a systematic workflow where issues guide implementation, and GitHub’s automation closes the loop.</p>
+
+<hr />
+
+<h2 id="phase-2-metrics">Phase 2 Metrics</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Blog posts written</td>
+      <td>1 (Homebrew automation, 12,257 words)</td>
+    </tr>
+    <tr>
+      <td>Project showcase cards</td>
+      <td>2 (brew-setup-and-update, cfktech-resume)</td>
+    </tr>
+    <tr>
+      <td>GitHub Issues tracked</td>
+      <td>6 (4 features, 2 bugs)</td>
+    </tr>
+    <tr>
+      <td>Releases shipped</td>
+      <td>2 (v1.0.16, v1.0.17)</td>
+    </tr>
+    <tr>
+      <td>Critical bugs found &amp; fixed</td>
+      <td>2 (workflow JSON parsing, homepage cleanup)</td>
+    </tr>
+    <tr>
+      <td>Build validation failures</td>
+      <td>0 (all PRs passed on first try)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="key-learnings">Key Learnings</h2>
+
+<h3 id="1-copilot-cli-accelerates-exploration">1. Copilot CLI Accelerates Exploration</h3>
+<p>Rather than switching contexts to read documentation, Copilot CLI provided synthesized answers in seconds. This kept me focused on implementation.</p>
+
+<h3 id="2-workflow-patterns-matter">2. Workflow Patterns Matter</h3>
+<p>By establishing a repeatable issue → branch → commit → PR → merge workflow, Phase 2 work was systematic and traceable. Future phases can follow the same pattern.</p>
+
+<h3 id="3-error-handling-prevents-silent-failures">3. Error Handling Prevents Silent Failures</h3>
+<p>The JSON parsing bug taught me that Bash workflows need explicit error checking. Copilot CLI helped me implement proper validation and debug output.</p>
+
+<h3 id="4-phased-development-is-sustainable">4. Phased Development is Sustainable</h3>
+<p>Breaking Phase 2 into 6 issues (4 features, 2 bugs) allowed focused work sessions. Each issue could ship independently, yet contribute to the overall phase goal.</p>
+
+<hr />
+
+<h2 id="whats-next-phase-3">What’s Next: Phase 3</h2>
+
+<p>Phase 3 will implement advanced features:</p>
+<ul>
+  <li><strong>Search functionality</strong> (#28): Help readers find posts</li>
+  <li><strong>Tags and categories</strong> (#29): Organize content by topic</li>
+  <li><strong>Newsletter integration</strong> (#30): Build audience</li>
+  <li><strong>Analytics</strong> (#31): Understand reader behavior</li>
+  <li><strong>Monetization</strong> (#32): Buy Me a Coffee integration</li>
+  <li><strong>Medium cross-posting</strong> (Phase 3): Expand reach</li>
+</ul>
+
+<p>I’ll use the same Copilot CLI + GitHub Issues workflow that worked for Phase 2.</p>
+
+<hr />
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Phase 2 of cfktech-resume demonstrated that <strong>GitHub Copilot CLI is not just a code completion tool</strong>—it’s a development partner for:</p>
+<ul>
+  <li>Exploring unfamiliar domains (Jekyll, GitHub Actions)</li>
+  <li>Generating high-quality starting content</li>
+  <li>Diagnosing and solving systemic problems</li>
+  <li>Documenting workflows and best practices</li>
+</ul>
+
+<p>By pairing Copilot CLI with GitHub Issues and systematic release management, Phase 2 shipped 2 releases, 1 technical blog post, 2 project cards, and 2 critical bug fixes—all traceable and reversible.</p>
+
+<p>This foundation sets up Phase 3 for even greater impact.</p>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><strong>cfktech-resume repository</strong>: https://github.com/brianjmurray/cfktech-resume</li>
+  <li><strong>Phase 1 post</strong>: <a href="/blog/cfktech-portfolio-site/">Building cfktech.com: Portfolio Site with Automated CI/CD</a></li>
+  <li><strong>Homebrew blog post</strong>: <a href="/blog/homebrew-automation-macos-updates/">Automating macOS Updates with Homebrew</a></li>
+  <li><strong>GitHub Issues workflow documentation</strong>: See cfktech-resume README</li>
+</ul>
+
+<hr />
+
+<p><em>Have you used Copilot CLI for workflow automation? Share your experience in the comments or connect on <a href="https://github.com/brianjmurray">GitHub</a>.</em></p>]]></content><author><name></name></author><category term="Copilot CLI" /><category term="GitHub" /><category term="Automation" /><category term="Jekyll" /><category term="DevOps" /><summary type="html"><![CDATA[How Copilot CLI streamlined blog infrastructure, automated content creation, debugged workflows, and enforced a phased development approach.]]></summary></entry><entry><title type="html">Planning Phase 3: Advanced Features and Monetization Strategy with Copilot CLI</title><link href="https://cfktech.com/staging/blog/copilot-cli-phase-3-advanced-features/" rel="alternate" type="text/html" title="Planning Phase 3: Advanced Features and Monetization Strategy with Copilot CLI" /><published>2026-01-31T00:00:00+00:00</published><updated>2026-01-31T00:00:00+00:00</updated><id>https://cfktech.com/staging/blog/copilot-cli-phase-3-advanced-features</id><content type="html" xml:base="https://cfktech.com/staging/blog/copilot-cli-phase-3-advanced-features/"><![CDATA[<h2 id="introduction">Introduction</h2>
+
+<p>After shipping Phase 2 (blog infrastructure, content, project cards), the cfktech-resume portfolio is stable and growing. But with 4 blog posts live and growing audience, the question becomes: <strong>What features should Phase 3 prioritize?</strong></p>
+
+<p>Phase 3 is fundamentally different from Phases 1 and 2:</p>
+<ul>
+  <li>Phase 1 was about <strong>foundation</strong> (building the site)</li>
+  <li>Phase 2 was about <strong>content</strong> (populating with posts and projects)</li>
+  <li>Phase 3 is about <strong>scale and monetization</strong> (helping readers find content, growing audience, earning revenue)</li>
+</ul>
+
+<p>This post documents how I used <strong>GitHub Copilot CLI</strong> to research, evaluate, and plan Phase 3 features—turning a vague roadmap into actionable priorities backed by tradeoff analysis.</p>
+
+<hr />
+
+<h2 id="phase-3-roadmap-overview">Phase 3 Roadmap Overview</h2>
+
+<p>Five major initiatives are planned:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Initiative</th>
+      <th>Issue</th>
+      <th>Purpose</th>
+      <th>Complexity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Search</strong></td>
+      <td>#28</td>
+      <td>Help readers find blog posts</td>
+      <td>Medium</td>
+    </tr>
+    <tr>
+      <td><strong>Tags/Categories</strong></td>
+      <td>#29</td>
+      <td>Organize content by topic</td>
+      <td>Low</td>
+    </tr>
+    <tr>
+      <td><strong>Newsletter</strong></td>
+      <td>#30</td>
+      <td>Build audience, drive recurring traffic</td>
+      <td>Medium</td>
+    </tr>
+    <tr>
+      <td><strong>Analytics</strong></td>
+      <td>#31</td>
+      <td>Understand reader behavior</td>
+      <td>Low</td>
+    </tr>
+    <tr>
+      <td><strong>Monetization</strong></td>
+      <td>#32</td>
+      <td>Earn revenue via donations</td>
+      <td>Low</td>
+    </tr>
+    <tr>
+      <td><strong>Medium Integration</strong></td>
+      <td>TBD</td>
+      <td>Expand reach to Medium audience</td>
+      <td>Medium</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Total estimated effort: <strong>40-60 development hours</strong> across 6 initiatives.</p>
+
+<p>The challenge: <strong>Which features solve the biggest problems first?</strong></p>
+
+<hr />
+
+<h2 id="1-research-phase-using-copilot-cli-to-understand-tradeoffs">1. Research Phase: Using Copilot CLI to Understand Tradeoffs</h2>
+
+<h3 id="search-functionality-client-side-vs-server-side">Search Functionality: Client-Side vs. Server-Side</h3>
+
+<p><strong>The Question:</strong>
+How do I add search to a static Jekyll site? Options include client-side JavaScript, third-party services like Algolia, or something in between.</p>
+
+<p><strong>Copilot CLI Research:</strong>
+I asked Copilot CLI to compare approaches:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I have a Jekyll blog with ~20 posts. 
+Compare client-side search vs. Algolia vs. jekyll-lunr for a static site. 
+What are the tradeoffs in complexity, cost, and user experience?"</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI Response Summary:</strong></p>
+<ul>
+  <li><strong>Client-side (JavaScript)</strong>: Requires loading all posts into memory (~100KB JSON). Works offline. No backend. Free. Best for &lt;100 posts.</li>
+  <li><strong>Algolia</strong>: Paid service ($0-100/month depending on volume). Powerful. Requires API key management. Overkill for small blogs.</li>
+  <li><strong>jekyll-lunr</strong>: Pre-builds search index at build time. Balances simplicity (no backend) with power. Search works instantly. Popular for Jekyll blogs.</li>
+</ul>
+
+<p><strong>Decision Framework:</strong> Given 4-20 projected posts, <strong>jekyll-lunr is optimal</strong>—free, fast, no backend complexity, proven Jekyll integration.</p>
+
+<h3 id="tags-and-categories-flat-vs-hierarchical">Tags and Categories: Flat vs. Hierarchical</h3>
+
+<p><strong>The Question:</strong>
+Should I implement flat tags (e.g., <code class="language-plaintext highlighter-rouge">#DevOps</code>) or hierarchical categories (e.g., <code class="language-plaintext highlighter-rouge">DevOps &gt; Automation</code>)?</p>
+
+<p><strong>Copilot CLI Analysis:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"For a technical blog, should I use flat tags or hierarchical categories? 
+Compare user experience, implementation complexity, and long-term scalability."</span>
+</code></pre></div></div>
+
+<p><strong>Key Insights:</strong></p>
+<ul>
+  <li><strong>Flat tags</strong>: Simpler. Users scan easily. Scales fine to ~50 tags. Implementation is straightforward in Jekyll.</li>
+  <li><strong>Hierarchical categories</strong>: Better organization at scale. More powerful filtering. Higher complexity (requires custom Liquid logic). Overhead until 100+ posts.</li>
+</ul>
+
+<p><strong>Decision:</strong> Start flat tags (low complexity, high value now), plan hierarchy refactor for 50+ posts.</p>
+
+<h3 id="newsletter-email-service-selection">Newsletter: Email Service Selection</h3>
+
+<p><strong>The Question:</strong>
+Which email service balances ease of integration, cost, and features?</p>
+
+<p><strong>Copilot CLI Comparison:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Compare Mailchimp vs. Substack vs. ConvertKit for a technical blog newsletter.
+Focus on: ease of Jekyll integration, free tier features, monetization options."</span>
+</code></pre></div></div>
+
+<p><strong>Analysis:</strong>
+| Service | Setup | Free Tier | Monetization | Best For |
+|———|——-|———–|————–|———-|
+| <strong>Mailchimp</strong> | API integration required | 500 contacts free | Mailchimp Partners program | Growing blogs |
+| <strong>Substack</strong> | No integration (manual cross-posting) | Free, keeps 90% revenue | Built-in paid subscriptions | Writer-focused |
+| <strong>ConvertKit</strong> | Creator-focused integrations | Limited free tier | Affiliate &amp; sponsorship | Professional creators |</p>
+
+<p><strong>Decision:</strong> Mailchimp for now (free tier, API integration possible, can migrate later if growing).</p>
+
+<h3 id="analytics-privacy-vs-power">Analytics: Privacy vs. Power</h3>
+
+<p><strong>The Question:</strong>
+Should I use Google Analytics (powerful, privacy concerns) or privacy-focused alternatives like Plausible/Fathom?</p>
+
+<p><strong>Copilot CLI Tradeoff Analysis:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Compare Google Analytics 4 vs. Plausible Analytics vs. Fathom for a 
+technical portfolio blog. Consider: privacy, cost, ease of setup, insights quality."</span>
+</code></pre></div></div>
+
+<p><strong>Key Tradeoffs:</strong></p>
+<ul>
+  <li><strong>Google Analytics 4</strong>: Free. Comprehensive. GDPR concerns without consent banners. Overkill for small audience.</li>
+  <li><strong>Plausible</strong>: €9/mo. GDPR-compliant. Simple dashboard. Less detailed than GA4. Growing adoption in indie dev community.</li>
+  <li><strong>Fathom</strong>: $19/mo. Similar to Plausible. Better privacy. Both require paid tier.</li>
+</ul>
+
+<p><strong>Decision:</strong> Start with Google Analytics 4 (free, familiar), add privacy notice in footer. Migrate to Plausible at $100/month traffic threshold.</p>
+
+<h3 id="monetization-donations-vs-affiliate-vs-sponsorship">Monetization: Donations vs. Affiliate vs. Sponsorship</h3>
+
+<p><strong>The Question:</strong>
+What’s the lowest-friction way to let readers support my work?</p>
+
+<p><strong>Copilot CLI Framework:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"For a technical blog with 100-500 monthly visitors, rank these monetization 
+options by ease of setup, likelihood of revenue, and user friction: 
+Buy Me a Coffee, Amazon Affiliates, Stripe Tips, sponsorships."</span>
+</code></pre></div></div>
+
+<p><strong>Analysis:</strong>
+| Option | Setup | Friction | Revenue Potential | Timeline |
+|——–|——-|———-|——————|———-|
+| <strong>Buy Me a Coffee</strong> | 5 min | Very low | Low ($0-10/mo early) | Immediate |
+| <strong>Amazon Affiliates</strong> | 30 min | None (contextual links) | Medium ($10-100/mo) | 3-6 months |
+| <strong>Sponsorships</strong> | Ongoing outreach | None (if accepted) | High ($100-1000/mo) | 6+ months |
+| <strong>Stripe Tips</strong> | 1 hour setup | Medium (popup fatigue) | Low-Medium | Immediate |</p>
+
+<p><strong>Decision:</strong> Launch Buy Me a Coffee immediately (lowest friction). Add contextual Amazon Affiliate links as posts mention products. Pursue sponsorships at 10K+ monthly visitors.</p>
+
+<hr />
+
+<h2 id="2-priority-matrix-impact-vs-effort">2. Priority Matrix: Impact vs. Effort</h2>
+
+<p>Using Copilot CLI insights, I mapped features on an impact/effort matrix:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>HIGH IMPACT
+    ↑
+    │ [Newsletter]  [Analytics]
+    │ [Medium API]
+    │        [Tags]
+    │ [Search]
+    │        [Monetization]
+    └─────────────────────────→ HIGH EFFORT
+</code></pre></div></div>
+
+<p><strong>Quadrants:</strong></p>
+
+<ol>
+  <li><strong>Quick Wins</strong> (High Impact, Low Effort): Tags, Monetization, Analytics</li>
+  <li><strong>Major Projects</strong> (High Impact, High Effort): Search, Newsletter, Medium API</li>
+  <li><strong>Nice-to-Haves</strong> (Low Impact, Low Effort): None identified</li>
+  <li><strong>Avoid</strong> (Low Impact, High Effort): None identified</li>
+</ol>
+
+<hr />
+
+<h2 id="3-phased-timeline-batching-by-value">3. Phased Timeline: Batching by Value</h2>
+
+<p>Rather than implementing all 6 initiatives simultaneously, Phase 3 will ship in 3 sub-phases:</p>
+
+<h3 id="phase-3a-reader-discovery-weeks-1-2">Phase 3a: Reader Discovery (Weeks 1-2)</h3>
+<p><strong>Goal:</strong> Help existing readers find related content</p>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Tags/Categories (#29) — 4 hours
+    <ul>
+      <li>Add <code class="language-plaintext highlighter-rouge">tags:</code> frontmatter to existing posts</li>
+      <li>Create tag listing pages</li>
+      <li>Add tag filters to blog index</li>
+    </ul>
+  </li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Search (#28) — 6 hours
+    <ul>
+      <li>Integrate jekyll-lunr</li>
+      <li>Add search box to header</li>
+      <li>Test with all posts</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Shipping:</strong> v1.0.19</p>
+
+<h3 id="phase-3b-audience-growth-weeks-3-4">Phase 3b: Audience Growth (Weeks 3-4)</h3>
+<p><strong>Goal:</strong> Build recurring audience through email + content distribution</p>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Newsletter (#30) — 4 hours
+    <ul>
+      <li>Mailchimp integration</li>
+      <li>Signup form on homepage + posts</li>
+      <li>Automation to email new posts</li>
+    </ul>
+  </li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Medium API (#TBD) — 6 hours
+    <ul>
+      <li>Research Medium API and authentication</li>
+      <li>Build GitHub Actions workflow to auto-publish to Medium</li>
+      <li>Backfill existing posts to Medium with canonical URLs</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Shipping:</strong> v1.0.20</p>
+
+<h3 id="phase-3c-monetization--understanding-weeks-5-6">Phase 3c: Monetization &amp; Understanding (Weeks 5-6)</h3>
+<p><strong>Goal:</strong> Monetize audience + understand behavior</p>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Monetization (#32) — 2 hours
+    <ul>
+      <li>Add Buy Me a Coffee widget to posts + sidebar</li>
+      <li>Document process for future revenue streams</li>
+    </ul>
+  </li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Analytics (#31) — 2 hours
+    <ul>
+      <li>Add Google Analytics 4 tracking</li>
+      <li>Create simple dashboard for weekly metrics</li>
+    </ul>
+  </li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Amazon Affiliates — 1 hour
+    <ul>
+      <li>Add affiliate links to posts mentioning tools/services</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Shipping:</strong> v1.0.21</p>
+
+<hr />
+
+<h2 id="4-decision-framework-how-copilot-cli-shaped-roadmap">4. Decision Framework: How Copilot CLI Shaped Roadmap</h2>
+
+<p>Rather than choosing features arbitrarily, I used Copilot CLI to apply decision criteria:</p>
+
+<h3 id="criterion-1-revenue-potential-short-term">Criterion 1: Revenue Potential (Short-term)</h3>
+<p><strong>Which features generate income earliest?</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"For a new technical blog with 100-500 visitors/month, 
+which monetization approaches have shortest path to first </span><span class="nv">$100</span><span class="s2"> earned?"</span>
+</code></pre></div></div>
+
+<p><strong>Result:</strong> Buy Me a Coffee + Amazon Affiliate links have quickest ROI. Newsletter and Medium are content/reach plays, not direct revenue.</p>
+
+<p><strong>Decision:</strong> Prioritize monetization (quick win) over newsletter (longer payoff).</p>
+
+<h3 id="criterion-2-reader-value-medium-term">Criterion 2: Reader Value (Medium-term)</h3>
+<p><strong>Which features provide immediate value to current audience?</strong></p>
+
+<p><strong>Copilot CLI Insight:</strong></p>
+<ul>
+  <li>Readers with 4+ posts want: search (find relevant posts), tags (browse by topic)</li>
+  <li>Readers with growing blog want: analytics (understand what works)</li>
+  <li>Readers wanting to expand reach want: Medium distribution, newsletter</li>
+</ul>
+
+<p><strong>Decision:</strong> Implement search + tags early (#28, #29). They solve real reader problems NOW.</p>
+
+<h3 id="criterion-3-compound-growth-long-term">Criterion 3: Compound Growth (Long-term)</h3>
+<p><strong>Which features enable exponential growth?</strong></p>
+
+<p><strong>Copilot CLI Framework:</strong></p>
+<ul>
+  <li>Newsletter: Each post reaches X readers + subscribers (compound). Subscriber list = asset.</li>
+  <li>Medium: Each post reaches base audience + Medium audience (2X reach).</li>
+  <li>Affiliate links: Revenue compounds as traffic grows.</li>
+</ul>
+
+<p><strong>Decision:</strong> Sequence search/tags/monetization first (quick wins), then newsletter/Medium (compound growth) as audience grows.</p>
+
+<hr />
+
+<h2 id="5-handling-unknown-unknowns">5. Handling Unknown Unknowns</h2>
+
+<p>Copilot CLI isn’t just about known tradeoffs—it also helps surface what I <em>don’t</em> know:</p>
+
+<h3 id="unknown-medium-api-complexity">Unknown: Medium API Complexity</h3>
+<p>Initially, I assumed Medium API was complex. Copilot CLI revealed:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"What's the actual difficulty of integrating Medium's API into a 
+GitHub Actions workflow? What are the gotchas?"</span>
+</code></pre></div></div>
+
+<p><strong>Response:</strong> Medium API is simpler than expected for basic publishing. Main gotchas:</p>
+<ul>
+  <li>Must request API approval (can take 1-2 weeks)</li>
+  <li>No bulk publishing endpoint</li>
+  <li>Requires careful error handling (network timeouts during publish)</li>
+</ul>
+
+<p><strong>Decision:</strong> Plan Medium integration for Phase 3b, but file approval request NOW (so it’s ready by week 3).</p>
+
+<h3 id="unknown-newsletter-open-rates">Unknown: Newsletter Open Rates</h3>
+<p>I worried newsletter integration might have low ROI. Copilot CLI helped:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"For technical blogs with 500-5000 subscribers, what are typical 
+newsletter open rates, and how do they compare to social media reach?"</span>
+</code></pre></div></div>
+
+<p><strong>Response:</strong> Technical blogs see 30-50% open rates (vs. 2-5% social). Email is highest-value channel once built.</p>
+
+<p><strong>Decision:</strong> Prioritize newsletter higher in roadmap—it’s the highest-leverage audience play.</p>
+
+<hr />
+
+<h2 id="6-resource-allocation-time-budget">6. Resource Allocation: Time Budget</h2>
+
+<p>With Phase 3 estimated at 40-60 hours and uncertain availability, Copilot CLI helped create a realistic timeline:</p>
+
+<p><strong>High Priority</strong> (Must Ship): 12-16 hours</p>
+<ul>
+  <li>Tags (#29): 4 hours</li>
+  <li>Search (#28): 6 hours</li>
+  <li>Monetization (#32): 2-4 hours</li>
+</ul>
+
+<p><strong>Medium Priority</strong> (Should Ship): 12-16 hours</p>
+<ul>
+  <li>Newsletter (#30): 4 hours</li>
+  <li>Medium API (#TBD): 6 hours</li>
+  <li>Analytics (#31): 2 hours</li>
+</ul>
+
+<p><strong>Low Priority</strong> (Nice to Have): 4+ hours</p>
+<ul>
+  <li>Affiliate links (contextual)</li>
+  <li>Amazon Associates integration</li>
+  <li>Advanced analytics (cohort analysis, etc.)</li>
+</ul>
+
+<p><strong>Risk Buffer:</strong> 10 hours (unexpected issues, refinement)</p>
+
+<p><strong>Realistic Timeline:</strong> 4-6 weeks part-time work.</p>
+
+<hr />
+
+<h2 id="7-success-metrics-how-to-know-phase-3-worked">7. Success Metrics: How to Know Phase 3 Worked</h2>
+
+<p>Rather than shipping features for features’ sake, Copilot CLI helped define what “success” means:</p>
+
+<h3 id="reader-engagement-pre-phase-3-baseline">Reader Engagement (Pre Phase 3 Baseline)</h3>
+<ul>
+  <li>Average session duration: ?</li>
+  <li>Bounce rate: ?</li>
+  <li>Avg. pages per session: ?</li>
+</ul>
+
+<h3 id="phase-3-success-criteria">Phase 3 Success Criteria</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>Metric</th>
+      <th>Target</th>
+      <th>Timeline</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Tags/Search</strong></td>
+      <td>Avg. pages/session</td>
+      <td>+30%</td>
+      <td>Week 2</td>
+    </tr>
+    <tr>
+      <td><strong>Newsletter</strong></td>
+      <td>Subscribers</td>
+      <td>50+</td>
+      <td>Week 4</td>
+    </tr>
+    <tr>
+      <td><strong>Medium</strong></td>
+      <td>Referral traffic</td>
+      <td>+20% monthly</td>
+      <td>Week 5</td>
+    </tr>
+    <tr>
+      <td><strong>Analytics</strong></td>
+      <td>Monthly visitors</td>
+      <td>1000+</td>
+      <td>Month 2</td>
+    </tr>
+    <tr>
+      <td><strong>Monetization</strong></td>
+      <td>First donation</td>
+      <td>$10+</td>
+      <td>Month 2</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>These aren’t guesses—they’re benchmarks from similar blogs, provided by Copilot CLI research.</p>
+
+<hr />
+
+<h2 id="8-phase-3-in-context-the-bigger-picture">8. Phase 3 in Context: The Bigger Picture</h2>
+
+<p>Copilot CLI helped me see Phase 3 as not just feature development, but <strong>strategic positioning</strong>:</p>
+
+<ul>
+  <li><strong>Phase 1</strong> proved I can build production systems (Jekyll + GitHub Pages + CI/CD)</li>
+  <li><strong>Phase 2</strong> proved I can create valuable content (12k+ word technical posts)</li>
+  <li><strong>Phase 3</strong> proves I can <strong>grow and monetize</strong> an audience</li>
+</ul>
+
+<p>This progression tells a story to potential clients/employers:</p>
+<ol>
+  <li><strong>Builder</strong>: Infrastructure (Phase 1)</li>
+  <li><strong>Creator</strong>: Content (Phase 2)</li>
+  <li><strong>Entrepreneur</strong>: Growth (Phase 3)</li>
+</ol>
+
+<p>By documenting each phase with Copilot CLI (hence these blog posts), I’m creating a portfolio of skills beyond code.</p>
+
+<hr />
+
+<h2 id="what-copilot-cli-made-possible">What Copilot CLI Made Possible</h2>
+
+<p>Without Copilot CLI, Phase 3 planning would have looked like:</p>
+<ol>
+  <li>Spend 2 hours on each research topic (scattered browsing, Reddit, docs)</li>
+  <li>Make fragmented decisions without clear tradeoffs</li>
+  <li>Ship features in random order based on excitement level</li>
+  <li>Hope results match hopes</li>
+</ol>
+
+<p><strong>With Copilot CLI</strong>, Phase 3 planning was:</p>
+<ol>
+  <li>✅ Research 6 topics in 90 minutes (focused, synthesized answers)</li>
+  <li>✅ Map decisions to explicit criteria (revenue, reader value, growth)</li>
+  <li>✅ Sequence features by impact/effort (data-driven roadmap)</li>
+  <li>✅ Define success metrics before shipping (measurable outcomes)</li>
+</ol>
+
+<hr />
+
+<h2 id="timeline-phase-3-implementation">Timeline: Phase 3 Implementation</h2>
+
+<p><strong>Now (End of January):</strong></p>
+<ul>
+  <li>File Medium API approval request (1 week approval window)</li>
+  <li>Create GitHub Issues for all Phase 3 features</li>
+</ul>
+
+<p><strong>Week 1-2 (February):</strong></p>
+<ul>
+  <li>Implement tags + search</li>
+  <li>Ship v1.0.19</li>
+  <li>Begin newsletter integration</li>
+</ul>
+
+<p><strong>Week 3-4 (February):</strong></p>
+<ul>
+  <li>Launch newsletter</li>
+  <li>Implement Medium API automation</li>
+  <li>Ship v1.0.20</li>
+  <li>Backfill existing posts to Medium</li>
+</ul>
+
+<p><strong>Week 5-6 (March):</strong></p>
+<ul>
+  <li>Add monetization (Buy Me a Coffee)</li>
+  <li>Implement analytics</li>
+  <li>Add affiliate links</li>
+  <li>Ship v1.0.21</li>
+</ul>
+
+<p><strong>Ongoing:</strong></p>
+<ul>
+  <li>Monitor success metrics</li>
+  <li>Iterate based on reader feedback</li>
+  <li>Pursue sponsorships at 10K+ monthly visitors</li>
+</ul>
+
+<hr />
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Phase 3 of cfktech-resume will transform the portfolio from a <strong>publishing platform</strong> into an <strong>audience-driven business</strong>.</p>
+
+<p>By using Copilot CLI to research, evaluate, and prioritize features, I’ve created a roadmap backed by:</p>
+<ul>
+  <li><strong>Data</strong>: Benchmarks from similar blogs</li>
+  <li><strong>Tradeoffs</strong>: Explicit cost-benefit analysis for each choice</li>
+  <li><strong>Sequence</strong>: Impact/effort matrix to ship quick wins first</li>
+  <li><strong>Metrics</strong>: Success criteria defined upfront</li>
+</ul>
+
+<p>This approach—research → decision framework → phased execution—is exactly the mindset that Copilot CLI enables: <strong>faster, more confident decisions</strong>.</p>
+
+<p>Phase 3 ships starting in February. Blog posts will document each feature as it launches.</p>
+
+<hr />
+
+<h2 id="next-implementing-phase-3">Next: Implementing Phase 3</h2>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />File Medium API approval</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Create Issues #28, #29, #30, #31, #32 (already done in Phase 2 planning)</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Start Phase 3a: Tags + Search (v1.0.19)</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Track metrics: Pages/session, newsletter subscribers, referral traffic</li>
+</ul>
+
+<hr />
+
+<p><em>What Phase 3 feature are you most excited about? Share thoughts or ideas in comments or <a href="https://github.com/brianjmurray/cfktech-resume">on GitHub</a>.</em></p>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><strong>cfktech-resume repository</strong>: https://github.com/brianjmurray/cfktech-resume</li>
+  <li><strong>Phase 1 post</strong>: <a href="/blog/cfktech-portfolio-site/">Building cfktech.com: Portfolio Site with Automated CI/CD</a></li>
+  <li><strong>Phase 2 post</strong>: <a href="/blog/copilot-cli-phase-2-blog-infrastructure/">Using Copilot CLI to Build a Scalable Blog</a></li>
+  <li><strong>GitHub Issues</strong>: Phase 3 roadmap tracked as Issues #28-32</li>
+</ul>]]></content><author><name></name></author><category term="Copilot CLI" /><category term="GitHub" /><category term="Strategy" /><category term="Product Planning" /><category term="Monetization" /><summary type="html"><![CDATA[How Copilot CLI helps plan Phase 3 features—search, tags, newsletters, analytics, and monetization—by researching tradeoffs, evaluating tools, and building a data-driven roadmap.]]></summary></entry><entry><title type="html">Automating macOS Updates with Homebrew: Keeping Your Mac Fresh</title><link href="https://cfktech.com/staging/blog/homebrew-automation-macos-updates/" rel="alternate" type="text/html" title="Automating macOS Updates with Homebrew: Keeping Your Mac Fresh" /><published>2026-01-31T00:00:00+00:00</published><updated>2026-01-31T00:00:00+00:00</updated><id>https://cfktech.com/staging/blog/homebrew-automation-macos-updates</id><content type="html" xml:base="https://cfktech.com/staging/blog/homebrew-automation-macos-updates/"><![CDATA[<p>Keeping a macOS development machine up-to-date is a constant challenge. Between OS updates, Homebrew packages, App Store apps, npm packages, Azure CLI tools, and VS Code extensions, it’s easy to fall behind or forget something important. In this post, I’ll show you how to automate the entire process with a single bash script—the same approach I’ve used for years on my development Macs.</p>
+
+<h2 id="the-problem-manual-update-fatigue">The Problem: Manual Update Fatigue</h2>
+
+<p>Without automation, keeping everything current requires:</p>
+
+<ul>
+  <li>Manually running <code class="language-plaintext highlighter-rouge">softwareupdate</code> for macOS</li>
+  <li>Remembering to run <code class="language-plaintext highlighter-rouge">brew upgrade</code></li>
+  <li>Running <code class="language-plaintext highlighter-rouge">mas upgrade</code> for App Store apps</li>
+  <li>Manually updating each Homebrew tap and CLI tool (Azure CLI, etc.)</li>
+  <li>Updating the Brewfile to track new installations</li>
+  <li>Creating Git commits and PRs to track changes</li>
+  <li>Backing up dotfiles and configurations</li>
+</ul>
+
+<p>Even worse, inconsistencies can creep in. You install something on one Mac but forget it on another. You upgrade a tool and don’t track the version anywhere. You configure something in VS Code and lose it when you get a new machine.</p>
+
+<h2 id="the-solution-automated-update-pipeline">The Solution: Automated Update Pipeline</h2>
+
+<p>The answer is a simple automation approach that runs all updates in sequence, commits the results to Git, and creates a pull request. This way:</p>
+
+<p>✅ Everything stays current automatically<br />
+✅ Changes are tracked in Git (history + rollback capability)<br />
+✅ Multiple Macs stay in sync<br />
+✅ New machines can be set up quickly<br />
+✅ You have a record of what’s installed and when</p>
+
+<h2 id="how-it-works-the-three-core-files">How It Works: The Three Core Files</h2>
+
+<h3 id="1-the-brewfile-package-manifest">1. The Brewfile: Package Manifest</h3>
+
+<p>The Brewfile is the heart of the system. It’s a declarative list of everything installed via Homebrew, including:</p>
+
+<ul>
+  <li><strong>Homebrew taps</strong> (external package repositories like <code class="language-plaintext highlighter-rouge">dbt-labs/dbt</code>, <code class="language-plaintext highlighter-rouge">hashicorp/tap</code>)</li>
+  <li><strong>Brew packages</strong> (CLI tools like <code class="language-plaintext highlighter-rouge">docker</code>, <code class="language-plaintext highlighter-rouge">node</code>, <code class="language-plaintext highlighter-rouge">python@3.11</code>)</li>
+  <li><strong>Casks</strong> (GUI applications like <code class="language-plaintext highlighter-rouge">visual-studio-code</code>, <code class="language-plaintext highlighter-rouge">docker</code>)</li>
+  <li><strong>App Store apps</strong> (managed via <code class="language-plaintext highlighter-rouge">mas</code>, the Mac App Store CLI)</li>
+  <li><strong>VS Code extensions</strong> (automatically synced to all machines)</li>
+</ul>
+
+<p>Example Brewfile structure:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Taps</span>
+tap <span class="s2">"1password/tap"</span>
+tap <span class="s2">"dbt-labs/dbt"</span>
+tap <span class="s2">"hashicorp/tap"</span>
+
+<span class="c"># Core tools</span>
+brew <span class="s2">"git"</span>
+brew <span class="s2">"docker"</span>
+brew <span class="s2">"python@3.11"</span>
+brew <span class="s2">"node"</span>
+
+<span class="c"># Casks (GUI apps)</span>
+cask <span class="s2">"visual-studio-code"</span>
+cask <span class="s2">"docker"</span>
+cask <span class="s2">"1password"</span>
+
+<span class="c"># App Store apps</span>
+mas <span class="s2">"1Password 7"</span>, <span class="nb">id</span>: 1569813296
+mas <span class="s2">"Final Cut Pro"</span>, <span class="nb">id</span>: 424389933
+
+<span class="c"># VS Code extensions</span>
+vscode <span class="s2">"ms-python.python"</span>
+vscode <span class="s2">"ms-azuretools.vscode-docker"</span>
+</code></pre></div></div>
+
+<p>When you run <code class="language-plaintext highlighter-rouge">brew bundle</code>, it installs everything listed. When you run <code class="language-plaintext highlighter-rouge">brew bundle dump</code>, it updates the Brewfile with your current installed packages.</p>
+
+<h3 id="2-the-update-script-orchestration">2. The Update Script: Orchestration</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">update.sh</code> script automates the entire update process:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c"># Timestamp for branch/commit naming</span>
+<span class="nv">now</span><span class="o">=</span><span class="si">$(</span><span class="nb">date</span> <span class="s1">'+%Y%m%d%H%M%S'</span><span class="si">)</span>
+
+<span class="c"># Pull latest from main</span>
+git pull origin
+
+<span class="c"># Create timestamped branch</span>
+git checkout <span class="nt">-b</span> <span class="nv">$now</span>
+
+<span class="c"># Run updates in sequence</span>
+<span class="nb">sudo </span>softwareupdate <span class="nt">-ia</span> <span class="nt">--verbose</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew update <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew upgrade <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew bundle <span class="nt">-v</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew cleanup <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew doctor <span class="nt">-v</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> mas upgrade <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew bundle dump <span class="nt">-f</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> az upgrade <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> mackup backup <span class="nt">-f</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> git add <span class="nb">.</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> git commit <span class="nt">-m</span> <span class="s2">"ran update on </span><span class="nv">$now</span><span class="s2">"</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> git push <span class="nt">--set-upstream</span> origin <span class="nv">$now</span>
+
+<span class="c"># Create and auto-merge PR</span>
+gh <span class="nb">pr </span>create <span class="nt">--fill</span> <span class="nt">-B</span> <span class="s2">"main"</span>
+gh <span class="nb">pr </span>merge <span class="nt">--admin</span> <span class="nt">--squash</span>
+
+<span class="c"># Return to main</span>
+git checkout main
+git pull origin
+</code></pre></div></div>
+
+<p>This script does everything in one command:</p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">softwareupdate -ia</code></strong> - Install all macOS system updates (requires sudo)</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew update</code></strong> - Update Homebrew itself</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew upgrade</code></strong> - Upgrade all installed packages</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew bundle -v</code></strong> - Ensure all packages in Brewfile are installed</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew cleanup</code></strong> - Remove old versions to save disk space</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew doctor</code></strong> - Check for Homebrew issues</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">mas upgrade</code></strong> - Upgrade all App Store apps</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew bundle dump</code></strong> - Update Brewfile with current state</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">az upgrade</code></strong> - Upgrade Azure CLI (if installed)</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">mackup backup</code></strong> - Back up dotfiles (if using Mackup)</li>
+  <li><strong>Commit changes</strong> - Git commit with timestamp</li>
+  <li><strong>Create PR</strong> - Auto-create a pull request</li>
+  <li><strong>Merge PR</strong> - Auto-merge with squash strategy</li>
+  <li><strong>Return to main</strong> - Clean up after yourself</li>
+</ol>
+
+<p>If any step fails, the whole chain stops (due to <code class="language-plaintext highlighter-rouge">&amp;&amp;</code>). This is intentional—you want to see what failed rather than continuing with a broken state.</p>
+
+<h3 id="3-the-initial-setup-script-first-time-configuration">3. The Initial Setup Script: First-Time Configuration</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">initial_setup.sh</code> script runs once on a new Mac (after Homebrew is installed):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c"># Copy Brewfile from iCloud to local repo</span>
+<span class="c"># Assuming Brewfile is in ~/iCloud/brew-setup-and-update/Brewfile</span>
+
+git clone https://github.com/brianjmurray/brew-setup-and-update.git
+<span class="nb">cd </span>brew-setup-and-update
+
+<span class="c"># Install everything from Brewfile</span>
+brew bundle
+
+<span class="c"># Create initial commit</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Initial setup from Brewfile"</span>
+git push
+</code></pre></div></div>
+
+<p>Once this runs, you have a complete development environment set up automatically.</p>
+
+<h2 id="real-world-workflow-week-to-week">Real-World Workflow: Week-to-Week</h2>
+
+<p>Here’s how I use this on my personal Macs:</p>
+
+<h3 id="day-1-new-mac-setup">Day 1 (New Mac Setup)</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Just installed macOS and Homebrew</span>
+./initial_setup.sh
+
+<span class="c"># 5 minutes later: fully configured with all tools, apps, and extensions</span>
+</code></pre></div></div>
+
+<h3 id="every-other-week-maintenance">Every Other Week (Maintenance)</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/iCloud/brew-setup-and-update
+./update.sh
+
+<span class="c"># Script runs for ~15 minutes while I work on something else</span>
+<span class="c"># All updates are complete, changes are tracked, new environment is live</span>
+</code></pre></div></div>
+
+<h3 id="important-branch-name-is-timestamp">Important: Branch Name is Timestamp</h3>
+<p>The script uses a timestamp for the branch name: <code class="language-plaintext highlighter-rouge">20260131153000</code>. This means:</p>
+<ul>
+  <li>Multiple runs don’t conflict (each gets a unique branch)</li>
+  <li>Branch names are sortable by date</li>
+  <li>You can see exactly when each update ran</li>
+</ul>
+
+<h3 id="auto-merge-strategy-squash">Auto-Merge Strategy: Squash</h3>
+<p>The PR uses <code class="language-plaintext highlighter-rouge">--squash</code> strategy, which means:</p>
+<ul>
+  <li>All commits from the update are combined into one</li>
+  <li>Main branch stays clean with one commit per update cycle</li>
+  <li>Easy to revert if something breaks: <code class="language-plaintext highlighter-rouge">git revert &lt;commit&gt;</code></li>
+</ul>
+
+<h2 id="advanced-keeping-macs-in-sync">Advanced: Keeping Macs In Sync</h2>
+
+<h3 id="scenario-you-have-multiple-macs">Scenario: You Have Multiple Macs</h3>
+
+<p>If you maintain several Macs (personal, work, etc.), you can:</p>
+
+<ol>
+  <li><strong>Share the Brewfile</strong> in iCloud, Dropbox, or GitHub</li>
+  <li><strong>Run on each Mac</strong> on your preferred schedule</li>
+  <li><strong>Merge updates</strong> from one Mac’s PR to sync all Macs</li>
+</ol>
+
+<p>Example setup:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/iCloud/brew-setup-and-update/
+├── Brewfile (shared)
+├── update.sh (shared)
+├── initial_setup.sh (shared)
+└── Brewfile.work (work-specific variant)
+</code></pre></div></div>
+
+<p>Each Mac can customize its own Brewfile while sharing the update script.</p>
+
+<h3 id="scenario-new-mac-setup-from-scratch">Scenario: New Mac Setup From Scratch</h3>
+
+<p>With this approach, onboarding a new Mac is:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Install Homebrew</span>
+/bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://brew.sh<span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># 2. Clone this repo</span>
+git clone https://github.com/brianjmurray/brew-setup-and-update.git
+<span class="nb">cd </span>brew-setup-and-update
+
+<span class="c"># 3. Run once</span>
+./initial_setup.sh
+
+<span class="c"># 30 minutes later (installing everything)</span>
+<span class="c"># New Mac is fully configured with 100+ packages, apps, and extensions</span>
+</code></pre></div></div>
+
+<p>Compare this to manually installing everything—it would take hours.</p>
+
+<h2 id="benefits-beyond-automation">Benefits Beyond Automation</h2>
+
+<h3 id="1-version-history">1. <strong>Version History</strong></h3>
+<p>Every update is committed to Git. You can see exactly what changed:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git log <span class="nt">--oneline</span>
+<span class="c"># 20260131153000 ran update on 20260131153000</span>
+<span class="c"># 20260129103000 ran update on 20260129103000</span>
+<span class="c"># 20260125164500 ran update on 20260125164500</span>
+</code></pre></div></div>
+
+<h3 id="2-rollback-capability">2. <strong>Rollback Capability</strong></h3>
+<p>If an update breaks something, rollback is easy:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git revert &lt;commit-hash&gt;
+brew bundle  <span class="c"># Re-apply the previous state</span>
+</code></pre></div></div>
+
+<h3 id="3-change-tracking">3. <strong>Change Tracking</strong></h3>
+<p>See exactly what changed in each update:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git show 20260131153000
+<span class="c"># Shows Brewfile changes: new packages, versions, removed apps</span>
+</code></pre></div></div>
+
+<h3 id="4-configuration-backup">4. <strong>Configuration Backup</strong></h3>
+<p>With Mackup, your dotfiles (<code class="language-plaintext highlighter-rouge">.zshrc</code>, <code class="language-plaintext highlighter-rouge">.bashrc</code>, VS Code settings, etc.) are automatically backed up:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/.config/
+├── .zshrc
+├── .bashrc
+└── <span class="o">[</span>other configs]
+</code></pre></div></div>
+
+<p>All synced to cloud storage automatically.</p>
+
+<h3 id="5-cross-platform-consistency">5. <strong>Cross-Platform Consistency</strong></h3>
+<p>All your Macs have the same:</p>
+<ul>
+  <li>Homebrew packages</li>
+  <li>Cask applications</li>
+  <li>App Store apps</li>
+  <li>VS Code extensions</li>
+  <li>Configurations</li>
+</ul>
+
+<p>No more “but it works on my laptop” issues.</p>
+
+<h2 id="customization-making-it-your-own">Customization: Making It Your Own</h2>
+
+<h3 id="add-your-own-packages">Add Your Own Packages</h3>
+
+<p>Simply edit the Brewfile and re-run the update script:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add to Brewfile</span>
+brew <span class="s2">"rustup"</span>
+brew <span class="s2">"go"</span>
+cask <span class="s2">"tableplus"</span>
+
+<span class="c"># Next update run will install them automatically</span>
+./update.sh
+</code></pre></div></div>
+
+<h3 id="skip-the-auto-merge-for-review">Skip The Auto-Merge (For Review)</h3>
+
+<p>If you want to review changes before merging:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Comment out the merge line</span>
+<span class="c"># gh pr merge --admin --squash</span>
+
+<span class="c"># Then manually review and merge:</span>
+gh <span class="nb">pr </span>view  <span class="c"># See what changed</span>
+gh <span class="nb">pr </span>merge  <span class="c"># Merge when ready</span>
+</code></pre></div></div>
+
+<h3 id="run-on-specific-days">Run On Specific Days</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">cron</code> to run updates on a schedule:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Edit crontab</span>
+crontab <span class="nt">-e</span>
+
+<span class="c"># Add: Run every other Friday at 5 PM</span>
+0 17 <span class="k">*</span> <span class="k">*</span> 5 <span class="nb">cd</span> ~/brew-setup-and-update <span class="o">&amp;&amp;</span> ./update.sh 2&gt;&amp;1 <span class="o">&gt;&gt;</span> update.log
+</code></pre></div></div>
+
+<h3 id="run-before-important-work">Run Before Important Work</h3>
+
+<p>If you have a critical project coming up, run the update beforehand:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Make sure everything is current before a big sprint</span>
+./update.sh
+</code></pre></div></div>
+
+<h2 id="potential-issues--solutions">Potential Issues &amp; Solutions</h2>
+
+<h3 id="issue-update-fails-midway">Issue: Update Fails Midway</h3>
+
+<p><strong>Problem</strong>: One step fails, script stops.<br />
+<strong>Solution</strong>: Check the output, fix the issue, re-run. The <code class="language-plaintext highlighter-rouge">&amp;&amp;</code> chain ensures nothing continues if something fails.</p>
+
+<p>Example:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># If brew doctor finds issues, it stops</span>
+<span class="c"># Fix the issue, then re-run</span>
+brew doctor
+<span class="c"># Fix reported issues...</span>
+./update.sh  <span class="c"># Try again</span>
+</code></pre></div></div>
+
+<h3 id="issue-password-prompt-sudo">Issue: Password Prompt (sudo)</h3>
+
+<p><strong>Problem</strong>: <code class="language-plaintext highlighter-rouge">softwareupdate</code> requires sudo, script pauses.<br />
+<strong>Solution</strong>: Enter your password or temporarily use sudo without password.</p>
+
+<p>Temporary solution (use with caution):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Allow brew commands without password prompt</span>
+<span class="nb">sudo </span>visudo
+<span class="c"># Add: %admin ALL=(ALL) NOPASSWD: /usr/bin/softwareupdate</span>
+</code></pre></div></div>
+
+<h3 id="issue-pr-auto-merge-fails">Issue: PR Auto-Merge Fails</h3>
+
+<p><strong>Problem</strong>: PR creation or merge fails (permissions, branch protection, etc.).<br />
+<strong>Solution</strong>: Manually merge from GitHub, or adjust branch protection rules.</p>
+
+<h3 id="issue-some-apps-wont-update">Issue: Some Apps Won’t Update</h3>
+
+<p><strong>Problem</strong>: Certain apps fail to install or upgrade.<br />
+<strong>Solution</strong>: Check if the package name is correct, or install manually:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Some packages may require specific versions</span>
+brew <span class="nb">install</span> <span class="o">[</span>package]@[version]
+brew bundle dump  <span class="c"># Update Brewfile</span>
+</code></pre></div></div>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<h3 id="1-keep-the-repo-private-or-public">1. Keep the Repo Private or Public?</h3>
+
+<p><strong>Public</strong> (like my repo):</p>
+<ul>
+  <li>Useful for showing your tech stack</li>
+  <li>Good for sharing your setup with others</li>
+  <li>Safe: doesn’t include credentials (they’re in environment files)</li>
+</ul>
+
+<p><strong>Private</strong>:</p>
+<ul>
+  <li>Better for sensitive configs</li>
+  <li>Easier to track personal customizations</li>
+</ul>
+
+<h3 id="2-dont-commit-secrets">2. Don’t Commit Secrets</h3>
+
+<p>Never commit:</p>
+<ul>
+  <li>API keys</li>
+  <li>Passwords</li>
+  <li>SSH keys</li>
+  <li><code class="language-plaintext highlighter-rouge">.npmrc</code> files with tokens</li>
+</ul>
+
+<p>Use <code class="language-plaintext highlighter-rouge">.gitignore</code> for sensitive files:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># .gitignore</span>
+.env
+.npmrc
+<span class="k">*</span>.pem
+</code></pre></div></div>
+
+<h3 id="3-test-on-a-spare-mac-first">3. Test on a Spare Mac First</h3>
+
+<p>If you have multiple Macs, test your Brewfile on a non-critical one first.</p>
+
+<h3 id="4-review-changes-in-the-pr">4. Review Changes in the PR</h3>
+
+<p>Always glance at the PR before it auto-merges:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gh <span class="nb">pr </span>view  <span class="c"># See what changed</span>
+<span class="c"># Look for unexpected removals or issues</span>
+<span class="c"># If anything looks wrong, deny the merge manually</span>
+</code></pre></div></div>
+
+<h2 id="takeaways">Takeaways</h2>
+
+<p>Automating macOS updates saves time, maintains consistency, and ensures your development environment stays current. By using a simple Brewfile + update script + Git workflow, you get:</p>
+
+<ul>
+  <li><strong>One command</strong> (<code class="language-plaintext highlighter-rouge">./update.sh</code>) runs everything</li>
+  <li><strong>Complete version history</strong> of your Mac’s state</li>
+  <li><strong>Easy rollback</strong> if something breaks</li>
+  <li><strong>Multi-Mac sync</strong> automatically</li>
+  <li><strong>New Mac setup</strong> in 30 minutes instead of 3 hours</li>
+</ul>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol>
+  <li><strong>Fork the repo</strong>: <a href="https://github.com/brianjmurray/brew-setup-and-update">github.com/brianjmurray/brew-setup-and-update</a></li>
+  <li><strong>Customize the Brewfile</strong> to match your setup</li>
+  <li><strong>Run the script</strong> on your development Mac</li>
+  <li><strong>Watch Git track all updates</strong> from then on</li>
+</ol>
+
+<p>Your future self will thank you when you get a new Mac and everything is set up automatically. Happy updating!</p>
+
+<hr />
+
+<p><strong>Have you automated your Mac setup? Share your approach in the comments or on Twitter!</strong></p>]]></content><author><name></name></author><category term="Bash" /><category term="macOS" /><category term="Automation" /><category term="DevOps" /><category term="Homebrew" /><summary type="html"><![CDATA[A practical guide to automating macOS, Homebrew, App Store, and package manager updates using a single script. Save time, maintain consistency, and ensure your development environment stays current.]]></summary></entry><entry><title type="html">SQL Server Database Projects: Schema Management Template</title><link href="https://cfktech.com/staging/blog/sql-server-database-projects-template/" rel="alternate" type="text/html" title="SQL Server Database Projects: Schema Management Template" /><published>2026-01-31T00:00:00+00:00</published><updated>2026-01-31T00:00:00+00:00</updated><id>https://cfktech.com/staging/blog/sql-server-database-projects-template</id><content type="html" xml:base="https://cfktech.com/staging/blog/sql-server-database-projects-template/"><![CDATA[<p>Database schema management can be challenging, especially when working across multiple environments (dev, UAT, prod). This post introduces a SQL Server Database Projects template designed to simplify schema versioning, automate deployment, and enable teams to track database changes with the same rigor as application code.</p>
+
+<h2 id="what-are-sql-server-database-projects">What Are SQL Server Database Projects?</h2>
+
+<p>SQL Server Database Projects (formerly SSDT) are a declarative approach to database development that treats your schema as code. Instead of writing individual ALTER statements, you define your desired schema state, and the tooling generates the necessary scripts to move from current to target state.</p>
+
+<p><strong>Key benefits</strong>:</p>
+<ul>
+  <li><strong>Version control</strong>: All schema changes tracked in Git</li>
+  <li><strong>Build verification</strong>: Catch schema errors during build, not production</li>
+  <li><strong>Automated deployment</strong>: CI/CD pipelines deploy consistently across environments</li>
+  <li><strong>Schema comparison</strong>: Automatically sync databases with project state</li>
+  <li><strong>Documentation</strong>: Schema structure is self-documenting in code</li>
+</ul>
+
+<h2 id="why-this-matters">Why This Matters</h2>
+
+<p>Most teams manage database schema changes through scripts or manual updates. This approach has real pain points:</p>
+
+<ol>
+  <li><strong>Lost history</strong>: Scripts aren’t always preserved or properly versioned</li>
+  <li><strong>Inconsistent environments</strong>: Manual updates lead to drift between dev and prod</li>
+  <li><strong>High-risk deploys</strong>: Ad-hoc SQL doesn’t get tested the same way code does</li>
+  <li><strong>Onboarding friction</strong>: New team members don’t understand schema structure</li>
+  <li><strong>Rollback complexity</strong>: Undoing changes is error-prone without declarative state</li>
+</ol>
+
+<p>By treating schema as code, you gain the safety and repeatability of application development processes.</p>
+
+<h2 id="project-features">Project Features</h2>
+
+<p>This template includes:</p>
+
+<ul>
+  <li><strong>Pre-configured Database Project</strong>: Ready to import into Azure Data Studio or VSCode</li>
+  <li><strong>Build validation</strong>: Compile and catch errors before deployment</li>
+  <li><strong>CI/CD pipeline</strong>: Dev/Test/Staging/Prod promotion workflow</li>
+  <li><strong>Schema comparison</strong>: Tools to sync existing databases with project state</li>
+  <li><strong>Documentation</strong>: Auto-generated schema diagrams</li>
+  <li><strong>Service Principal permissions</strong>: Pre-configured for automated deployments</li>
+  <li><strong>Feature branch example</strong>: AdventureWorks branch shows best practices</li>
+</ul>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<h3 id="setup">Setup</h3>
+
+<ol>
+  <li><strong>Install tooling</strong> (choose your editor):
+    <ul>
+      <li>Azure Data Studio + <a href="https://marketplace.visualstudio.com/items?itemName=ms-mssql.sql-database-projects-vscode">Database Projects extension</a></li>
+      <li>VSCode + Database Projects extension</li>
+    </ul>
+  </li>
+  <li><strong>Clone the repository</strong>:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/brianjmurray/mssql-database-project.git
+<span class="nb">cd </span>mssql-database-project
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Open in your editor</strong> and install the extension</li>
+</ol>
+
+<h3 id="build--verify">Build &amp; Verify</h3>
+
+<p>Right-click the database project and select <strong>Build</strong>. You should see a successful build output with no errors. The project compiles to a <code class="language-plaintext highlighter-rouge">.dacpac</code> file (a database package).</p>
+
+<p>Small tip: Build frequently. A single error in one file can cascade to other files that reference it. Fix as you go rather than accumulating errors.</p>
+
+<h2 id="build--test-workflow">Build &amp; Test Workflow</h2>
+
+<ol>
+  <li><strong>Define schema</strong> in the project (tables, stored procedures, views, etc.)</li>
+  <li><strong>Build locally</strong> to verify syntax and references</li>
+  <li><strong>Test</strong> by deploying to a local SQL Server instance</li>
+  <li><strong>Commit and push</strong> to version control</li>
+  <li><strong>CI/CD pipeline</strong> automatically tests and deploys to target environments</li>
+</ol>
+
+<h2 id="cicd-pipeline-setup">CI/CD Pipeline Setup</h2>
+
+<p>This template includes pipeline examples for:</p>
+
+<ul>
+  <li><strong>Dev</strong>: Build, stage files, generate documentation</li>
+  <li><strong>UAT</strong>: Deploy to UAT environment after dev tests pass</li>
+  <li><strong>Prod</strong>: Deploy to production with approval gates</li>
+</ul>
+
+<p>Each environment is isolated, ensuring changes are validated before reaching production.</p>
+
+<h2 id="schema-comparison--import">Schema Comparison &amp; Import</h2>
+
+<h3 id="importing-an-existing-database">Importing an Existing Database</h3>
+
+<p>If you have an existing database you want to bring under version control:</p>
+
+<ol>
+  <li>Open the project in <strong>Azure Data Studio</strong></li>
+  <li>Right-click the project → <strong>Schema Compare</strong></li>
+  <li>Select your existing database as source</li>
+  <li>Review the differences</li>
+  <li>Click <strong>Update</strong> to import changes</li>
+</ol>
+
+<p>You can filter what you import (e.g., only tables, exclude certain schemas).</p>
+
+<h3 id="syncing-changes">Syncing Changes</h3>
+
+<p>If someone makes changes directly to a database, you can pull those changes back into the project using the same schema compare process. This ensures your project stays the source of truth.</p>
+
+<h2 id="real-world-use-cases">Real-World Use Cases</h2>
+
+<p><strong>Scenario 1: Multi-team development</strong></p>
+<ul>
+  <li>Different teams own different schemas/modules</li>
+  <li>Database Projects keep everyone’s changes organized and merged safely</li>
+  <li>Prevents manual conflicts and duplicated work</li>
+</ul>
+
+<p><strong>Scenario 2: Compliance &amp; auditing</strong></p>
+<ul>
+  <li>Every schema change is tracked in Git with commit history</li>
+  <li>Who changed what, when, and why are all documented</li>
+  <li>Essential for regulated industries</li>
+</ul>
+
+<p><strong>Scenario 3: Disaster recovery</strong></p>
+<ul>
+  <li>Database structure is in source control, separate from data</li>
+  <li>Recover or rebuild schema consistently across environments</li>
+  <li>Backup/restore focused on data, not schema</li>
+</ul>
+
+<p><strong>Scenario 4: Onboarding new engineers</strong></p>
+<ul>
+  <li>New team members can clone the repo and deploy locally</li>
+  <li>Schema documentation is version-controlled alongside code</li>
+  <li>Reduces time-to-productivity</li>
+</ul>
+
+<h2 id="key-permissions">Key Permissions</h2>
+
+<p>For automated deployments, configure service principal with:</p>
+
+<p><strong>Server-level roles</strong>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">##MS_DatabaseConnector##</code></li>
+  <li><code class="language-plaintext highlighter-rouge">##MS_DatabaseManager##</code></li>
+  <li><code class="language-plaintext highlighter-rouge">loginmanager</code></li>
+</ul>
+
+<p><strong>Database-level role</strong>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">db_owner</code></li>
+</ul>
+
+<h2 id="learning-resources">Learning Resources</h2>
+
+<ul>
+  <li><a href="https://learn.microsoft.com/en-us/sql/azure-data-studio/extensions/sql-database-project-extension?view=sql-server-ver16">SQL Database Projects Extension (Microsoft Docs)</a></li>
+  <li><a href="https://www.nuget.org/packages/MSBuild.Sdk.SqlProj">SqlProj NuGet Package</a></li>
+  <li><a href="https://github.com/brianjmurray/mssql-database-project/tree/feature/adventureworks">AdventureWorks Example Branch</a></li>
+</ul>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol>
+  <li>Clone the repository and explore the structure</li>
+  <li>Build the project to ensure your environment is set up</li>
+  <li>Check out the <code class="language-plaintext highlighter-rouge">feature/AdventureWorks</code> branch to see a complete example</li>
+  <li>Adapt the template to your own database schema</li>
+  <li>Integrate into your CI/CD pipeline</li>
+</ol>
+
+<p><strong>Ready to bring your database schema under version control?</strong> Clone the repository and start building:</p>
+
+<p><strong><a href="https://github.com/brianjmurray/mssql-database-project">View on GitHub →</a></strong></p>
+
+<hr />
+
+<p>Have questions about database projects, schema versioning, or CI/CD for databases? Feel free to reach out on <a href="https://www.linkedin.com/in/brianjmurray/">LinkedIn</a> or via email at brian@cfktech.com.</p>]]></content><author><name></name></author><category term="SQL Server" /><category term="Database" /><category term="DevOps" /><category term="CI/CD" /><summary type="html"><![CDATA[A comprehensive template for managing SQL Server database schema and structure using Database Projects, supporting versioning, CI/CD integration, and multi-environment deployments.]]></summary></entry></feed>
