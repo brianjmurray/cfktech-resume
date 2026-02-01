@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Closing 6 Issues in One Session: What Copilot CLI Does Well (and Where It Struggles)</title>
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9QGHXPKHHS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9QGHXPKHHS');
+    </script>
+    
+    <style>
+      /* CSS Custom Properties (Light Mode - Default) */
+      :root {
+        --color-bg: #f9f9f9;
+        --color-bg-elevated: #fff;
+        --color-bg-code: #f4f4f4;
+        --color-text: #333;
+        --color-text-muted: #666;
+        --color-text-light: #555;
+        --color-border: #eee;
+        --color-border-strong: #ddd;
+        --color-link: #0366d6;
+        --color-link-hover: #0256b9;
+        --color-accent: #667eea;
+        --color-accent-secondary: #764ba2;
+        --color-success: #28a745;
+        --color-donation-bg: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        --color-donation-text: #333;
+        --color-footer-bg: #f5f5f5;
+        --color-tag-bg: #e8e8e8;
+        --color-tag-text: #555;
+        --color-button-primary-bg: #0366d6;
+        --color-button-primary-text: #fff;
+        --color-button-coffee-bg: #ff813f;
+        --color-button-coffee-hover: #e56f2f;
+        --shadow-light: rgba(0,0,0,0.1);
+      }
+      
+      /* Dark Mode */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-bg: #1a1a2e;
+          --color-bg-elevated: #16213e;
+          --color-bg-code: #0f0f1a;
+          --color-text: #e4e4e7;
+          --color-text-muted: #a1a1aa;
+          --color-text-light: #d4d4d8;
+          --color-border: #2d2d44;
+          --color-border-strong: #3d3d5c;
+          --color-link: #60a5fa;
+          --color-link-hover: #93c5fd;
+          --color-accent: #818cf8;
+          --color-accent-secondary: #a78bfa;
+          --color-success: #34d399;
+          --color-donation-bg: linear-gradient(135deg, #2d2d44 0%, #3d3d5c 100%);
+          --color-donation-text: #e4e4e7;
+          --color-footer-bg: #16213e;
+          --color-tag-bg: #2d2d44;
+          --color-tag-text: #d4d4d8;
+          --color-button-primary-bg: #60a5fa;
+          --color-button-primary-text: #1a1a2e;
+          --color-button-coffee-bg: #ff813f;
+          --color-button-coffee-hover: #ff9559;
+          --shadow-light: rgba(0,0,0,0.3);
+        }
+      }
+      
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        line-height: 1.6; 
+        color: var(--color-text);
+        background: var(--color-bg);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Navigation */
+      nav {
+        background: var(--color-bg-elevated);
+        border-bottom: 1px solid var(--color-border);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      nav ul {
+        display: flex;
+        list-style: none;
+        max-width: 1000px;
+        margin: 0 auto;
+        gap: 2rem;
+      }
+      
+      nav a {
+        color: var(--color-text);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      
+      nav a:hover {
+        color: var(--color-link);
+      }
+      
+      /* Hero Section */
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+      
+      .hero .tagline {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        opacity: 0.95;
+      }
+      
+      .hero .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+      }
+      
+      .hero-cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: 2px solid;
+      }
+      
+      .btn-primary {
+        background: white;
+        color: #667eea;
+        border-color: white;
+      }
+      
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border-color: white;
+      }
+      
+      .btn-secondary:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+      }
+      
+      /* Main Content */
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem 2rem;
+      }
+      
+      section {
+        background: var(--color-bg-elevated);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px var(--shadow-light);
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--color-text);
+      }
+      
+      h3 {
+        font-size: 1.3rem;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--color-text);
+      }
+      
+      p {
+        margin-bottom: 1rem;
+      }
+      
+      ul, ol {
+        margin: 1rem 0 1rem 1.5rem;
+      }
+      
+      li {
+        margin-bottom: 0.5rem;
+      }
+      
+      a {
+        color: var(--color-link);
+        text-decoration: none;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+        color: var(--color-link-hover);
+      }
+      
+      /* Featured Grid */
+      .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .featured-card {
+        background: var(--color-bg);
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-left: 4px solid var(--color-accent);
+        transition: all 0.3s;
+      }
+      
+      .featured-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px var(--shadow-light);
+      }
+      
+      .featured-card h3 {
+        margin-top: 0;
+      }
+      
+      .featured-card h3 a {
+        color: var(--color-text);
+      }
+      
+      .featured-card h3 a:hover {
+        color: var(--color-accent);
+      }
+      
+      .post-date {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        margin: 0.5rem 0 1rem;
+      }
+      
+      .read-more {
+        color: var(--color-accent);
+        font-weight: 600;
+      }
+      
+      .featured-link {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 1.1rem;
+      }
+      
+      /* Blog Styles */
+      .blog-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .blog-post-preview {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--color-border);
+      }
+      
+      .blog-post-preview:last-child {
+        border-bottom: none;
+      }
+      
+      .blog-post-preview h2 {
+        margin-bottom: 0.5rem;
+      }
+      
+      .blog-post-preview h2 a {
+        color: var(--color-text);
+      }
+      
+      .blog-post-preview h2 a:hover {
+        color: var(--color-accent);
+      }
+      
+      /* Post Styles */
+      .post {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      
+      .post-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      
+      .post-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      
+      .post-meta {
+        color: var(--color-text-muted);
+        font-style: italic;
+      }
+      
+      .post-content {
+        line-height: 1.8;
+      }
+      
+      .post-content h2 {
+        margin-top: 2rem;
+      }
+      
+      .post-content code {
+        background: var(--color-bg-code);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: var(--color-text);
+      }
+      
+      .post-content pre {
+        background: var(--color-bg-code);
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      
+      .post-content pre code {
+        background: none;
+        padding: 0;
+      }
+      
+      /* Projects Grid */
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .project-card {
+        background: var(--color-bg);
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-top: 3px solid var(--color-accent);
+        transition: all 0.3s;
+      }
+      
+      .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px var(--shadow-light);
+      }
+      
+      .project-card h2 {
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+      }
+      
+      .project-description {
+        margin-bottom: 1rem;
+        color: var(--color-text-light);
+      }
+      
+      .project-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .tech-tag {
+        display: inline-block;
+        background: var(--color-tag-bg);
+        color: var(--color-tag-text);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+      }
+      
+      .project-links {
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .project-link {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: var(--color-accent);
+        color: white;
+        border-radius: 4px;
+        transition: all 0.3s;
+      }
+      
+      .project-link:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+        text-decoration: none;
+      }
+      
+      /* Contact Links */
+      .contact-links {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+      
+      .contact-link {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: var(--color-accent);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      
+      .contact-link:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+      }
+      
+      /* Donation Section */
+      .donation {
+        background: var(--color-donation-bg);
+        border-radius: 8px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+      }
+      
+      .donation h2 {
+        margin-bottom: 1rem;
+        color: var(--color-donation-text);
+      }
+      
+      .donation p {
+        margin-bottom: 1rem;
+        color: var(--color-text-light);
+      }
+      
+      .donation-cta {
+        margin: 1.5rem 0;
+      }
+      
+      .donation-note {
+        color: var(--color-text-muted);
+        font-style: italic;
+      }
+      
+      /* Post Donation Footer */
+      .post-donation {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 2px solid var(--color-border-strong);
+      }
+      
+      .post-donation p {
+        margin-bottom: 0.5rem;
+        color: var(--color-text-muted);
+      }
+      
+      .post-donation .btn {
+        background: var(--color-button-coffee-bg);
+        color: white;
+        border-color: var(--color-button-coffee-bg);
+      }
+      
+      .post-donation .btn:hover {
+        background: var(--color-button-coffee-hover);
+        border-color: var(--color-button-coffee-hover);
+      }
+      
+      /* Site Footer */
+      .site-footer {
+        background: var(--color-footer-bg);
+        border-top: 1px solid var(--color-border-strong);
+        margin-top: 2rem;
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+      }
+      
+      .footer-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      
+      .footer-link {
+        color: var(--color-accent);
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      
+      .footer-link:hover {
+        color: var(--color-accent-secondary);
+        text-decoration: underline;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+        
+        .hero .tagline {
+          font-size: 1rem;
+        }
+        
+        nav ul {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        section {
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        main {
+          padding: 0 1rem 1rem;
+        }
+      }
+      
+      /* Accessibility: Focus States */
+      a:focus,
+      .btn:focus,
+      button:focus {
+        outline: 3px solid var(--color-accent);
+        outline-offset: 2px;
+      }
+      
+      /* Skip to main content link (accessibility) */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--color-accent);
+        color: white;
+        padding: 8px 16px;
+        z-index: 200;
+        transition: top 0.3s;
+      }
+      
+      .skip-link:focus {
+        top: 0;
+      }
+      
+      /* Reduced motion preference */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+    <script>
+      // Remove pandoc width syntax artifacts from HTML
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('em').forEach(function(el) {
+          if (el.textContent.includes('{width=')) {
+            el.remove();
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/projects/">Projects</a></li>
+        <li><a href="/resume/">Resume</a></li>
+        <li><a href="https://github.com/brianjmurray" aria-label="GitHub Profile (opens in new tab)">GitHub</a></li>
+      </ul>
+    </nav>
+    <main id="main-content"><article class="post">
+  <header class="post-header">
+    <h1 class="post-title">Closing 6 Issues in One Session: What Copilot CLI Does Well (and Where It Struggles)</h1>
+    <p class="post-meta">
+      <time datetime="2026-02-01T00:00:00+00:00">
+        February 01, 2026
+      </time>
+    </p>
+  </header>
+
+  <div class="post-content">
+    <h2 id="the-goal-clear-the-issue-backlog">The Goal: Clear the Issue Backlog</h2>
+
+<p>Tonight I set out to tackle the remaining open issues on cfktech.com using GitHub Copilot CLI exclusively. The result: all 6 issues closed. But the journey revealed both the strengths and limitations of AI-assisted development—particularly around testing and deployment infrastructure.</p>
+
+<h2 id="the-issues-tackled">The Issues Tackled</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Issue</th>
+      <th>Description</th>
+      <th>Outcome</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>#64</td>
+      <td>Testing &amp; staging infrastructure</td>
+      <td>⚠️ Partially working</td>
+    </tr>
+    <tr>
+      <td>#32</td>
+      <td>Buy Me a Coffee donation button</td>
+      <td>✅ Complete</td>
+    </tr>
+    <tr>
+      <td>#25</td>
+      <td>Close SQL Server post issue</td>
+      <td>✅ Complete</td>
+    </tr>
+    <tr>
+      <td>#31</td>
+      <td>Google Analytics 4 integration</td>
+      <td>✅ Complete</td>
+    </tr>
+    <tr>
+      <td>#30</td>
+      <td>Medium cross-posting strategy</td>
+      <td>✅ Complete (was already done)</td>
+    </tr>
+    <tr>
+      <td>#59</td>
+      <td>Accessibility &amp; Dark Mode</td>
+      <td>✅ Complete</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="where-copilot-cli-excelled">Where Copilot CLI Excelled</h2>
+
+<h3 id="quick-feature-implementation">Quick Feature Implementation</h3>
+
+<p>For straightforward features, Copilot CLI was remarkably efficient:</p>
+
+<p><strong>Issue #32 (Donation Button)</strong>: Asked for a Buy Me a Coffee link in three locations. Copilot:</p>
+<ol>
+  <li>Found the URL from the GitHub issue comments</li>
+  <li>Edited <code class="language-plaintext highlighter-rouge">index.md</code>, <code class="language-plaintext highlighter-rouge">_layouts/post.html</code>, and <code class="language-plaintext highlighter-rouge">_layouts/default.html</code> in parallel</li>
+  <li>Added ~70 lines of CSS with gradient backgrounds and responsive design</li>
+  <li>Created the PR with proper <code class="language-plaintext highlighter-rouge">fixes #32</code> syntax</li>
+</ol>
+
+<p>Total time: ~15 minutes from request to merged.</p>
+
+<p><strong>Issue #31 (Analytics)</strong>: After I provided my GA4 Measurement ID, Copilot added the 8-line tracking script to the correct location in the <code class="language-plaintext highlighter-rouge">&lt;head&gt;</code> section. Done in under 10 minutes.</p>
+
+<p><strong>Issue #59 (Dark Mode)</strong>: This was the most impressive. Copilot:</p>
+<ul>
+  <li>Added CSS custom properties (25+ variables)</li>
+  <li>Implemented <code class="language-plaintext highlighter-rouge">prefers-color-scheme: dark</code> media query</li>
+  <li>Added skip-to-main-content link</li>
+  <li>Added ARIA labels for accessibility</li>
+  <li>Added focus states for keyboard navigation</li>
+  <li>Added <code class="language-plaintext highlighter-rouge">prefers-reduced-motion</code> support</li>
+</ul>
+
+<p>153 lines of changes, all following best practices.</p>
+
+<h3 id="issue-triage">Issue Triage</h3>
+
+<p>Copilot correctly identified that Issue #30 (“Medium API automation”) was already complete—the <code class="language-plaintext highlighter-rouge">_docs/MEDIUM_CROSSPOSTING.md</code> documentation existed with a comprehensive 230-line manual workflow. It recommended closing with a comment explaining why API automation isn’t possible (Medium deprecated their API for non-partner accounts).</p>
+
+<h3 id="bug-detection-and-fixing">Bug Detection and Fixing</h3>
+
+<p>When the donation button appeared unreadable on blog posts (white text on light background), Copilot quickly diagnosed the issue: the <code class="language-plaintext highlighter-rouge">.btn-secondary</code> class was designed for dark backgrounds. It added specific <code class="language-plaintext highlighter-rouge">.post-donation .btn</code> styling with an orange background (#ff813f) to fix the contrast issue.</p>
+
+<h2 id="where-we-struggled-testing-infrastructure">Where We Struggled: Testing Infrastructure</h2>
+
+<p>This is where things got complicated. Issue #64 was about implementing automated testing and staging deployment—and despite multiple attempts across several sessions, <strong>we still don’t have a fully working staging environment</strong>.</p>
+
+<h3 id="the-original-problem">The Original Problem</h3>
+
+<p>Earlier in the project, we merged changes that broke the CI/CD tag page on production. The tag link pointed to <code class="language-plaintext highlighter-rouge">/blog/tags/ci/cd/</code> instead of <code class="language-plaintext highlighter-rouge">/blog/tags/ci-cd/</code>. Our test script passed, but the actual rendered page was broken.</p>
+
+<p>This led to Issue #64: create a testing infrastructure that catches these issues before production.</p>
+
+<h3 id="what-we-tried">What We Tried</h3>
+
+<p><strong>Attempt 1: Local test.sh validation</strong></p>
+<ul>
+  <li>Created a bash script to verify tag file structure</li>
+  <li>Problem: Can’t run Jekyll builds locally (no Ruby/Bundler installed on my machine)</li>
+  <li>Result: Script passes but doesn’t catch rendering bugs</li>
+</ul>
+
+<p><strong>Attempt 2: GitHub Actions PR validation workflow</strong></p>
+<ul>
+  <li>Created <code class="language-plaintext highlighter-rouge">.github/workflows/pr-validation.yml</code></li>
+  <li>Builds Jekyll and runs test.sh in CI</li>
+  <li>Problem: Validates structure, not rendered output</li>
+</ul>
+
+<p><strong>Attempt 3: Staging deployment with peaceiris/actions-gh-pages</strong></p>
+<ul>
+  <li>Created <code class="language-plaintext highlighter-rouge">.github/workflows/deploy-staging.yml</code></li>
+  <li>Intended to deploy PRs to <code class="language-plaintext highlighter-rouge">/staging/pr-{NUMBER}/</code> for manual review</li>
+  <li>Problem 1: GitHub Actions permissions error (403 denied)</li>
+  <li>Problem 2: YAML parsing error from multi-line JavaScript template literal</li>
+  <li>Problem 3: Workflow runs on wrong events</li>
+</ul>
+
+<h3 id="current-state">Current State</h3>
+
+<p>After multiple fixes:</p>
+<ul>
+  <li>✅ PR validation runs test.sh (catches structural issues)</li>
+  <li>✅ YAML syntax error fixed (collapsed multi-line strings)</li>
+  <li>⚠️ Staging deployment still not actually deploying</li>
+  <li>❌ No way to preview PRs before merge</li>
+</ul>
+
+<p>The staging workflow “passes” in CI but the staging URLs don’t actually work. We can see the workflow ran, but the pages aren’t accessible.</p>
+
+<h3 id="why-this-is-hard">Why This Is Hard</h3>
+
+<p>The fundamental challenge: <strong>catching rendering bugs requires seeing the rendered output</strong>. Static analysis (checking file existence, validating frontmatter) can’t tell you if a tag link will resolve correctly on the live site.</p>
+
+<p>Options for the future:</p>
+<ol>
+  <li><strong>Install Ruby/Jekyll locally</strong> - Run full builds before pushing</li>
+  <li><strong>Netlify/Vercel preview deployments</strong> - Built-in PR previews</li>
+  <li><strong>Fix the peaceiris action</strong> - Debug GitHub Pages permissions</li>
+  <li><strong>Playwright/Cypress tests</strong> - Automated browser testing on deployed URLs</li>
+</ol>
+
+<p>For now, we’re relying on careful code review and quick rollbacks if issues reach production.</p>
+
+<h2 id="the-yaml-gotcha">The YAML Gotcha</h2>
+
+<p>One specific bug worth noting: the staging workflow had a multi-line JavaScript string in a GitHub Actions step:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// This broke YAML parsing</span>
+<span class="kd">const</span> <span class="nx">message</span> <span class="o">=</span> <span class="s2">`🚀 **Staging Ready!**
+
+Your changes have been deployed...`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>YAML interpreted the empty lines as significant, causing a parse error at line 63. The fix was collapsing to a single line:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">message</span> <span class="o">=</span> <span class="s2">`🚀 **Staging Ready!**\n\nYour changes have been deployed...`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This is the kind of subtle issue that’s easy to create when generating multi-line strings in YAML files.</p>
+
+<h2 id="session-stats">Session Stats</h2>
+
+<ul>
+  <li><strong>Issues Closed</strong>: 6</li>
+  <li><strong>PRs Merged</strong>: 4</li>
+  <li><strong>Lines Changed</strong>: ~350</li>
+  <li><strong>Time</strong>: ~2 hours</li>
+  <li><strong>Versions Released</strong>: v1.0.29 → v1.0.31</li>
+</ul>
+
+<h2 id="key-takeaways">Key Takeaways</h2>
+
+<h3 id="copilot-cli-strengths">Copilot CLI Strengths</h3>
+<ul>
+  <li><strong>Parallel file editing</strong> - Changes to multiple files in one operation</li>
+  <li><strong>GitHub integration</strong> - Creating issues, PRs, merging, all from terminal</li>
+  <li><strong>CSS and HTML</strong> - Generated well-structured, accessible dark mode</li>
+  <li><strong>Issue triage</strong> - Correctly identified already-completed work</li>
+</ul>
+
+<h3 id="copilot-cli-limitations">Copilot CLI Limitations</h3>
+<ul>
+  <li><strong>Complex CI/CD debugging</strong> - Struggled with GitHub Actions permissions and YAML edge cases</li>
+  <li><strong>Persistent state issues</strong> - Same staging bug “fixed” multiple times without resolution</li>
+  <li><strong>Can’t verify its own work</strong> - No browser to check if changes actually render correctly</li>
+  <li><strong>Over-confidence</strong> - Would report “fixed” when the underlying issue remained</li>
+</ul>
+
+<h3 id="what-id-do-differently">What I’d Do Differently</h3>
+
+<ol>
+  <li><strong>Verify before closing</strong> - Don’t trust “all checks passed” without manual review</li>
+  <li><strong>Simpler staging approach</strong> - Maybe Netlify instead of custom GitHub Pages deployment</li>
+  <li><strong>Local development setup</strong> - Install Jekyll to test locally before pushing</li>
+  <li><strong>Different model for infrastructure work</strong> - Now that I’ve enabled Claude Opus, may retry the staging deployment with a different model</li>
+</ol>
+
+<h2 id="whats-next">What’s Next</h2>
+
+<p>With the backlog cleared, the site now has:</p>
+<ul>
+  <li>📊 Google Analytics 4 tracking</li>
+  <li>☕ Donation buttons (3 locations)</li>
+  <li>🌙 Automatic dark mode</li>
+  <li>♿ Accessibility improvements (skip links, focus states, ARIA)</li>
+  <li>📄 RSS feed</li>
+  <li>🔍 Blog search</li>
+  <li>🏷️ Tag system</li>
+</ul>
+
+<p>The staging deployment remains the one unfinished piece. It’s on my list to revisit—possibly with a different approach or a different AI model to get fresh perspective on the GitHub Actions configuration.</p>
+
+<hr />
+
+<p><em>Session completed: February 1, 2026</em><br />
+<em>All issues closed, staging still pending</em><br />
+<em>Copilot CLI verdict: Great for features, needs work for DevOps</em></p>
+
+  </div>
+
+  <footer class="post-donation">
+    <hr>
+    <p><strong>Did you find this helpful?</strong></p>
+    <p>If this post added value to your day, consider supporting my work with a coffee. It means a lot and helps me keep creating content like this.</p>
+    <a href="https://buymeacoffee.com/cfktech" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Buy Me a Coffee ☕</a>
+  </footer>
+</article>
+</main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-content">
+        <p>&copy; 2026 Brian J. Murray. All rights reserved.</p>
+        <a href="https://buymeacoffee.com/cfktech" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="Support this work on Buy Me a Coffee (opens in new tab)">Support This Work ☕</a>
+      </div>
+    </footer>
+  </body>
+</html>

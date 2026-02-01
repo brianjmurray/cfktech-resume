@@ -1,0 +1,66 @@
+[
+  
+    {
+      "title": "Closing 6 Issues in One Session: What Copilot CLI Does Well (and Where It Struggles)",
+      "excerpt": "<h2 id=\"the-goal-clear-the-issue-backlog\">The Goal: Clear the Issue Backlog</h2>\n",
+      "url": "/blog/copilot-cli-issue-blitz/",
+      "date": "February 01, 2026",
+      "content": "The Goal: Clear the Issue Backlog\n\nTonight I set out to tackle the remaining open issues on cfktech.com using GitHub Copilot CLI exclusively. The result: all 6 issues closed. But the journey revealed both the strengths and limitations of AI-assisted development—particularly around testing and deployment infrastructure.\n\nThe Issues Tackled\n\n\n  \n    \n      Issue\n      Description\n      Outcome\n    \n  \n  \n    \n      #64\n      Testing &amp; staging infrastructure\n      ⚠️ Partially working\n    \n ..."
+    }
+    ,
+  
+    {
+      "title": "SQL Server Database Projects: Schema Management Template",
+      "excerpt": "A comprehensive template for managing SQL Server database schema and structure using Database Projects, supporting versioning, CI/CD integration, and multi-environment deployments.",
+      "url": "/blog/sql-server-database-projects-template/",
+      "date": "January 31, 2026",
+      "content": "Database schema management can be challenging, especially when working across multiple environments (dev, UAT, prod). This post introduces a SQL Server Database Projects template designed to simplify schema versioning, automate deployment, and enable teams to track database changes with the same rigor as application code.\n\nWhat Are SQL Server Database Projects?\n\nSQL Server Database Projects (formerly SSDT) are a declarative approach to database development that treats your schema as code. Ins..."
+    }
+    ,
+  
+    {
+      "title": "Automating macOS Updates with Homebrew: Keeping Your Mac Fresh",
+      "excerpt": "A practical guide to automating macOS, Homebrew, App Store, and package manager updates using a single script. Save time, maintain consistency, and ensure your development environment stays current.",
+      "url": "/blog/homebrew-automation-macos-updates/",
+      "date": "January 31, 2026",
+      "content": "Keeping a macOS development machine up-to-date is a constant challenge. Between OS updates, Homebrew packages, App Store apps, npm packages, Azure CLI tools, and VS Code extensions, it’s easy to fall behind or forget something important. In this post, I’ll show you how to automate the entire process with a single bash script—the same approach I’ve used for years on my development Macs.\n\nThe Problem: Manual Update Fatigue\n\nWithout automation, keeping everything current requires:\n\n\n  Manually r..."
+    }
+    ,
+  
+    {
+      "title": "Planning Phase 3: Advanced Features and Monetization Strategy with Copilot CLI",
+      "excerpt": "How Copilot CLI helps plan Phase 3 features—search, tags, newsletters, analytics, and monetization—by researching tradeoffs, evaluating tools, and building a data-driven roadmap.",
+      "url": "/blog/copilot-cli-phase-3-advanced-features/",
+      "date": "January 31, 2026",
+      "content": "Introduction\n\nAfter shipping Phase 2 (blog infrastructure, content, project cards), the cfktech-resume portfolio is stable and growing. But with 4 blog posts live and growing audience, the question becomes: What features should Phase 3 prioritize?\n\nPhase 3 is fundamentally different from Phases 1 and 2:\n\n  Phase 1 was about foundation (building the site)\n  Phase 2 was about content (populating with posts and projects)\n  Phase 3 is about scale and monetization (helping readers find content, gr..."
+    }
+    ,
+  
+    {
+      "title": "Using GitHub Copilot CLI to Build a Scalable Blog: Phase 2 of cfktech-resume",
+      "excerpt": "How Copilot CLI streamlined blog infrastructure, automated content creation, debugged workflows, and enforced a phased development approach.",
+      "url": "/blog/copilot-cli-phase-2-blog-infrastructure/",
+      "date": "January 31, 2026",
+      "content": "Introduction\n\nWhen I started Phase 2 of the cfktech-resume portfolio project, the goal was ambitious: build a scalable blog infrastructure, write multiple technical posts, and expand the portfolio showcase. What could have been a week of manual troubleshooting became a focused workflow using GitHub Copilot CLI as my development partner.\n\nThis post documents how Copilot CLI transformed my Phase 2 workflow through exploration, automation, problem-solving, and systematic issue tracking.\n\nPhase 2..."
+    }
+    ,
+  
+    {
+      "title": "From Idea to Automated Resume Site: How Copilot CLI Accelerated Phase 1",
+      "excerpt": "Retrospective on Phase 1 of cfktech-resume: how GitHub Copilot CLI helped design Jekyll architecture, automate GitHub Actions workflows, and ship v1.0.0-v1.0.15 in weeks instead of months.",
+      "url": "/blog/copilot-cli-phase-1-foundation-retrospective/",
+      "date": "January 31, 2026",
+      "content": "Introduction\n\nPhase 1 of cfktech-resume happened before I was systematically documenting Copilot CLI usage. But looking back, Copilot CLI was critical to how quickly and confidently I shipped the foundation.\n\nThis post is a retrospective on Phase 1, documenting how Copilot CLI shaped the initial site architecture, workflow automation, and deployment strategy—lessons that directly informed how I approached Phases 2 and 3.\n\n\n\nPhase 1 Overview\n\nTimeline: December 2025 - January 2026\nReleases: v1..."
+    }
+    ,
+  
+    {
+      "title": "Building cfktech.com: A Portfolio Site with Automated CI/CD",
+      "excerpt": "From resume site to portfolio: how I built a fully automated site using Jekyll, GitHub Pages, semantic versioning, and CI/CD pipelines to showcase projects and thought leadership.",
+      "url": "/blog/cfktech-portfolio-site/",
+      "date": "January 31, 2026",
+      "content": "The Journey: Resume to Portfolio\n\nMy professional website evolved significantly in early 2026. It started as a simple resume site (v1.0.0-v1.0.14) and transformed into a full portfolio platform with automated deployments, blog infrastructure, and project showcases. This post shares the technical decisions, challenges, and solutions behind cfktech.com.\n\nPhase 0: The Resume Site (v1.0.0-v1.0.14)\n\nWhat Started It All\n\nI needed a professional web presence that was:\n\n  Self-hosted on a custom doma..."
+    }
+    
+  
+]

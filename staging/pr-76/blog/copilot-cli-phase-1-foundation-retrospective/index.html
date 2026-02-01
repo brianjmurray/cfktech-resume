@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>From Idea to Automated Resume Site: How Copilot CLI Accelerated Phase 1</title>
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9QGHXPKHHS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9QGHXPKHHS');
+    </script>
+    
+    <style>
+      /* CSS Custom Properties (Light Mode - Default) */
+      :root {
+        --color-bg: #f9f9f9;
+        --color-bg-elevated: #fff;
+        --color-bg-code: #f4f4f4;
+        --color-text: #333;
+        --color-text-muted: #666;
+        --color-text-light: #555;
+        --color-border: #eee;
+        --color-border-strong: #ddd;
+        --color-link: #0366d6;
+        --color-link-hover: #0256b9;
+        --color-accent: #667eea;
+        --color-accent-secondary: #764ba2;
+        --color-success: #28a745;
+        --color-donation-bg: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        --color-donation-text: #333;
+        --color-footer-bg: #f5f5f5;
+        --color-tag-bg: #e8e8e8;
+        --color-tag-text: #555;
+        --color-button-primary-bg: #0366d6;
+        --color-button-primary-text: #fff;
+        --color-button-coffee-bg: #ff813f;
+        --color-button-coffee-hover: #e56f2f;
+        --shadow-light: rgba(0,0,0,0.1);
+      }
+      
+      /* Dark Mode */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-bg: #1a1a2e;
+          --color-bg-elevated: #16213e;
+          --color-bg-code: #0f0f1a;
+          --color-text: #e4e4e7;
+          --color-text-muted: #a1a1aa;
+          --color-text-light: #d4d4d8;
+          --color-border: #2d2d44;
+          --color-border-strong: #3d3d5c;
+          --color-link: #60a5fa;
+          --color-link-hover: #93c5fd;
+          --color-accent: #818cf8;
+          --color-accent-secondary: #a78bfa;
+          --color-success: #34d399;
+          --color-donation-bg: linear-gradient(135deg, #2d2d44 0%, #3d3d5c 100%);
+          --color-donation-text: #e4e4e7;
+          --color-footer-bg: #16213e;
+          --color-tag-bg: #2d2d44;
+          --color-tag-text: #d4d4d8;
+          --color-button-primary-bg: #60a5fa;
+          --color-button-primary-text: #1a1a2e;
+          --color-button-coffee-bg: #ff813f;
+          --color-button-coffee-hover: #ff9559;
+          --shadow-light: rgba(0,0,0,0.3);
+        }
+      }
+      
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        line-height: 1.6; 
+        color: var(--color-text);
+        background: var(--color-bg);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Navigation */
+      nav {
+        background: var(--color-bg-elevated);
+        border-bottom: 1px solid var(--color-border);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      nav ul {
+        display: flex;
+        list-style: none;
+        max-width: 1000px;
+        margin: 0 auto;
+        gap: 2rem;
+      }
+      
+      nav a {
+        color: var(--color-text);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      
+      nav a:hover {
+        color: var(--color-link);
+      }
+      
+      /* Hero Section */
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+      
+      .hero .tagline {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        opacity: 0.95;
+      }
+      
+      .hero .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+      }
+      
+      .hero-cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: 2px solid;
+      }
+      
+      .btn-primary {
+        background: white;
+        color: #667eea;
+        border-color: white;
+      }
+      
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border-color: white;
+      }
+      
+      .btn-secondary:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+      }
+      
+      /* Main Content */
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem 2rem;
+      }
+      
+      section {
+        background: var(--color-bg-elevated);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px var(--shadow-light);
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--color-text);
+      }
+      
+      h3 {
+        font-size: 1.3rem;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--color-text);
+      }
+      
+      p {
+        margin-bottom: 1rem;
+      }
+      
+      ul, ol {
+        margin: 1rem 0 1rem 1.5rem;
+      }
+      
+      li {
+        margin-bottom: 0.5rem;
+      }
+      
+      a {
+        color: var(--color-link);
+        text-decoration: none;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+        color: var(--color-link-hover);
+      }
+      
+      /* Featured Grid */
+      .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .featured-card {
+        background: var(--color-bg);
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-left: 4px solid var(--color-accent);
+        transition: all 0.3s;
+      }
+      
+      .featured-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px var(--shadow-light);
+      }
+      
+      .featured-card h3 {
+        margin-top: 0;
+      }
+      
+      .featured-card h3 a {
+        color: var(--color-text);
+      }
+      
+      .featured-card h3 a:hover {
+        color: var(--color-accent);
+      }
+      
+      .post-date {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        margin: 0.5rem 0 1rem;
+      }
+      
+      .read-more {
+        color: var(--color-accent);
+        font-weight: 600;
+      }
+      
+      .featured-link {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 1.1rem;
+      }
+      
+      /* Blog Styles */
+      .blog-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .blog-post-preview {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--color-border);
+      }
+      
+      .blog-post-preview:last-child {
+        border-bottom: none;
+      }
+      
+      .blog-post-preview h2 {
+        margin-bottom: 0.5rem;
+      }
+      
+      .blog-post-preview h2 a {
+        color: var(--color-text);
+      }
+      
+      .blog-post-preview h2 a:hover {
+        color: var(--color-accent);
+      }
+      
+      /* Post Styles */
+      .post {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      
+      .post-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      
+      .post-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      
+      .post-meta {
+        color: var(--color-text-muted);
+        font-style: italic;
+      }
+      
+      .post-content {
+        line-height: 1.8;
+      }
+      
+      .post-content h2 {
+        margin-top: 2rem;
+      }
+      
+      .post-content code {
+        background: var(--color-bg-code);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: var(--color-text);
+      }
+      
+      .post-content pre {
+        background: var(--color-bg-code);
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      
+      .post-content pre code {
+        background: none;
+        padding: 0;
+      }
+      
+      /* Projects Grid */
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .project-card {
+        background: var(--color-bg);
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-top: 3px solid var(--color-accent);
+        transition: all 0.3s;
+      }
+      
+      .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px var(--shadow-light);
+      }
+      
+      .project-card h2 {
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+      }
+      
+      .project-description {
+        margin-bottom: 1rem;
+        color: var(--color-text-light);
+      }
+      
+      .project-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .tech-tag {
+        display: inline-block;
+        background: var(--color-tag-bg);
+        color: var(--color-tag-text);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+      }
+      
+      .project-links {
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .project-link {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: var(--color-accent);
+        color: white;
+        border-radius: 4px;
+        transition: all 0.3s;
+      }
+      
+      .project-link:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+        text-decoration: none;
+      }
+      
+      /* Contact Links */
+      .contact-links {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+      
+      .contact-link {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: var(--color-accent);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      
+      .contact-link:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+      }
+      
+      /* Donation Section */
+      .donation {
+        background: var(--color-donation-bg);
+        border-radius: 8px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+      }
+      
+      .donation h2 {
+        margin-bottom: 1rem;
+        color: var(--color-donation-text);
+      }
+      
+      .donation p {
+        margin-bottom: 1rem;
+        color: var(--color-text-light);
+      }
+      
+      .donation-cta {
+        margin: 1.5rem 0;
+      }
+      
+      .donation-note {
+        color: var(--color-text-muted);
+        font-style: italic;
+      }
+      
+      /* Post Donation Footer */
+      .post-donation {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 2px solid var(--color-border-strong);
+      }
+      
+      .post-donation p {
+        margin-bottom: 0.5rem;
+        color: var(--color-text-muted);
+      }
+      
+      .post-donation .btn {
+        background: var(--color-button-coffee-bg);
+        color: white;
+        border-color: var(--color-button-coffee-bg);
+      }
+      
+      .post-donation .btn:hover {
+        background: var(--color-button-coffee-hover);
+        border-color: var(--color-button-coffee-hover);
+      }
+      
+      /* Site Footer */
+      .site-footer {
+        background: var(--color-footer-bg);
+        border-top: 1px solid var(--color-border-strong);
+        margin-top: 2rem;
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+      }
+      
+      .footer-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      
+      .footer-link {
+        color: var(--color-accent);
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      
+      .footer-link:hover {
+        color: var(--color-accent-secondary);
+        text-decoration: underline;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+        
+        .hero .tagline {
+          font-size: 1rem;
+        }
+        
+        nav ul {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        section {
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        main {
+          padding: 0 1rem 1rem;
+        }
+      }
+      
+      /* Accessibility: Focus States */
+      a:focus,
+      .btn:focus,
+      button:focus {
+        outline: 3px solid var(--color-accent);
+        outline-offset: 2px;
+      }
+      
+      /* Skip to main content link (accessibility) */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--color-accent);
+        color: white;
+        padding: 8px 16px;
+        z-index: 200;
+        transition: top 0.3s;
+      }
+      
+      .skip-link:focus {
+        top: 0;
+      }
+      
+      /* Reduced motion preference */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+    <script>
+      // Remove pandoc width syntax artifacts from HTML
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('em').forEach(function(el) {
+          if (el.textContent.includes('{width=')) {
+            el.remove();
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/projects/">Projects</a></li>
+        <li><a href="/resume/">Resume</a></li>
+        <li><a href="https://github.com/brianjmurray" aria-label="GitHub Profile (opens in new tab)">GitHub</a></li>
+      </ul>
+    </nav>
+    <main id="main-content"><article class="post">
+  <header class="post-header">
+    <h1 class="post-title">From Idea to Automated Resume Site: How Copilot CLI Accelerated Phase 1</h1>
+    <p class="post-meta">
+      <time datetime="2026-01-31T00:00:00+00:00">
+        January 31, 2026
+      </time>
+    </p>
+  </header>
+
+  <div class="post-content">
+    <h2 id="introduction">Introduction</h2>
+
+<p>Phase 1 of cfktech-resume happened before I was systematically documenting Copilot CLI usage. But looking back, Copilot CLI was critical to how quickly and confidently I shipped the foundation.</p>
+
+<p>This post is a retrospective on Phase 1, documenting how Copilot CLI shaped the initial site architecture, workflow automation, and deployment strategy—lessons that directly informed how I approached Phases 2 and 3.</p>
+
+<hr />
+
+<h2 id="phase-1-overview">Phase 1 Overview</h2>
+
+<p><strong>Timeline</strong>: December 2025 - January 2026<br />
+<strong>Releases</strong>: v1.0.0 → v1.0.15<br />
+<strong>Goal</strong>: Build a professional, automated resume site on cfktech.com<br />
+<strong>Tech Stack</strong>: Jekyll + GitHub Pages + GitHub Actions + pandoc</p>
+
+<p>The challenge wasn’t building a resume site (simple), but building one that:</p>
+<ul>
+  <li>✅ Auto-generates PDFs</li>
+  <li>✅ Uses semantic versioning</li>
+  <li>✅ Deploys automatically</li>
+  <li>✅ Is professionally designed</li>
+  <li>✅ Showcases automation skills</li>
+</ul>
+
+<hr />
+
+<h2 id="part-1-discovery--architecture-with-copilot-cli">Part 1: Discovery &amp; Architecture with Copilot CLI</h2>
+
+<h3 id="the-starting-question">The Starting Question</h3>
+
+<p>When I first started Phase 1, I asked myself: <strong>“What’s the fastest way to build a professional resume site that auto-generates PDFs and versions itself?”</strong></p>
+
+<p>This required research into:</p>
+<ul>
+  <li>Static site generators (Jekyll vs. Hugo vs. Next.js vs. others)</li>
+  <li>Deployment platforms (GitHub Pages vs. Netlify vs. traditional hosting)</li>
+  <li>PDF generation approaches (pandoc vs. wkhtmltopdf vs. serverless)</li>
+  <li>CI/CD frameworks (GitHub Actions vs. GitLab CI vs. others)</li>
+</ul>
+
+<p>Without Copilot CLI, I would have:</p>
+<ol>
+  <li>Spent 3-4 hours browsing tutorials</li>
+  <li>Compared tools on Reddit</li>
+  <li>Made fragmented decisions</li>
+  <li>Possibly chosen the wrong stack</li>
+</ol>
+
+<h3 id="how-copilot-cli-helped">How Copilot CLI Helped</h3>
+
+<p><strong>Initial Research Phase:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I want to build a resume site with these requirements:
+- Professional design
+- Auto-generates PDF from Markdown
+- Deploys automatically
+- Uses semantic versioning for releases
+- Low maintenance
+
+Compare Jekyll, Hugo, and Next.js. What are the tradeoffs?"</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI Response</strong> (synthesized from documentation + best practices):</p>
+<ul>
+  <li><strong>Jekyll</strong>: Mature. Simple. GitHub Pages native integration. Good for blogs. PDF generation via pandoc. <em>Best for static resume + blog.</em></li>
+  <li><strong>Hugo</strong>: Faster builds. Less JavaScript. Requires separate deployment. Overkill for resume.</li>
+  <li><strong>Next.js</strong>: Powerful. Requires server. Expensive to run. Overcomplicated for static site.</li>
+</ul>
+
+<p><strong>Decision</strong>: Jekyll. The reasoning:</p>
+<ul>
+  <li>GitHub Pages native support (free hosting)</li>
+  <li>Markdown-first workflow (versionable)</li>
+  <li>Simple enough to understand and modify</li>
+  <li>Proven ecosystem for PDF generation</li>
+</ul>
+
+<hr />
+
+<h2 id="part-2-architecture--layout-design">Part 2: Architecture &amp; Layout Design</h2>
+
+<h3 id="the-challenge">The Challenge</h3>
+
+<p>Jekyll generates static sites, but I needed:</p>
+<ul>
+  <li>A professional layout (not default Jekyll theme)</li>
+  <li>Separate pages: Resume, Home, About</li>
+  <li>Semantic HTML for accessibility</li>
+  <li>Modern CSS (gradients, cards, responsive design)</li>
+  <li>PDF-friendly styling</li>
+</ul>
+
+<h3 id="copilot-cli-in-action-layout-design">Copilot CLI in Action: Layout Design</h3>
+
+<p>Rather than start with a blank canvas, I used Copilot CLI:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Design a Jekyll site structure for a resume + portfolio.
+What should the directory structure look like?
+What are the standard collections and includes?
+How do I organize CSS?"</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI provided</strong>:</p>
+<ul>
+  <li>Standard Jekyll structure (<code class="language-plaintext highlighter-rouge">_includes/</code>, <code class="language-plaintext highlighter-rouge">_layouts/</code>, <code class="language-plaintext highlighter-rouge">assets/</code>)</li>
+  <li>How collections work (for blogs added later)</li>
+  <li>Best practices for modular CSS</li>
+  <li>Where to put configuration</li>
+</ul>
+
+<p>Then I asked:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I need a professional resume layout in HTML/CSS.
+The resume should:
+- Display from Markdown frontmatter
+- Be printable to PDF
+- Have a two-column layout (skills on left, content on right)
+- Use modern colors and typography
+
+Generate a Jekyll layout template."</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI generated</strong>:</p>
+<ul>
+  <li>A professional <code class="language-plaintext highlighter-rouge">_layouts/default.html</code> template</li>
+  <li>CSS for two-column resume layout</li>
+  <li>Print-friendly media queries</li>
+  <li>Semantic HTML structure</li>
+</ul>
+
+<p>This saved hours of design iteration. Instead of trying different layouts, I had a solid foundation to refine.</p>
+
+<h3 id="key-insight">Key Insight</h3>
+
+<p>Copilot CLI didn’t just provide code—it provided a <strong>coherent architecture</strong>. Rather than collecting snippets from 10 different blogs, I had a unified design philosophy backed by layout templates and CSS structure.</p>
+
+<hr />
+
+<h2 id="part-3-automation--github-actions">Part 3: Automation &amp; GitHub Actions</h2>
+
+<h3 id="the-biggest-time-saver-workflow-design">The Biggest Time Saver: Workflow Design</h3>
+
+<p>Phase 1’s killer feature is the auto-release workflow:</p>
+<ol>
+  <li>Push resume changes to main</li>
+  <li>GitHub Action calculates next version</li>
+  <li>Automatically generates PDF</li>
+  <li>Creates GitHub release with PDF attached</li>
+  <li>Deploys to GitHub Pages</li>
+</ol>
+
+<p>Without this workflow, each resume update would be manual: bump version, generate PDF, commit changes, push.</p>
+
+<h3 id="how-copilot-cli-shaped-the-workflow">How Copilot CLI Shaped the Workflow</h3>
+
+<p><strong>Initial Question:</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"I want to automate resume updates in GitHub Actions.
+When I push to main:
+1. Calculate the next semantic version from git tags
+2. Generate a PDF using pandoc
+3. Create a GitHub release with the PDF as an asset
+4. Deploy to GitHub Pages
+
+Design a GitHub Actions workflow for this."</span>
+</code></pre></div></div>
+
+<p><strong>Copilot CLI Provided</strong>:
+A full workflow structure covering:</p>
+<ul>
+  <li>Trigger conditions (on push to main)</li>
+  <li>Getting git history and tags</li>
+  <li>Calculating semantic version with <code class="language-plaintext highlighter-rouge">git describe</code></li>
+  <li>Running pandoc to generate PDF</li>
+  <li>Using GitHub API to create releases</li>
+  <li>Best practices for error handling</li>
+</ul>
+
+<p><strong>What Would Have Taken 4 Hours</strong>:</p>
+<ul>
+  <li>Learning GitHub Actions syntax</li>
+  <li>Understanding context and secrets</li>
+  <li>Figuring out how to calculate versions</li>
+  <li>Debugging pandoc command-line options</li>
+  <li>Handling edge cases (no previous tag, malformed version)</li>
+</ul>
+
+<p><strong>What Actually Took 1 Hour</strong>:</p>
+<ul>
+  <li>Copilot CLI provided the workflow</li>
+  <li>I customized it for my resume format</li>
+  <li>Small tweaks for PDF styling</li>
+  <li>Testing on actual push</li>
+</ul>
+
+<h3 id="key-technical-decisions-shaped-by-copilot-cli">Key Technical Decisions (Shaped by Copilot CLI)</h3>
+
+<p><strong>Version Calculation</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Best way to calculate next semantic version from 
+existing git tags in a GitHub Actions workflow?"</span>
+</code></pre></div></div>
+
+<p>Copilot CLI recommended:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">LATEST_TAG</span><span class="o">=</span><span class="si">$(</span>git describe <span class="nt">--tags</span> <span class="nt">--abbrev</span><span class="o">=</span>0<span class="si">)</span>
+<span class="nv">NEW_VERSION</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="nv">$LATEST_TAG</span> | <span class="nb">awk</span> <span class="nt">-F</span><span class="nb">.</span> <span class="s1">'{print $1"."$2"."$3+1}'</span><span class="si">)</span>
+</code></pre></div></div>
+
+<p>This simple approach saved debugging complex version management tools.</p>
+
+<p><strong>PDF Engine Selection</strong>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>copilot prompt <span class="s2">"Should I use pandoc with pdflatex, xelatex, or wkhtmltopdf 
+for converting Markdown resume to PDF? Which handles Unicode, fonts, and styling best?"</span>
+</code></pre></div></div>
+
+<p>Copilot CLI explained:</p>
+<ul>
+  <li><strong>pdflatex</strong>: Fast. Limited Unicode. Works fine for English.</li>
+  <li><strong>xelatex</strong>: Slower. Full Unicode support. Better fonts.</li>
+  <li><strong>wkhtmltopdf</strong>: Deprecated. Avoid.</li>
+</ul>
+
+<p><strong>Decision</strong>: xelatex for professional appearance and future Unicode support.</p>
+
+<hr />
+
+<h2 id="part-4-lessons-that-shaped-phase-2">Part 4: Lessons That Shaped Phase 2</h2>
+
+<h3 id="lesson-1-systematic-versioning-enables-confidence">Lesson 1: Systematic Versioning Enables Confidence</h3>
+
+<p>Phase 1 established semantic versioning (v1.0.0 → v1.0.15). This small decision had huge consequences:</p>
+<ul>
+  <li>Every change is tagged and released</li>
+  <li>Can revert to any version</li>
+  <li>Release notes create documentation</li>
+  <li>Creates a product feel (not just a website)</li>
+</ul>
+
+<p>In Phase 2, this workflow was so smooth that we shipped 4 releases in one session (v1.0.16 → v1.0.19).</p>
+
+<p><strong>Copilot CLI Contribution</strong>: Helped design and debug the version calculation logic. Without that confidence, we might have skipped versioning entirely.</p>
+
+<h3 id="lesson-2-automation-compounds">Lesson 2: Automation Compounds</h3>
+
+<p>Phase 1 automated resume updates. Phase 2 automated blog deployments. Phase 3 will automate Medium cross-posting.</p>
+
+<p>Each phase adds 5-10 minutes of workflow automation. By Phase 5, shipping becomes near-instant.</p>
+
+<p><strong>Copilot CLI Contribution</strong>: Showed how GitHub Actions patterns repeat. Once I understood the pattern (trigger → process → release), Phase 2 and 3 workflows were simple extensions.</p>
+
+<h3 id="lesson-3-architecture-decisions-pay-off">Lesson 3: Architecture Decisions Pay Off</h3>
+
+<p>Choosing Jekyll Collections for blogs in Phase 1 meant Phase 2 blog posts auto-populate into listings. One good architecture decision prevented hours of custom code in Phase 2.</p>
+
+<p><strong>Copilot CLI Contribution</strong>: Explained Jekyll collections early, enabling a blog-ready architecture before we wrote a single post.</p>
+
+<h3 id="lesson-4-constraints-enable-shipping">Lesson 4: Constraints Enable Shipping</h3>
+
+<p>GitHub Pages has constraints:</p>
+<ul>
+  <li>No server-side processing</li>
+  <li>Static files only</li>
+  <li>Build limitations</li>
+  <li>Jekyll-specific</li>
+</ul>
+
+<p>Rather than fight these constraints, Copilot CLI helped me embrace them:</p>
+<ul>
+  <li>Use static search (not server search)</li>
+  <li>Generate PDFs at build time (not on-demand)</li>
+  <li>Use client-side JavaScript (not backend APIs)</li>
+</ul>
+
+<p>These constraints led to simpler, more reliable solutions.</p>
+
+<hr />
+
+<h2 id="part-5-what-would-have-been-different-without-copilot-cli">Part 5: What Would Have Been Different Without Copilot CLI</h2>
+
+<h3 id="scenario-a-without-copilot-cli">Scenario A: Without Copilot CLI</h3>
+
+<p><strong>Timeline: 4-6 weeks</strong></p>
+
+<ol>
+  <li>Spend 2-3 days researching Jekyll vs. Hugo vs. Next.js</li>
+  <li>Watch 10 tutorials, follow conflicting advice</li>
+  <li>Get stuck on GitHub Actions (underdocumented)</li>
+  <li>Build workflows incorrectly, debug for days</li>
+  <li>Struggle with pandoc configuration</li>
+  <li>Make conservative architectural choices to avoid learning curves</li>
+  <li>Ship with no versioning or PDF generation</li>
+  <li>Regret the architecture when Phase 2 starts</li>
+</ol>
+
+<p><strong>Result</strong>: Working site, but fragile. Phases 2 and 3 would reveal architectural limitations.</p>
+
+<h3 id="scenario-b-with-copilot-cli-what-actually-happened">Scenario B: With Copilot CLI (What Actually Happened)</h3>
+
+<p><strong>Timeline: 1-2 weeks</strong></p>
+
+<ol>
+  <li>Copilot CLI research in 30 minutes → Jekyll decision made with confidence</li>
+  <li>Copilot CLI workflow templates → GitHub Actions working in 1 hour</li>
+  <li>Copilot CLI layout design → Professional design in 2 hours</li>
+  <li>Small tweaks and testing → Done</li>
+</ol>
+
+<p><strong>Result</strong>: Solid foundation. Versioning. PDF generation. Blog-ready architecture. Phase 2 and 3 built on confidence, not compromise.</p>
+
+<hr />
+
+<h2 id="part-6-the-numbers">Part 6: The Numbers</h2>
+
+<h3 id="time-investment-estimates">Time Investment (Estimates)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Without Copilot CLI</th>
+      <th>With Copilot CLI</th>
+      <th>Savings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Research &amp; decision (Jekyll)</td>
+      <td>3 hours</td>
+      <td>0.5 hours</td>
+      <td>2.5 hours</td>
+    </tr>
+    <tr>
+      <td>Workflow design</td>
+      <td>4 hours</td>
+      <td>1 hour</td>
+      <td>3 hours</td>
+    </tr>
+    <tr>
+      <td>Layout &amp; CSS</td>
+      <td>6 hours</td>
+      <td>2 hours</td>
+      <td>4 hours</td>
+    </tr>
+    <tr>
+      <td>Pandoc setup &amp; debug</td>
+      <td>3 hours</td>
+      <td>0.5 hours</td>
+      <td>2.5 hours</td>
+    </tr>
+    <tr>
+      <td>Testing &amp; fixes</td>
+      <td>4 hours</td>
+      <td>1 hour</td>
+      <td>3 hours</td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td><strong>20 hours</strong></td>
+      <td><strong>5 hours</strong></td>
+      <td><strong>15 hours</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="confidence-multiplier">Confidence Multiplier</h3>
+
+<p>Beyond time savings, Copilot CLI provided <strong>confidence</strong>:</p>
+<ul>
+  <li>Confident in Jekyll choice (not second-guessing)</li>
+  <li>Confident in workflows (not worried about fragility)</li>
+  <li>Confident in architecture (not planning major rewrites)</li>
+</ul>
+
+<p>This confidence enabled rapid iteration in Phases 2 and 3.</p>
+
+<hr />
+
+<h2 id="part-7-how-phase-1-wisdom-shaped-future-phases">Part 7: How Phase 1 Wisdom Shaped Future Phases</h2>
+
+<h3 id="pattern-recognition">Pattern Recognition</h3>
+
+<p>Phase 1 established a pattern:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Issue → Branch → Commit → PR → Build Check → Release → Live
+</code></pre></div></div>
+
+<p>This simple workflow became the <strong>standard for Phase 2 and 3</strong>. By the time Phase 2 started, we could close 7 issues in 2 hours because the workflow was second nature.</p>
+
+<h3 id="reusable-components">Reusable Components</h3>
+
+<p>Phase 1 built:</p>
+<ul>
+  <li>Jekyll site structure</li>
+  <li>GitHub Actions workflow patterns</li>
+  <li>CSS framework</li>
+  <li>README documentation</li>
+</ul>
+
+<p>Phase 2 reused all of these, just adding content and blog posts. Phase 3 will reuse them again, adding features on top.</p>
+
+<p><strong>This is the compounding effect of good Phase 1 work.</strong></p>
+
+<h3 id="automation-mindset">Automation Mindset</h3>
+
+<p>Phase 1’s automation obsession (versioning, PDF generation, GitHub Actions) set the tone for Phases 2 and 3:</p>
+<ul>
+  <li>Phase 2 automated blog post deployment</li>
+  <li>Phase 3 will automate Medium cross-posting</li>
+</ul>
+
+<p>Each phase automates more, reducing manual work.</p>
+
+<hr />
+
+<h2 id="conclusion-phase-1-as-foundation">Conclusion: Phase 1 as Foundation</h2>
+
+<p>Phase 1 of cfktech-resume was about more than building a resume site. It was about:</p>
+<ol>
+  <li><strong>Choosing the right stack</strong> (Jekyll, not over-engineered solutions)</li>
+  <li><strong>Building a solid foundation</strong> (versioning, deployment, architecture)</li>
+  <li><strong>Establishing workflows</strong> (issue → release → live pattern)</li>
+  <li><strong>Creating confidence</strong> (through successful execution)</li>
+</ol>
+
+<p>All of this was accelerated by Copilot CLI, which:</p>
+<ul>
+  <li><strong>Answered research questions</strong> quickly and reliably</li>
+  <li><strong>Provided workflow templates</strong> that worked first-try</li>
+  <li><strong>Explained architecture patterns</strong> that paid off in later phases</li>
+  <li><strong>Reduced decision friction</strong> so we could ship fast</li>
+</ul>
+
+<hr />
+
+<h2 id="the-three-phases-a-complete-view">The Three Phases: A Complete View</h2>
+
+<p><strong>Phase 1</strong> (Foundation): Built the platform, established workflows, automated versioning<br />
+<strong>Phase 2</strong> (Content): Populated with blog posts, added projects, documented the process<br />
+<strong>Phase 3</strong> (Scale): Adding discovery (search/tags), audience growth (newsletter), monetization</p>
+
+<p>Each phase builds on the previous. Phase 1’s decisions made Phase 2 possible. Phase 2’s patterns will make Phase 3 simpler.</p>
+
+<p><strong>The common thread</strong>: Using Copilot CLI to make informed decisions, avoid dead-ends, and ship confidently.</p>
+
+<hr />
+
+<h2 id="whats-next">What’s Next</h2>
+
+<p>This completes the Copilot CLI retrospective series:</p>
+<ol>
+  <li>✅ Phase 1: Foundation &amp; Automation (this post)</li>
+  <li>✅ Phase 2: Blog Infrastructure &amp; Content</li>
+  <li>✅ Phase 3: Advanced Features &amp; Monetization Planning</li>
+</ol>
+
+<p>Phase 3 implementation begins next, starting with blog search (#28) and tags (#29).</p>
+
+<hr />
+
+<h2 id="lessons-for-other-builders">Lessons for Other Builders</h2>
+
+<p>If you’re building a portfolio site or similar project:</p>
+
+<ol>
+  <li><strong>Use Copilot CLI for research</strong>: Faster than googling. More coherent than Reddit.</li>
+  <li><strong>Choose boring technology</strong>: Jekyll &gt; Next.js for blogs. Don’t over-engineer.</li>
+  <li><strong>Automate early</strong>: Versioning and deployment are easier early. Harder to add later.</li>
+  <li><strong>Build incrementally</strong>: Phases allow learning and adjusting without rewriting.</li>
+  <li><strong>Document the journey</strong>: Blog posts about the process are as valuable as the code.</li>
+</ol>
+
+<hr />
+
+<h2 id="resources">Resources</h2>
+
+<ul>
+  <li><strong>cfktech-resume repository</strong>: https://github.com/brianjmurray/cfktech-resume</li>
+  <li><strong>Phase 2 post</strong>: <a href="/blog/copilot-cli-phase-2-blog-infrastructure/">Using Copilot CLI for Blog Infrastructure</a></li>
+  <li><strong>Phase 3 post</strong>: <a href="/blog/copilot-cli-phase-3-advanced-features/">Planning Advanced Features &amp; Monetization</a></li>
+  <li><strong>General Phase 1 retrospective</strong>: <a href="/blog/cfktech-portfolio-site/">Building cfktech.com</a></li>
+</ul>
+
+<hr />
+
+<p><em>This completes the Copilot CLI journey through cfktech-resume. From foundation to content to scale—all documented, all shipped. What would you build with Copilot CLI? Share your ideas <a href="https://github.com/brianjmurray/cfktech-resume">on GitHub</a>.</em></p>
+
+  </div>
+
+  <footer class="post-donation">
+    <hr>
+    <p><strong>Did you find this helpful?</strong></p>
+    <p>If this post added value to your day, consider supporting my work with a coffee. It means a lot and helps me keep creating content like this.</p>
+    <a href="https://buymeacoffee.com/cfktech" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Buy Me a Coffee ☕</a>
+  </footer>
+</article>
+</main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-content">
+        <p>&copy; 2026 Brian J. Murray. All rights reserved.</p>
+        <a href="https://buymeacoffee.com/cfktech" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="Support this work on Buy Me a Coffee (opens in new tab)">Support This Work ☕</a>
+      </div>
+    </footer>
+  </body>
+</html>

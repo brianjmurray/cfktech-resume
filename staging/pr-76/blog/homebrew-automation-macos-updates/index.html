@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Automating macOS Updates with Homebrew: Keeping Your Mac Fresh</title>
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9QGHXPKHHS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9QGHXPKHHS');
+    </script>
+    
+    <style>
+      /* CSS Custom Properties (Light Mode - Default) */
+      :root {
+        --color-bg: #f9f9f9;
+        --color-bg-elevated: #fff;
+        --color-bg-code: #f4f4f4;
+        --color-text: #333;
+        --color-text-muted: #666;
+        --color-text-light: #555;
+        --color-border: #eee;
+        --color-border-strong: #ddd;
+        --color-link: #0366d6;
+        --color-link-hover: #0256b9;
+        --color-accent: #667eea;
+        --color-accent-secondary: #764ba2;
+        --color-success: #28a745;
+        --color-donation-bg: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        --color-donation-text: #333;
+        --color-footer-bg: #f5f5f5;
+        --color-tag-bg: #e8e8e8;
+        --color-tag-text: #555;
+        --color-button-primary-bg: #0366d6;
+        --color-button-primary-text: #fff;
+        --color-button-coffee-bg: #ff813f;
+        --color-button-coffee-hover: #e56f2f;
+        --shadow-light: rgba(0,0,0,0.1);
+      }
+      
+      /* Dark Mode */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-bg: #1a1a2e;
+          --color-bg-elevated: #16213e;
+          --color-bg-code: #0f0f1a;
+          --color-text: #e4e4e7;
+          --color-text-muted: #a1a1aa;
+          --color-text-light: #d4d4d8;
+          --color-border: #2d2d44;
+          --color-border-strong: #3d3d5c;
+          --color-link: #60a5fa;
+          --color-link-hover: #93c5fd;
+          --color-accent: #818cf8;
+          --color-accent-secondary: #a78bfa;
+          --color-success: #34d399;
+          --color-donation-bg: linear-gradient(135deg, #2d2d44 0%, #3d3d5c 100%);
+          --color-donation-text: #e4e4e7;
+          --color-footer-bg: #16213e;
+          --color-tag-bg: #2d2d44;
+          --color-tag-text: #d4d4d8;
+          --color-button-primary-bg: #60a5fa;
+          --color-button-primary-text: #1a1a2e;
+          --color-button-coffee-bg: #ff813f;
+          --color-button-coffee-hover: #ff9559;
+          --shadow-light: rgba(0,0,0,0.3);
+        }
+      }
+      
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+        line-height: 1.6; 
+        color: var(--color-text);
+        background: var(--color-bg);
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Navigation */
+      nav {
+        background: var(--color-bg-elevated);
+        border-bottom: 1px solid var(--color-border);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      
+      nav ul {
+        display: flex;
+        list-style: none;
+        max-width: 1000px;
+        margin: 0 auto;
+        gap: 2rem;
+      }
+      
+      nav a {
+        color: var(--color-text);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+      
+      nav a:hover {
+        color: var(--color-link);
+      }
+      
+      /* Hero Section */
+      .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6rem 2rem;
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
+      
+      .hero .tagline {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        opacity: 0.95;
+      }
+      
+      .hero .subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+      }
+      
+      .hero-cta {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: 2px solid;
+      }
+      
+      .btn-primary {
+        background: white;
+        color: #667eea;
+        border-color: white;
+      }
+      
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      }
+      
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border-color: white;
+      }
+      
+      .btn-secondary:hover {
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-2px);
+      }
+      
+      /* Main Content */
+      main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 2rem 2rem;
+      }
+      
+      section {
+        background: var(--color-bg-elevated);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px var(--shadow-light);
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--color-text);
+      }
+      
+      h3 {
+        font-size: 1.3rem;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--color-text);
+      }
+      
+      p {
+        margin-bottom: 1rem;
+      }
+      
+      ul, ol {
+        margin: 1rem 0 1rem 1.5rem;
+      }
+      
+      li {
+        margin-bottom: 0.5rem;
+      }
+      
+      a {
+        color: var(--color-link);
+        text-decoration: none;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+        color: var(--color-link-hover);
+      }
+      
+      /* Featured Grid */
+      .featured-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .featured-card {
+        background: var(--color-bg);
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-left: 4px solid var(--color-accent);
+        transition: all 0.3s;
+      }
+      
+      .featured-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px var(--shadow-light);
+      }
+      
+      .featured-card h3 {
+        margin-top: 0;
+      }
+      
+      .featured-card h3 a {
+        color: var(--color-text);
+      }
+      
+      .featured-card h3 a:hover {
+        color: var(--color-accent);
+      }
+      
+      .post-date {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        margin: 0.5rem 0 1rem;
+      }
+      
+      .read-more {
+        color: var(--color-accent);
+        font-weight: 600;
+      }
+      
+      .featured-link {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 1.1rem;
+      }
+      
+      /* Blog Styles */
+      .blog-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      
+      .blog-post-preview {
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--color-border);
+      }
+      
+      .blog-post-preview:last-child {
+        border-bottom: none;
+      }
+      
+      .blog-post-preview h2 {
+        margin-bottom: 0.5rem;
+      }
+      
+      .blog-post-preview h2 a {
+        color: var(--color-text);
+      }
+      
+      .blog-post-preview h2 a:hover {
+        color: var(--color-accent);
+      }
+      
+      /* Post Styles */
+      .post {
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      
+      .post-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--color-border);
+      }
+      
+      .post-title {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+      }
+      
+      .post-meta {
+        color: var(--color-text-muted);
+        font-style: italic;
+      }
+      
+      .post-content {
+        line-height: 1.8;
+      }
+      
+      .post-content h2 {
+        margin-top: 2rem;
+      }
+      
+      .post-content code {
+        background: var(--color-bg-code);
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        color: var(--color-text);
+      }
+      
+      .post-content pre {
+        background: var(--color-bg-code);
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      
+      .post-content pre code {
+        background: none;
+        padding: 0;
+      }
+      
+      /* Projects Grid */
+      .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+      }
+      
+      .project-card {
+        background: var(--color-bg);
+        padding: 1.5rem;
+        border-radius: 6px;
+        border-top: 3px solid var(--color-accent);
+        transition: all 0.3s;
+      }
+      
+      .project-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px var(--shadow-light);
+      }
+      
+      .project-card h2 {
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+      }
+      
+      .project-description {
+        margin-bottom: 1rem;
+        color: var(--color-text-light);
+      }
+      
+      .project-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .tech-tag {
+        display: inline-block;
+        background: var(--color-tag-bg);
+        color: var(--color-tag-text);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+      }
+      
+      .project-links {
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .project-link {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: var(--color-accent);
+        color: white;
+        border-radius: 4px;
+        transition: all 0.3s;
+      }
+      
+      .project-link:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+        text-decoration: none;
+      }
+      
+      /* Contact Links */
+      .contact-links {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+      
+      .contact-link {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: var(--color-accent);
+        color: white;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      
+      .contact-link:hover {
+        background: var(--color-accent-secondary);
+        transform: translateY(-2px);
+      }
+      
+      /* Donation Section */
+      .donation {
+        background: var(--color-donation-bg);
+        border-radius: 8px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+      }
+      
+      .donation h2 {
+        margin-bottom: 1rem;
+        color: var(--color-donation-text);
+      }
+      
+      .donation p {
+        margin-bottom: 1rem;
+        color: var(--color-text-light);
+      }
+      
+      .donation-cta {
+        margin: 1.5rem 0;
+      }
+      
+      .donation-note {
+        color: var(--color-text-muted);
+        font-style: italic;
+      }
+      
+      /* Post Donation Footer */
+      .post-donation {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 2px solid var(--color-border-strong);
+      }
+      
+      .post-donation p {
+        margin-bottom: 0.5rem;
+        color: var(--color-text-muted);
+      }
+      
+      .post-donation .btn {
+        background: var(--color-button-coffee-bg);
+        color: white;
+        border-color: var(--color-button-coffee-bg);
+      }
+      
+      .post-donation .btn:hover {
+        background: var(--color-button-coffee-hover);
+        border-color: var(--color-button-coffee-hover);
+      }
+      
+      /* Site Footer */
+      .site-footer {
+        background: var(--color-footer-bg);
+        border-top: 1px solid var(--color-border-strong);
+        margin-top: 2rem;
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+      }
+      
+      .footer-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      
+      .footer-link {
+        color: var(--color-accent);
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      
+      .footer-link:hover {
+        color: var(--color-accent-secondary);
+        text-decoration: underline;
+      }
+      
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 1.8rem;
+        }
+        
+        .hero .tagline {
+          font-size: 1rem;
+        }
+        
+        nav ul {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        section {
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        main {
+          padding: 0 1rem 1rem;
+        }
+      }
+      
+      /* Accessibility: Focus States */
+      a:focus,
+      .btn:focus,
+      button:focus {
+        outline: 3px solid var(--color-accent);
+        outline-offset: 2px;
+      }
+      
+      /* Skip to main content link (accessibility) */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: var(--color-accent);
+        color: white;
+        padding: 8px 16px;
+        z-index: 200;
+        transition: top 0.3s;
+      }
+      
+      .skip-link:focus {
+        top: 0;
+      }
+      
+      /* Reduced motion preference */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+    <script>
+      // Remove pandoc width syntax artifacts from HTML
+      document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('em').forEach(function(el) {
+          if (el.textContent.includes('{width=')) {
+            el.remove();
+          }
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/projects/">Projects</a></li>
+        <li><a href="/resume/">Resume</a></li>
+        <li><a href="https://github.com/brianjmurray" aria-label="GitHub Profile (opens in new tab)">GitHub</a></li>
+      </ul>
+    </nav>
+    <main id="main-content"><article class="post">
+  <header class="post-header">
+    <h1 class="post-title">Automating macOS Updates with Homebrew: Keeping Your Mac Fresh</h1>
+    <p class="post-meta">
+      <time datetime="2026-01-31T00:00:00+00:00">
+        January 31, 2026
+      </time>
+    </p>
+  </header>
+
+  <div class="post-content">
+    <p>Keeping a macOS development machine up-to-date is a constant challenge. Between OS updates, Homebrew packages, App Store apps, npm packages, Azure CLI tools, and VS Code extensions, it’s easy to fall behind or forget something important. In this post, I’ll show you how to automate the entire process with a single bash script—the same approach I’ve used for years on my development Macs.</p>
+
+<h2 id="the-problem-manual-update-fatigue">The Problem: Manual Update Fatigue</h2>
+
+<p>Without automation, keeping everything current requires:</p>
+
+<ul>
+  <li>Manually running <code class="language-plaintext highlighter-rouge">softwareupdate</code> for macOS</li>
+  <li>Remembering to run <code class="language-plaintext highlighter-rouge">brew upgrade</code></li>
+  <li>Running <code class="language-plaintext highlighter-rouge">mas upgrade</code> for App Store apps</li>
+  <li>Manually updating each Homebrew tap and CLI tool (Azure CLI, etc.)</li>
+  <li>Updating the Brewfile to track new installations</li>
+  <li>Creating Git commits and PRs to track changes</li>
+  <li>Backing up dotfiles and configurations</li>
+</ul>
+
+<p>Even worse, inconsistencies can creep in. You install something on one Mac but forget it on another. You upgrade a tool and don’t track the version anywhere. You configure something in VS Code and lose it when you get a new machine.</p>
+
+<h2 id="the-solution-automated-update-pipeline">The Solution: Automated Update Pipeline</h2>
+
+<p>The answer is a simple automation approach that runs all updates in sequence, commits the results to Git, and creates a pull request. This way:</p>
+
+<p>✅ Everything stays current automatically<br />
+✅ Changes are tracked in Git (history + rollback capability)<br />
+✅ Multiple Macs stay in sync<br />
+✅ New machines can be set up quickly<br />
+✅ You have a record of what’s installed and when</p>
+
+<h2 id="how-it-works-the-three-core-files">How It Works: The Three Core Files</h2>
+
+<h3 id="1-the-brewfile-package-manifest">1. The Brewfile: Package Manifest</h3>
+
+<p>The Brewfile is the heart of the system. It’s a declarative list of everything installed via Homebrew, including:</p>
+
+<ul>
+  <li><strong>Homebrew taps</strong> (external package repositories like <code class="language-plaintext highlighter-rouge">dbt-labs/dbt</code>, <code class="language-plaintext highlighter-rouge">hashicorp/tap</code>)</li>
+  <li><strong>Brew packages</strong> (CLI tools like <code class="language-plaintext highlighter-rouge">docker</code>, <code class="language-plaintext highlighter-rouge">node</code>, <code class="language-plaintext highlighter-rouge">python@3.11</code>)</li>
+  <li><strong>Casks</strong> (GUI applications like <code class="language-plaintext highlighter-rouge">visual-studio-code</code>, <code class="language-plaintext highlighter-rouge">docker</code>)</li>
+  <li><strong>App Store apps</strong> (managed via <code class="language-plaintext highlighter-rouge">mas</code>, the Mac App Store CLI)</li>
+  <li><strong>VS Code extensions</strong> (automatically synced to all machines)</li>
+</ul>
+
+<p>Example Brewfile structure:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Taps</span>
+tap <span class="s2">"1password/tap"</span>
+tap <span class="s2">"dbt-labs/dbt"</span>
+tap <span class="s2">"hashicorp/tap"</span>
+
+<span class="c"># Core tools</span>
+brew <span class="s2">"git"</span>
+brew <span class="s2">"docker"</span>
+brew <span class="s2">"python@3.11"</span>
+brew <span class="s2">"node"</span>
+
+<span class="c"># Casks (GUI apps)</span>
+cask <span class="s2">"visual-studio-code"</span>
+cask <span class="s2">"docker"</span>
+cask <span class="s2">"1password"</span>
+
+<span class="c"># App Store apps</span>
+mas <span class="s2">"1Password 7"</span>, <span class="nb">id</span>: 1569813296
+mas <span class="s2">"Final Cut Pro"</span>, <span class="nb">id</span>: 424389933
+
+<span class="c"># VS Code extensions</span>
+vscode <span class="s2">"ms-python.python"</span>
+vscode <span class="s2">"ms-azuretools.vscode-docker"</span>
+</code></pre></div></div>
+
+<p>When you run <code class="language-plaintext highlighter-rouge">brew bundle</code>, it installs everything listed. When you run <code class="language-plaintext highlighter-rouge">brew bundle dump</code>, it updates the Brewfile with your current installed packages.</p>
+
+<h3 id="2-the-update-script-orchestration">2. The Update Script: Orchestration</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">update.sh</code> script automates the entire update process:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c"># Timestamp for branch/commit naming</span>
+<span class="nv">now</span><span class="o">=</span><span class="si">$(</span><span class="nb">date</span> <span class="s1">'+%Y%m%d%H%M%S'</span><span class="si">)</span>
+
+<span class="c"># Pull latest from main</span>
+git pull origin
+
+<span class="c"># Create timestamped branch</span>
+git checkout <span class="nt">-b</span> <span class="nv">$now</span>
+
+<span class="c"># Run updates in sequence</span>
+<span class="nb">sudo </span>softwareupdate <span class="nt">-ia</span> <span class="nt">--verbose</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew update <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew upgrade <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew bundle <span class="nt">-v</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew cleanup <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew doctor <span class="nt">-v</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> mas upgrade <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> brew bundle dump <span class="nt">-f</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> az upgrade <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> mackup backup <span class="nt">-f</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> git add <span class="nb">.</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> git commit <span class="nt">-m</span> <span class="s2">"ran update on </span><span class="nv">$now</span><span class="s2">"</span> <span class="se">\</span>
+ <span class="o">&amp;&amp;</span> git push <span class="nt">--set-upstream</span> origin <span class="nv">$now</span>
+
+<span class="c"># Create and auto-merge PR</span>
+gh <span class="nb">pr </span>create <span class="nt">--fill</span> <span class="nt">-B</span> <span class="s2">"main"</span>
+gh <span class="nb">pr </span>merge <span class="nt">--admin</span> <span class="nt">--squash</span>
+
+<span class="c"># Return to main</span>
+git checkout main
+git pull origin
+</code></pre></div></div>
+
+<p>This script does everything in one command:</p>
+
+<ol>
+  <li><strong><code class="language-plaintext highlighter-rouge">softwareupdate -ia</code></strong> - Install all macOS system updates (requires sudo)</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew update</code></strong> - Update Homebrew itself</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew upgrade</code></strong> - Upgrade all installed packages</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew bundle -v</code></strong> - Ensure all packages in Brewfile are installed</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew cleanup</code></strong> - Remove old versions to save disk space</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew doctor</code></strong> - Check for Homebrew issues</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">mas upgrade</code></strong> - Upgrade all App Store apps</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">brew bundle dump</code></strong> - Update Brewfile with current state</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">az upgrade</code></strong> - Upgrade Azure CLI (if installed)</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">mackup backup</code></strong> - Back up dotfiles (if using Mackup)</li>
+  <li><strong>Commit changes</strong> - Git commit with timestamp</li>
+  <li><strong>Create PR</strong> - Auto-create a pull request</li>
+  <li><strong>Merge PR</strong> - Auto-merge with squash strategy</li>
+  <li><strong>Return to main</strong> - Clean up after yourself</li>
+</ol>
+
+<p>If any step fails, the whole chain stops (due to <code class="language-plaintext highlighter-rouge">&amp;&amp;</code>). This is intentional—you want to see what failed rather than continuing with a broken state.</p>
+
+<h3 id="3-the-initial-setup-script-first-time-configuration">3. The Initial Setup Script: First-Time Configuration</h3>
+
+<p>The <code class="language-plaintext highlighter-rouge">initial_setup.sh</code> script runs once on a new Mac (after Homebrew is installed):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c"># Copy Brewfile from iCloud to local repo</span>
+<span class="c"># Assuming Brewfile is in ~/iCloud/brew-setup-and-update/Brewfile</span>
+
+git clone https://github.com/brianjmurray/brew-setup-and-update.git
+<span class="nb">cd </span>brew-setup-and-update
+
+<span class="c"># Install everything from Brewfile</span>
+brew bundle
+
+<span class="c"># Create initial commit</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Initial setup from Brewfile"</span>
+git push
+</code></pre></div></div>
+
+<p>Once this runs, you have a complete development environment set up automatically.</p>
+
+<h2 id="real-world-workflow-week-to-week">Real-World Workflow: Week-to-Week</h2>
+
+<p>Here’s how I use this on my personal Macs:</p>
+
+<h3 id="day-1-new-mac-setup">Day 1 (New Mac Setup)</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Just installed macOS and Homebrew</span>
+./initial_setup.sh
+
+<span class="c"># 5 minutes later: fully configured with all tools, apps, and extensions</span>
+</code></pre></div></div>
+
+<h3 id="every-other-week-maintenance">Every Other Week (Maintenance)</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd</span> ~/iCloud/brew-setup-and-update
+./update.sh
+
+<span class="c"># Script runs for ~15 minutes while I work on something else</span>
+<span class="c"># All updates are complete, changes are tracked, new environment is live</span>
+</code></pre></div></div>
+
+<h3 id="important-branch-name-is-timestamp">Important: Branch Name is Timestamp</h3>
+<p>The script uses a timestamp for the branch name: <code class="language-plaintext highlighter-rouge">20260131153000</code>. This means:</p>
+<ul>
+  <li>Multiple runs don’t conflict (each gets a unique branch)</li>
+  <li>Branch names are sortable by date</li>
+  <li>You can see exactly when each update ran</li>
+</ul>
+
+<h3 id="auto-merge-strategy-squash">Auto-Merge Strategy: Squash</h3>
+<p>The PR uses <code class="language-plaintext highlighter-rouge">--squash</code> strategy, which means:</p>
+<ul>
+  <li>All commits from the update are combined into one</li>
+  <li>Main branch stays clean with one commit per update cycle</li>
+  <li>Easy to revert if something breaks: <code class="language-plaintext highlighter-rouge">git revert &lt;commit&gt;</code></li>
+</ul>
+
+<h2 id="advanced-keeping-macs-in-sync">Advanced: Keeping Macs In Sync</h2>
+
+<h3 id="scenario-you-have-multiple-macs">Scenario: You Have Multiple Macs</h3>
+
+<p>If you maintain several Macs (personal, work, etc.), you can:</p>
+
+<ol>
+  <li><strong>Share the Brewfile</strong> in iCloud, Dropbox, or GitHub</li>
+  <li><strong>Run on each Mac</strong> on your preferred schedule</li>
+  <li><strong>Merge updates</strong> from one Mac’s PR to sync all Macs</li>
+</ol>
+
+<p>Example setup:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/iCloud/brew-setup-and-update/
+├── Brewfile (shared)
+├── update.sh (shared)
+├── initial_setup.sh (shared)
+└── Brewfile.work (work-specific variant)
+</code></pre></div></div>
+
+<p>Each Mac can customize its own Brewfile while sharing the update script.</p>
+
+<h3 id="scenario-new-mac-setup-from-scratch">Scenario: New Mac Setup From Scratch</h3>
+
+<p>With this approach, onboarding a new Mac is:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Install Homebrew</span>
+/bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://brew.sh<span class="si">)</span><span class="s2">"</span>
+
+<span class="c"># 2. Clone this repo</span>
+git clone https://github.com/brianjmurray/brew-setup-and-update.git
+<span class="nb">cd </span>brew-setup-and-update
+
+<span class="c"># 3. Run once</span>
+./initial_setup.sh
+
+<span class="c"># 30 minutes later (installing everything)</span>
+<span class="c"># New Mac is fully configured with 100+ packages, apps, and extensions</span>
+</code></pre></div></div>
+
+<p>Compare this to manually installing everything—it would take hours.</p>
+
+<h2 id="benefits-beyond-automation">Benefits Beyond Automation</h2>
+
+<h3 id="1-version-history">1. <strong>Version History</strong></h3>
+<p>Every update is committed to Git. You can see exactly what changed:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git log <span class="nt">--oneline</span>
+<span class="c"># 20260131153000 ran update on 20260131153000</span>
+<span class="c"># 20260129103000 ran update on 20260129103000</span>
+<span class="c"># 20260125164500 ran update on 20260125164500</span>
+</code></pre></div></div>
+
+<h3 id="2-rollback-capability">2. <strong>Rollback Capability</strong></h3>
+<p>If an update breaks something, rollback is easy:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git revert &lt;commit-hash&gt;
+brew bundle  <span class="c"># Re-apply the previous state</span>
+</code></pre></div></div>
+
+<h3 id="3-change-tracking">3. <strong>Change Tracking</strong></h3>
+<p>See exactly what changed in each update:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git show 20260131153000
+<span class="c"># Shows Brewfile changes: new packages, versions, removed apps</span>
+</code></pre></div></div>
+
+<h3 id="4-configuration-backup">4. <strong>Configuration Backup</strong></h3>
+<p>With Mackup, your dotfiles (<code class="language-plaintext highlighter-rouge">.zshrc</code>, <code class="language-plaintext highlighter-rouge">.bashrc</code>, VS Code settings, etc.) are automatically backed up:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/.config/
+├── .zshrc
+├── .bashrc
+└── <span class="o">[</span>other configs]
+</code></pre></div></div>
+
+<p>All synced to cloud storage automatically.</p>
+
+<h3 id="5-cross-platform-consistency">5. <strong>Cross-Platform Consistency</strong></h3>
+<p>All your Macs have the same:</p>
+<ul>
+  <li>Homebrew packages</li>
+  <li>Cask applications</li>
+  <li>App Store apps</li>
+  <li>VS Code extensions</li>
+  <li>Configurations</li>
+</ul>
+
+<p>No more “but it works on my laptop” issues.</p>
+
+<h2 id="customization-making-it-your-own">Customization: Making It Your Own</h2>
+
+<h3 id="add-your-own-packages">Add Your Own Packages</h3>
+
+<p>Simply edit the Brewfile and re-run the update script:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add to Brewfile</span>
+brew <span class="s2">"rustup"</span>
+brew <span class="s2">"go"</span>
+cask <span class="s2">"tableplus"</span>
+
+<span class="c"># Next update run will install them automatically</span>
+./update.sh
+</code></pre></div></div>
+
+<h3 id="skip-the-auto-merge-for-review">Skip The Auto-Merge (For Review)</h3>
+
+<p>If you want to review changes before merging:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Comment out the merge line</span>
+<span class="c"># gh pr merge --admin --squash</span>
+
+<span class="c"># Then manually review and merge:</span>
+gh <span class="nb">pr </span>view  <span class="c"># See what changed</span>
+gh <span class="nb">pr </span>merge  <span class="c"># Merge when ready</span>
+</code></pre></div></div>
+
+<h3 id="run-on-specific-days">Run On Specific Days</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">cron</code> to run updates on a schedule:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Edit crontab</span>
+crontab <span class="nt">-e</span>
+
+<span class="c"># Add: Run every other Friday at 5 PM</span>
+0 17 <span class="k">*</span> <span class="k">*</span> 5 <span class="nb">cd</span> ~/brew-setup-and-update <span class="o">&amp;&amp;</span> ./update.sh 2&gt;&amp;1 <span class="o">&gt;&gt;</span> update.log
+</code></pre></div></div>
+
+<h3 id="run-before-important-work">Run Before Important Work</h3>
+
+<p>If you have a critical project coming up, run the update beforehand:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Make sure everything is current before a big sprint</span>
+./update.sh
+</code></pre></div></div>
+
+<h2 id="potential-issues--solutions">Potential Issues &amp; Solutions</h2>
+
+<h3 id="issue-update-fails-midway">Issue: Update Fails Midway</h3>
+
+<p><strong>Problem</strong>: One step fails, script stops.<br />
+<strong>Solution</strong>: Check the output, fix the issue, re-run. The <code class="language-plaintext highlighter-rouge">&amp;&amp;</code> chain ensures nothing continues if something fails.</p>
+
+<p>Example:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># If brew doctor finds issues, it stops</span>
+<span class="c"># Fix the issue, then re-run</span>
+brew doctor
+<span class="c"># Fix reported issues...</span>
+./update.sh  <span class="c"># Try again</span>
+</code></pre></div></div>
+
+<h3 id="issue-password-prompt-sudo">Issue: Password Prompt (sudo)</h3>
+
+<p><strong>Problem</strong>: <code class="language-plaintext highlighter-rouge">softwareupdate</code> requires sudo, script pauses.<br />
+<strong>Solution</strong>: Enter your password or temporarily use sudo without password.</p>
+
+<p>Temporary solution (use with caution):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Allow brew commands without password prompt</span>
+<span class="nb">sudo </span>visudo
+<span class="c"># Add: %admin ALL=(ALL) NOPASSWD: /usr/bin/softwareupdate</span>
+</code></pre></div></div>
+
+<h3 id="issue-pr-auto-merge-fails">Issue: PR Auto-Merge Fails</h3>
+
+<p><strong>Problem</strong>: PR creation or merge fails (permissions, branch protection, etc.).<br />
+<strong>Solution</strong>: Manually merge from GitHub, or adjust branch protection rules.</p>
+
+<h3 id="issue-some-apps-wont-update">Issue: Some Apps Won’t Update</h3>
+
+<p><strong>Problem</strong>: Certain apps fail to install or upgrade.<br />
+<strong>Solution</strong>: Check if the package name is correct, or install manually:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Some packages may require specific versions</span>
+brew <span class="nb">install</span> <span class="o">[</span>package]@[version]
+brew bundle dump  <span class="c"># Update Brewfile</span>
+</code></pre></div></div>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<h3 id="1-keep-the-repo-private-or-public">1. Keep the Repo Private or Public?</h3>
+
+<p><strong>Public</strong> (like my repo):</p>
+<ul>
+  <li>Useful for showing your tech stack</li>
+  <li>Good for sharing your setup with others</li>
+  <li>Safe: doesn’t include credentials (they’re in environment files)</li>
+</ul>
+
+<p><strong>Private</strong>:</p>
+<ul>
+  <li>Better for sensitive configs</li>
+  <li>Easier to track personal customizations</li>
+</ul>
+
+<h3 id="2-dont-commit-secrets">2. Don’t Commit Secrets</h3>
+
+<p>Never commit:</p>
+<ul>
+  <li>API keys</li>
+  <li>Passwords</li>
+  <li>SSH keys</li>
+  <li><code class="language-plaintext highlighter-rouge">.npmrc</code> files with tokens</li>
+</ul>
+
+<p>Use <code class="language-plaintext highlighter-rouge">.gitignore</code> for sensitive files:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># .gitignore</span>
+.env
+.npmrc
+<span class="k">*</span>.pem
+</code></pre></div></div>
+
+<h3 id="3-test-on-a-spare-mac-first">3. Test on a Spare Mac First</h3>
+
+<p>If you have multiple Macs, test your Brewfile on a non-critical one first.</p>
+
+<h3 id="4-review-changes-in-the-pr">4. Review Changes in the PR</h3>
+
+<p>Always glance at the PR before it auto-merges:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gh <span class="nb">pr </span>view  <span class="c"># See what changed</span>
+<span class="c"># Look for unexpected removals or issues</span>
+<span class="c"># If anything looks wrong, deny the merge manually</span>
+</code></pre></div></div>
+
+<h2 id="takeaways">Takeaways</h2>
+
+<p>Automating macOS updates saves time, maintains consistency, and ensures your development environment stays current. By using a simple Brewfile + update script + Git workflow, you get:</p>
+
+<ul>
+  <li><strong>One command</strong> (<code class="language-plaintext highlighter-rouge">./update.sh</code>) runs everything</li>
+  <li><strong>Complete version history</strong> of your Mac’s state</li>
+  <li><strong>Easy rollback</strong> if something breaks</li>
+  <li><strong>Multi-Mac sync</strong> automatically</li>
+  <li><strong>New Mac setup</strong> in 30 minutes instead of 3 hours</li>
+</ul>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ol>
+  <li><strong>Fork the repo</strong>: <a href="https://github.com/brianjmurray/brew-setup-and-update">github.com/brianjmurray/brew-setup-and-update</a></li>
+  <li><strong>Customize the Brewfile</strong> to match your setup</li>
+  <li><strong>Run the script</strong> on your development Mac</li>
+  <li><strong>Watch Git track all updates</strong> from then on</li>
+</ol>
+
+<p>Your future self will thank you when you get a new Mac and everything is set up automatically. Happy updating!</p>
+
+<hr />
+
+<p><strong>Have you automated your Mac setup? Share your approach in the comments or on Twitter!</strong></p>
+
+  </div>
+
+  <footer class="post-donation">
+    <hr>
+    <p><strong>Did you find this helpful?</strong></p>
+    <p>If this post added value to your day, consider supporting my work with a coffee. It means a lot and helps me keep creating content like this.</p>
+    <a href="https://buymeacoffee.com/cfktech" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">Buy Me a Coffee ☕</a>
+  </footer>
+</article>
+</main>
+    <footer class="site-footer" role="contentinfo">
+      <div class="footer-content">
+        <p>&copy; 2026 Brian J. Murray. All rights reserved.</p>
+        <a href="https://buymeacoffee.com/cfktech" class="footer-link" target="_blank" rel="noopener noreferrer" aria-label="Support this work on Buy Me a Coffee (opens in new tab)">Support This Work ☕</a>
+      </div>
+    </footer>
+  </body>
+</html>
