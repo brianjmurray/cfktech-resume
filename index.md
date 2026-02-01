@@ -60,3 +60,14 @@ title: "Brian J. Murray - Resume"
     <a href="https://www.linkedin.com/in/brianjmurray/" class="contact-link">LinkedIn</a>
   </div>
 </section>
+
+<section class="donation">
+  <h2>Support This Work</h2>
+  <p>If you find value in this content, consider supporting my work. Your support helps me continue creating tutorials, sharing insights, and building tools for the data engineering community.</p>
+  
+  <div class="donation-cta">
+    <a href="https://buymeacoffee.com/cfktech" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Buy Me a Coffee ☕</a>
+  </div>
+  
+  <p class="donation-note"><small>100% of contributions go toward content creation and tools development.</small></p>
+</section>
