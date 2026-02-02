@@ -1,6 +1,8 @@
-title: "Brian J. Murray - Resume (Staging)"
-baseurl: "/staging"
-url: "https://cfktech.com"
+title: "Brian J. Murray - Resume (Preview)"
+# baseurl is empty - Surge deploys to root of subdomain
+baseurl: ""
+# URL is set dynamically per-PR (cfktech-pr-{number}.surge.sh)
+url: ""
 
 # Plugins
 plugins:
