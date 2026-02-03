@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Resume
+title: Résumé
 permalink: /resume/
 ---
 
-<h1>Resume</h1>
+<h1>Résumé</h1>
 
-<p>My detailed professional resume with work history, skills, and accomplishments.</p>
+<p>My detailed professional résumé with work history, skills, and accomplishments.</p>
 
 <div class="resume-section">
   <h2>Download</h2>
@@ -17,5 +17,5 @@ permalink: /resume/
 
 <div class="resume-section">
   <h2>View Online</h2>
-  <p>The PDF version above contains the formatted resume with all details. For the most current version, download the PDF or view the full resume on the home page.</p>
+  <p>The PDF version above contains the formatted résumé with all details. For the most current version, download the PDF or view the full résumé on the home page.</p>
 </div>
