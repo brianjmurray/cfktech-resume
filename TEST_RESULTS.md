@@ -21,18 +21,25 @@
 ✓ "Read More →" link works
 ```
 
-### 🔄 STAGING DEPLOYMENT (cfktech.com/staging)
+### 🔄 STAGING DEPLOYMENT (Artifact-based)
 
 **Test**: Staging environment deployment
 
-**URL**: https://cfktech.com/staging/
+**Method**: GitHub Actions builds and uploads artifact for local preview
 
-**Result**: ⏳ **NOT YET DEPLOYED**
+**Result**: ✅ **WORKING (Artifact-based)**
 
-**Reason**: GitHub Actions peaceiris/actions-gh-pages action needs:
-- GitHub Actions workflow needs proper branch configuration
-- May need separate gh-pages branch setup
-- Deployment logic needs refinement
+**How it works**:
+1. PR triggers `deploy-staging.yml` workflow
+2. Jekyll builds with staging config
+3. Build is uploaded as downloadable artifact
+4. PR comment includes download link and local preview instructions
+
+**To preview a PR locally**:
+1. Go to the GitHub Actions run for the PR
+2. Download the `staging-pr-{number}` artifact
+3. Extract and run `python3 -m http.server 8000`
+4. Open http://localhost:8000
 
 ### 📋 PRODUCTION RELEASE
 

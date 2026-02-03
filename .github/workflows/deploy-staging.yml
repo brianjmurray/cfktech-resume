@@ -1,72 +1,125 @@
-name: Deploy to Staging (PR Testing)
+name: Deploy PR Preview
 
 on:
   pull_request:
-    branches: [ main ]
-    types: [opened, synchronize, reopened]
-    paths:
-      - '_posts/**'
-      - '_layouts/**'
-      - 'blog/**'
-      - 'index.md'
-      - 'projects/**'
-      - '_config.yml'
-      - '_config_staging.yml'
-      - 'Gemfile'
-      - '.github/workflows/deploy-staging.yml'
+    branches: [main]
+    types: [opened, synchronize, reopened, closed]
+
+# Allow only one concurrent deployment per PR
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
-  deploy-staging:
+  deploy-preview:
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
-    
+
     steps:
-    - name: Checkout PR branch
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: '3.1'
-        bundler-cache: true
-    
-    - name: Build Jekyll for staging
-      run: |
-        bundle exec jekyll build \
-          --destination ./staging \
-          --config _config.yml,_config_staging.yml
-    
-    - name: Deploy staging to gh-pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./staging
-        destination_dir: staging/pr-${{ github.event.pull_request.number }}
-        keep_files: true
-    
-    - name: Comment PR with staging link
-      uses: actions/github-script@v7
-      if: success()
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const prNumber = context.issue.number;
-          const stagingUrl = `https://cfktech.com/staging/pr-${prNumber}/`;
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
+
+      - name: Build Jekyll for preview
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # Build with preview-specific baseurl
+          bundle exec jekyll build \
+            --destination ./preview \
+            --baseurl "" \
+            --config _config.yml,_config_staging.yml
           
-          const message = `🚀 **Staging Deployment Ready!**\n\nYour changes have been built and deployed to staging:\n👉 [Review on Staging](${stagingUrl})\n\n**Before approving this PR, please verify:**\n- [ ] All pages load without errors (check browser console)\n- [ ] Tag pages display posts correctly\n- [ ] Clicking tag links works\n- [ ] Blog search functionality works\n- [ ] Styling looks correct on desktop and mobile\n- [ ] No broken links (check for 404s by clicking around)\n\n**If everything looks good**, this PR is safe to merge!\nIf you find issues, request changes and the PR author can update.`;
-          
-          try {
-            await github.rest.issues.createComment({
-              issue_number: prNumber,
+          echo "✓ Preview build complete"
+          echo "✓ Files generated: $(find ./preview -type f | wc -l)"
+
+      - name: Verify build
+        run: |
+          if [ ! -f "./preview/index.html" ]; then
+            echo "ERROR: index.html not found"
+            exit 1
+          fi
+          echo "✓ Build verified"
+
+      - name: Deploy to Surge
+        id: surge
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          npm install -g surge
+          PREVIEW_URL="cfktech-pr-${{ github.event.pull_request.number }}.surge.sh"
+          surge ./preview $PREVIEW_URL --token $SURGE_TOKEN
+          echo "preview_url=https://$PREVIEW_URL" >> $GITHUB_OUTPUT
+
+      - name: Comment PR with preview link
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            const previewUrl = `https://cfktech-pr-${prNumber}.surge.sh`;
+            
+            // Check for existing bot comment to update instead of creating duplicates
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: message
+              issue_number: prNumber
             });
-          } catch (error) {
-            console.error('Failed to post comment:', error);
-            throw error;
-          }
+            
+            const botComment = comments.find(c => 
+              c.user.type === 'Bot' && c.body.includes('Preview Deployment')
+            );
+            
+            const message = `## 🚀 Preview Deployment Ready!
+
+            Your changes are live at: **${previewUrl}**
+
+            ### ✅ Before Merging, Verify:
+            - [ ] All pages load without errors
+            - [ ] Tag pages display posts correctly
+            - [ ] Blog search functionality works
+            - [ ] Links navigate correctly
+            - [ ] No console errors
+
+            ---
+            *Preview auto-updates on each push to this PR*`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: message
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: message
+              });
+            }
+
+  # Cleanup preview when PR is closed
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Teardown Surge preview
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
+        run: |
+          npm install -g surge
+          surge teardown cfktech-pr-${{ github.event.pull_request.number }}.surge.sh --token $SURGE_TOKEN || true
