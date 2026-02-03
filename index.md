@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Brian J. Murray - Resume"
+title: "Brian J. Murray - Résumé"
 ---
 
 <section class="hero">
