@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Brian J. Murray - Résumé"
+title: "cfk tech"
 ---
 
 <section class="hero">

@@ -1,4 +1,4 @@
-title: "Brian J. Murray - Résumé (Preview)"
+title: "cfk tech (Preview)"
 # baseurl is empty - Surge deploys to root of subdomain
 baseurl: ""
 # URL is set dynamically per-PR (cfktech-pr-{number}.surge.sh)
