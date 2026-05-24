@@ -1,7 +1,7 @@
 ---
 title: ""
 author: Brian J. Murray
-date: January 25, 2026 — Updated
+date: May 24, 2026 — Updated
 geometry: margin=0.75in
 fontsize: 11pt
 titlepage: false
@@ -15,7 +15,19 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 ### Independence Pet Holdings
 
-#### Senior Data Engineer (04/2023–Present)
+#### Senior Data Architect (03/2026–Present)
+- Lead architecture for IPH's enterprise data foundation, designing Databricks workspace, catalog, networking, and deployment patterns for a multi-brand insurance data platform.
+- Designed the Calandra 2 Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
+- Established Terraform-driven workspace infrastructure intended to be reusable across tenants and environments, with environment-specific `.tfvars` customization and Azure DevOps deployment pipelines.
+- Implemented CI/CD guardrails for Databricks infrastructure and data products, including read-only staging controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
+- Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
+- Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, masking policy deployment scripts, volume access controls, and catalog/schema grants aligned to engineering and analyst roles.
+- Supported Pets Best onboarding by reviewing and promoting Bronze/Silver implementations, validating environment scoping and DLT/job-based silver patterns, and enabling analyst and engineer access in staging.
+- Designed cross-brand data strategy that uses Delta Sharing, foreign catalogs, and Silver harmonization layers to create enterprise views while preserving optionality as brands migrate toward shared platforms.
+- Advised platform strategy across Databricks, Microsoft Fabric/OneLake, Power BI, Purview, and Snowflake/dbt integrations for corporate reporting, analytics, governance, and future AI/ML use cases.
+- Tech: Databricks, Unity Catalog, Terraform, Azure DevOps, Azure, Delta Sharing, DLT/Lakeflow, serverless/classic compute, Power BI, Purview.
+
+#### Senior Data Engineer (04/2023–03/2026)
 - Designed and operated Databricks lakehouse pipelines across Bronze/Silver/Gold tiers using Unity Catalog, Delta Live Tables, and Delta Lake for multiple domains (CRM, Quote, Phone, Salesforce, Marketing).
 - Built parameterized, reusable ETL frameworks and notebooks for incremental loads (cron-driven windows), deduplication via windowing, and Delta MERGE upserts; added Teams webhooks and job health rules for reliability.
 - Implemented dynamic DLT materialized views for Embrace domain by introspecting information_schema and generating managed tables with deletion vectors and row tracking.
@@ -71,6 +83,5 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 **Macomb Community College**, Warren, Michigan  
 Associate of Applied Science – Networking Specialist (May 2003)
-
 
 

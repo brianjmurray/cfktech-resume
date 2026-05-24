@@ -5,9 +5,9 @@ title: "cfk tech"
 
 <section class="hero">
   <div class="hero-content">
-    <h1>Data Architecture & Engineering</h1>
-    <p class="tagline">Building scalable data platforms with Databricks, infrastructure as code, and modern DevOps practices.</p>
-    <p class="subtitle">I help organizations design, build, and optimize data ecosystems that scale.</p>
+    <h1>Enterprise Data Architecture</h1>
+    <p class="tagline">Designing secure, scalable data platforms with Databricks, Unity Catalog, Terraform, and modern DevOps practices.</p>
+    <p class="subtitle">I help organizations turn fragmented data ecosystems into governed platforms for analytics, reporting, and AI-ready data products.</p>
     <div class="hero-cta">
       <a href="#about" class="btn btn-primary">Learn More</a>
       <a href="/blog" class="btn btn-secondary">Read My Blog</a>
@@ -18,18 +18,19 @@ title: "cfk tech"
 <section id="about" class="about">
   <h2>About</h2>
   
-  <p>I'm a Senior Data Engineer and emerging Data Architect with deep expertise in building production-grade data platforms on Databricks. With 8+ years in data engineering, I've evolved from writing SQL and building pipelines to designing multi-environment data architectures that power business intelligence and analytics at scale.</p>
+  <p>I'm a Senior Data Architect with deep experience building production-grade data platforms on Databricks and Azure. My work spans enterprise architecture, platform engineering, governance, CI/CD, and hands-on data engineering for regulated insurance data environments.</p>
   
   <h3>Specializations</h3>
   <ul>
-    <li><strong>Data Platforms</strong>: Designing scalable Databricks workspaces, Delta Lake architectures, Unity Catalog implementations</li>
-    <li><strong>Infrastructure as Code</strong>: Terraform, Databricks Asset Bundles, Azure DevOps CI/CD for data infrastructure</li>
-    <li><strong>Data Engineering</strong>: PySpark optimization, medallion architectures (Bronze/Silver/Gold), ETL/ELT patterns</li>
-    <li><strong>DevOps & AI</strong>: Automated deployments, monitoring, AI-assisted data optimization, LLM integration for data tasks</li>
+    <li><strong>Enterprise Data Platforms</strong>: Databricks workspace strategy, medallion architecture, cross-brand data sharing, and Unity Catalog governance</li>
+    <li><strong>Infrastructure as Code</strong>: Terraform, Databricks Asset Bundles, Azure DevOps CI/CD, service-principal deployments, and environment promotion controls</li>
+    <li><strong>Data Governance</strong>: PII classification, masking policies, catalog permissions, Purview alignment, and analyst/engineering access models</li>
+    <li><strong>Data Engineering</strong>: PySpark, SQL, DLT/Lakeflow, Delta Lake, streaming and batch pipelines, and performance-focused ETL/ELT patterns</li>
+    <li><strong>Architecture Strategy</strong>: Databricks, Microsoft Fabric/OneLake, Power BI, Snowflake/dbt integration, and AI-ready data platform planning</li>
   </ul>
   
   <h3>Recent Focus</h3>
-  <p>Currently exploring the intersection of AI and data engineering—using LLMs to accelerate data documentation, optimization, and infrastructure automation.</p>
+  <p>Currently leading data architecture work for a multi-brand insurance platform: secure Databricks infrastructure, Unity Catalog governance, reusable Terraform patterns, and CI/CD guardrails for enterprise data products.</p>
 </section>
 
 <section class="featured">
@@ -52,7 +53,7 @@ title: "cfk tech"
 
 <section class="cta">
   <h2>Let's Connect</h2>
-  <p>Have questions about data architecture, Databricks workspace design, or infrastructure automation? I'm open to collaborations, technical discussions, and consulting opportunities.</p>
+  <p>Have questions about Databricks architecture, Unity Catalog governance, data platform CI/CD, or infrastructure automation? I'm open to collaborations, technical discussions, and consulting opportunities.</p>
   
   <div class="contact-links">
     <a href="mailto:brian@cfktech.com" class="contact-link">Email</a>

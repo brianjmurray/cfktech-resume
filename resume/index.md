@@ -6,7 +6,7 @@ permalink: /resume/
 
 <h1>Résumé</h1>
 
-<p>My detailed professional résumé with work history, skills, and accomplishments.</p>
+<p>My current professional résumé, updated for Senior Data Architect work across Databricks, Unity Catalog, Terraform, Azure DevOps, and enterprise data governance.</p>
 
 <div class="resume-section">
   <h2>Download</h2>
@@ -17,5 +17,5 @@ permalink: /resume/
 
 <div class="resume-section">
   <h2>View Online</h2>
-  <p>The PDF version above contains the formatted résumé with all details. For the most current version, download the PDF or view the full résumé on the home page.</p>
+  <p>The PDF version above contains the formatted résumé with all details. For the most current version, download the PDF generated from the latest résumé source.</p>
 </div>
