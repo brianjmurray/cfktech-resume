@@ -17,7 +17,7 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 #### Senior Data Architect (03/2026–Present)
 - Lead architecture for IPH's enterprise data foundation, designing Databricks workspace, catalog, networking, and deployment patterns for a multi-brand insurance data platform.
-- Designed the Calandra 2 Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
+- Designed enterprise Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
 - Established Terraform-driven workspace infrastructure intended to be reusable across tenants and environments, with environment-specific `.tfvars` customization and Azure DevOps deployment pipelines.
 - Implemented CI/CD guardrails for Databricks infrastructure and data products, including read-only staging controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
@@ -83,5 +83,4 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 **Macomb Community College**, Warren, Michigan  
 Associate of Applied Science – Networking Specialist (May 2003)
-
 
