@@ -22,7 +22,7 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Implemented CI/CD guardrails for Databricks infrastructure and data products, including read-only staging controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
 - Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, masking policy deployment scripts, volume access controls, and catalog/schema grants aligned to engineering and analyst roles.
-- Supported Pets Best onboarding by reviewing and promoting Bronze/Silver implementations, validating environment scoping and DLT/job-based silver patterns, and enabling analyst and engineer access in staging.
+- Supported multi-brand onboarding by reviewing and promoting Bronze/Silver implementations, validating environment scoping and DLT/job-based silver patterns, and enabling analyst and engineer access in staging.
 - Designed cross-brand data strategy that uses Delta Sharing, foreign catalogs, and Silver harmonization layers to create enterprise views while preserving optionality as brands migrate toward shared platforms.
 - Advised platform strategy across Databricks, Microsoft Fabric/OneLake, Power BI, Purview, and Snowflake/dbt integrations for corporate reporting, analytics, governance, and future AI/ML use cases.
 - Tech: Databricks, Unity Catalog, Terraform, Azure DevOps, Azure, Delta Sharing, DLT/Lakeflow, serverless/classic compute, Power BI, Purview.
@@ -83,4 +83,3 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
 **Macomb Community College**, Warren, Michigan  
 Associate of Applied Science – Networking Specialist (May 2003)
-
