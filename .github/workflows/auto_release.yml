@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - 'apps/**'
       - index.md
       - resume.md
       - _layouts/**
