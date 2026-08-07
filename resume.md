@@ -1,7 +1,7 @@
 ---
 title: ""
 author: Brian J. Murray
-date: May 24, 2026 — Updated
+date: August 7, 2026 — Updated
 geometry: margin=0.75in
 fontsize: 11pt
 titlepage: false
@@ -18,8 +18,8 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 #### Senior Data Architect (03/2026–Present)
 - Lead architecture for IPH's enterprise data foundation, designing Databricks workspace, catalog, networking, and deployment patterns for a multi-brand insurance data platform.
 - Designed enterprise Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
-- Established Terraform-driven workspace infrastructure intended to be reusable across tenants and environments, with environment-specific `.tfvars` customization and Azure DevOps deployment pipelines.
-- Implemented CI/CD guardrails for Databricks infrastructure and data products, including read-only staging controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
+- Implemented Terraform-managed Databricks workspace infrastructure across dev, test, staging, and production scaffolds, with reusable tenant/environment patterns, environment-specific `.tfvars` customization, and Azure DevOps deployment pipelines.
+- Implemented CI/CD and access-governance guardrails for Databricks infrastructure and data products, including staging/production access controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
 - Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, masking policy deployment scripts, volume access controls, and catalog/schema grants aligned to engineering and analyst roles.
 - Supported multi-brand onboarding by reviewing and promoting Bronze/Silver implementations, validating environment scoping and DLT/job-based silver patterns, and enabling analyst and engineer access in staging.
