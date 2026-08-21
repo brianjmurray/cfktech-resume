@@ -1,7 +1,7 @@
 ---
 title: ""
 author: Brian J. Murray
-date: August 7, 2026 — Updated
+date: August 21, 2026 — Updated
 geometry: margin=0.75in
 fontsize: 11pt
 titlepage: false
@@ -20,8 +20,10 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Designed enterprise Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
 - Implemented Terraform-managed Databricks workspace infrastructure across dev, test, staging, and production environments, with reusable tenant/environment patterns, environment-specific `.tfvars` customization, and Azure DevOps deployment pipelines.
 - Implemented CI/CD and access-governance guardrails for Databricks infrastructure and data products, including staging and production access controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
+- Led production Databricks Asset Bundle deployment readiness across Azure DevOps pipelines, Key Vault secrets, environment configuration, and dashboard/data-product validation for Bronze/Silver workloads.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
 - Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, masking policy deployment scripts, volume access controls, and catalog/schema grants aligned to engineering and analyst roles.
+- Designed environment-scoped Entra group patterns for Databricks platform roles across dev, staging, and production to preserve least privilege, separation of duties, and controlled governance testing.
 - Supported multi-brand onboarding by reviewing and promoting Bronze/Silver implementations, validating environment scoping and DLT/job-based silver patterns, and enabling analyst and engineer access in staging.
 - Designed cross-brand data strategy that uses Delta Sharing, foreign catalogs, and Silver harmonization layers to create enterprise views while preserving optionality as brands migrate toward shared platforms.
 - Advised platform strategy across Databricks, Microsoft Fabric/OneLake, Power BI, Purview, and Snowflake/dbt integrations for corporate reporting, analytics, governance, and future AI/ML use cases.
