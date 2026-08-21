@@ -20,7 +20,7 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Designed enterprise Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
 - Implemented Terraform-managed Databricks workspace infrastructure across dev, test, staging, and production environments, with reusable tenant/environment patterns, environment-specific `.tfvars` customization, and Azure DevOps deployment pipelines.
 - Implemented CI/CD and access-governance guardrails for Databricks infrastructure and data products, including staging and production access controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
-- Led production Databricks Asset Bundle deployment readiness across Azure DevOps pipelines, Key Vault secrets, environment configuration, and dashboard/data-product validation for Bronze/Silver workloads.
+- Led production Declarative Automation Bundle deployment readiness across Azure DevOps pipelines, Key Vault secrets, environment configuration, and dashboard and data-product validation for Bronze/Silver workloads.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
 - Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, masking policy deployment scripts, volume access controls, and catalog/schema grants aligned to engineering and analyst roles.
 - Designed environment-scoped Entra group patterns for Databricks platform roles across dev, staging, and production to preserve least privilege, separation of duties, and controlled governance testing.
@@ -35,10 +35,10 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Implemented dynamic DLT materialized views for Embrace domain by introspecting information_schema and generating managed tables with deletion vectors and row tracking.
 - Delivered Quote Event pipelines with streaming ingestion and downstream Gold facts/dimensions (e.g., visit attribution) and integrated SDtatsig data for experimentation analytics.
 - Stood up scheduled partner exports, hardening jobs with retries, SLAs, and idempotent writes.
-- Standardized multi-environment CI/CD using Databricks Asset Bundles and Azure DevOps: validate → deploy → run across dev/rc/prod with service-principal run-as, Key Vault integration, and optional auto-approve for controlled rollouts.
+- Standardized multi-environment CI/CD using Declarative Automation Bundles and Azure DevOps: validate → deploy → run across dev/rc/prod with service-principal run-as, Key Vault integration, and optional auto-approve for controlled rollouts.
 - Introduced per-developer isolation strategies in dev (user-suffixed schemas/catalogs) and Photon/serverless configurations to improve query performance and reduce cost.
 - Refactored legacy jobs into bundle-managed resources, parameterized catalogs/schemas, and consolidated schedules via Quartz cron; added centralized logging/metrics and alerting.
-- Tech: Python (PySpark), SQL, Delta Lake/DLT, Unity Catalog, Databricks CLI, Azure DevOps, Azure CLI, Databricks Asset Bundles.
+- Tech: Python (PySpark), SQL, Delta Lake/DLT, Unity Catalog, Databricks CLI, Azure DevOps, Azure CLI, Declarative Automation Bundles.
 
 ### Independence Pet Group
 
