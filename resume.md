@@ -1,7 +1,7 @@
 ---
 title: ""
 author: Brian J. Murray
-date: August 21, 2026 — Updated
+date: August 28, 2026 — Updated
 geometry: margin=0.75in
 fontsize: 11pt
 titlepage: false
@@ -19,12 +19,12 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Lead architecture for IPH's enterprise data foundation, designing Databricks workspace, catalog, networking, and deployment patterns for a multi-brand insurance data platform.
 - Designed enterprise Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
 - Implemented Terraform-managed Databricks workspace infrastructure across dev, test, staging, and production environments, with reusable tenant/environment patterns, environment-specific `.tfvars` customization, and Azure DevOps deployment pipelines.
-- Implemented CI/CD and access-governance guardrails for Databricks infrastructure and data products, including staging and production access controls, service-principal deployments, pipeline-managed promotion, and code review standards before higher-environment release.
+- Implemented CI/CD and access-governance guardrails for Databricks infrastructure and data products, including staged workspace promotion, service-principal deployments, pipeline-managed release controls, and code review standards before higher-environment release.
 - Led production Declarative Automation Bundle deployment readiness across Azure DevOps pipelines, Key Vault secrets, environment configuration, and dashboard and data-product validation for Bronze/Silver workloads.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
-- Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, masking policy deployment scripts, volume access controls, and catalog/schema grants aligned to engineering and analyst roles.
+- Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, centralized masking policies, volume access controls, catalog/schema grants, and least-privilege Power BI service-principal access patterns.
 - Designed environment-scoped Entra group patterns for Databricks platform roles across dev, staging, and production to preserve least privilege, separation of duties, and controlled governance testing.
-- Supported multi-brand onboarding by reviewing and promoting Bronze/Silver implementations, validating environment scoping and DLT/job-based silver patterns, and enabling analyst and engineer access in staging.
+- Supported multi-brand onboarding and workspace migration by reviewing Bronze/Silver implementations, validating environment scoping and DLT/job-based patterns, and enabling governed analyst and engineer access in staging.
 - Designed cross-brand data strategy that uses Delta Sharing, foreign catalogs, and Silver harmonization layers to create enterprise views while preserving optionality as brands migrate toward shared platforms.
 - Advised platform strategy across Databricks, Microsoft Fabric/OneLake, Power BI, Purview, and Snowflake/dbt integrations for corporate reporting, analytics, governance, and future AI/ML use cases.
 - Tech: Databricks, Unity Catalog, Terraform, Azure DevOps, Azure, Delta Sharing, DLT/Lakeflow, serverless/classic compute, Power BI, Purview.
