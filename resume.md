@@ -1,7 +1,7 @@
 ---
 title: ""
 author: Brian J. Murray
-date: September 4, 2026 — Updated
+date: September 18, 2026 — Updated
 geometry: margin=0.75in
 fontsize: 11pt
 titlepage: false
@@ -11,6 +11,10 @@ titlepage: false
 
 brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 
+## PROFESSIONAL SUMMARY
+
+Senior Data Architect designing governed, data-intensive platforms across Databricks, Unity Catalog, Terraform, and Azure DevOps. Strengths include lakehouse architecture, CI/CD release guardrails, observability and job-health patterns, secure access governance, and self-service data products for analytics, reporting, and AI-ready use cases.
+
 ## PROFESSIONAL EXPERIENCE
 
 ### Independence Pet Holdings
@@ -19,7 +23,7 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Lead architecture for IPH's enterprise data foundation, designing Databricks workspace, catalog, networking, and deployment patterns for a multi-brand insurance data platform.
 - Designed enterprise Databricks architecture using Unity Catalog, medallion-layer conventions, operating-company catalog separation, and shared ecosystem/corporate data zones.
 - Implemented Terraform-managed Databricks workspace infrastructure across dev, test, staging, and production environments, with reusable tenant/environment patterns, environment-specific `.tfvars` customization, and Azure DevOps deployment pipelines.
-- Built CI/CD, developer-enablement, and access-governance guardrails for Databricks infrastructure and data products, including staged workspace promotion, service-principal deployments, pipeline-managed release controls, and code review standards before higher-environment release.
+- Built CI/CD, developer-enablement, and access-governance guardrails for Databricks infrastructure and self-service data products, including staged workspace promotion, service-principal deployments, pipeline-managed release controls, and code review standards before higher-environment release.
 - Led production Declarative Automation Bundle deployment readiness across Azure DevOps pipelines, Key Vault secrets, environment configuration, observability/job-health checks, and dashboard and data-product validation for Bronze/Silver workloads.
 - Partnered with Databricks, networking, security, and infrastructure teams to resolve secure connectivity for classic and serverless compute, Network Connectivity Configuration, private endpoints, firewall rules, and federated source access.
 - Built and refined governance patterns for PII handling in Unity Catalog, including classification tag permissions, centralized masking policies, volume access controls, catalog/schema grants, and least-privilege Power BI service-principal access patterns.
@@ -33,7 +37,7 @@ brian@cfktech.com · LinkedIn: https://www.linkedin.com/in/brianjmurray/
 - Designed and operated Databricks lakehouse pipelines across Bronze/Silver/Gold tiers using Unity Catalog, Delta Live Tables, and Delta Lake for multiple domains (CRM, Quote, Phone, Salesforce, Marketing).
 - Built parameterized, reusable ETL frameworks and notebooks for incremental loads (cron-driven windows), deduplication via windowing, and Delta MERGE upserts; added Teams webhooks and job health rules for reliability.
 - Implemented dynamic DLT materialized views for Embrace domain by introspecting information_schema and generating managed tables with deletion vectors and row tracking.
-- Delivered Quote Event pipelines with streaming ingestion and downstream Gold facts/dimensions (e.g., visit attribution) and integrated SDtatsig data for experimentation analytics.
+- Delivered Quote Event pipelines with streaming ingestion and downstream Gold facts/dimensions for experiment/event analytics, including visit attribution and Statsig integration.
 - Stood up scheduled partner exports, hardening jobs with retries, SLAs, and idempotent writes.
 - Standardized multi-environment CI/CD using Declarative Automation Bundles and Azure DevOps: validate → deploy → run across dev/rc/prod with service-principal run-as, Key Vault integration, and optional auto-approve for controlled rollouts.
 - Introduced per-developer isolation strategies in dev (user-suffixed schemas/catalogs) and Photon/serverless configurations to improve query performance and reduce cost.
